@@ -1675,3 +1675,216 @@
     sprite: Clothing/Uniforms/Jumpsuit/LCZ_sergeant_white.rsi
   - type: Clothing
     sprite: Clothing/Uniforms/Jumpsuit/LCZ_sergeant_white.rsi
+
+
+# Mobile Task Force (MTF)
+- type: entity
+  parent: ClothingUniformBase
+  id: ClothingUniformJumpsuitMTFAlpha1
+  name: alpha-1 uniform
+  description: Uniform for MTF unit Alpha-1.
+  components:
+  - type: Sprite
+    sprite: Clothing/Uniforms/Jumpsuit/alpha_1.rsi
+  - type: Clothing
+    sprite: Clothing/Uniforms/Jumpsuit/alpha_1.rsi
+    clothingVisuals:
+      innerclothing:
+      - state: equipped-INNERCLOTHING
+
+- type: entity
+  parent: ClothingUniformBase
+  id: ClothingUniformJumpsuitMTFBeta7
+  name: beta-7 uniform
+  description: Uniform for MTF unit Beta-7.
+  components:
+  - type: Sprite
+    sprite: Clothing/Uniforms/Jumpsuit/beta_7.rsi  
+  - type: Clothing
+    sprite: Clothing/Uniforms/Jumpsuit/beta_7.rsi
+    clothingVisuals:
+      innerclothing:
+      - state: equipped-INNERCLOTHING
+
+- type: entity
+  parent: ClothingUniformBase
+  id: ClothingUniformJumpsuitMTFEpsilon9
+  name: epsilon-9 uniform
+  description: Uniform for MTF unit Epsilon-9.
+  components:
+  - type: Sprite
+    sprite: Clothing/Uniforms/Jumpsuit/epsilon_9.rsi
+  - type: Clothing
+    sprite: Clothing/Uniforms/Jumpsuit/epsilon_9.rsi
+    clothingVisuals:
+      innerclothing:
+      - state: equipped-INNERCLOTHING
+
+- type: entity
+  parent: ClothingUniformBase
+  id: ClothingUniformJumpsuitMTFEpsilon11
+  name: epsilon-11 uniform
+  description: Uniform for MTF unit Epsilon-11.
+  components:
+  - type: Sprite
+    sprite: Clothing/Uniforms/Jumpsuit/Epsilon-11.rsi 
+  - type: Clothing
+    sprite: Clothing/Uniforms/Jumpsuit/Epsilon-11.rsi
+    clothingVisuals:
+      innerclothing:
+      - state: equipped-INNERCLOTHING
+
+- type: entity
+  parent: ClothingUniformBase
+  id: ClothingUniformJumpsuitMTFEta10
+  name: eta-10 uniform
+  description: Uniform for MTF unit Eta-10.
+  components:
+  - type: Sprite
+    sprite: Clothing/Uniforms/Jumpsuit/eta_10.rsi 
+  - type: Clothing
+    sprite: Clothing/Uniforms/Jumpsuit/eta_10.rsi
+    clothingVisuals:
+      innerclothing:
+      - state: equipped-INNERCLOTHING
+
+- type: entity
+  parent: ClothingUniformBase
+  id: ClothingUniformJumpsuitMTFNu7
+  name: nu-7 uniform
+  description: Uniform for MTF unit Nu-7.
+  components:
+  - type: Sprite
+    sprite: Clothing/Uniforms/Jumpsuit/nu_7.rsi 
+  - type: Clothing
+    sprite: Clothing/Uniforms/Jumpsuit/nu_7.rsi
+    clothingVisuals:
+      innerclothing:
+      - state: equipped-INNERCLOTHING
+
+- type: entity
+  parent: ClothingUniformBase
+  id: ClothingUniformJumpsuitMTFOmega1
+  name: omega-1 uniform
+  description: Uniform for MTF unit Omega-1.
+  components:
+  - type: Sprite
+    sprite: Clothing/Uniforms/Jumpsuit/omega_1.rsi 
+  - type: Clothing
+    sprite: Clothing/Uniforms/Jumpsuit/omega_1.rsi
+    clothingVisuals:
+      innerclothing:
+      - state: equipped-INNERCLOTHING
+
+# Security & Command
+- type: entity
+  parent: ClothingUniformBase
+  id: ClothingUniformJumpsuitEZGuard
+  name: EZ guard uniform
+  description: Standard jumpsuit for Entrance Zone security.
+  components:
+  - type: Sprite
+    sprite: Clothing/Uniforms/Jumpsuit/ez_guard.rsi
+  - type: Clothing
+    sprite: Clothing/Uniforms/Jumpsuit/ez_guard.rsi
+    clothingVisuals:
+      innerclothing:
+      - state: equipped-INNERCLOTHING
+
+- type: entity
+  parent: ClothingUniformBase
+  id: ClothingUniformJumpsuitEZSergeant
+  name: EZ sergeant uniform
+  description: Jumpsuit for Entrance Zone sergeants.
+  components:
+  - type: Sprite
+    sprite: Clothing/Uniforms/Jumpsuit/ez_sergeant.rsi
+  - type: Clothing
+    sprite: Clothing/Uniforms/Jumpsuit/ez_sergeant.rsi
+    clothingVisuals:
+      innerclothing:
+      - state: equipped-INNERCLOTHING
+
+- type: entity
+  parent: ClothingUniformBase
+  id: ClothingUniformJumpsuitEZSupervisor
+  name: EZ supervisor uniform
+  description: Jumpsuit for Entrance Zone supervisors.
+  components:
+  - type: Sprite
+    sprite: Clothing/Uniforms/Jumpsuit/ez_supervisor.rsi
+  - type: Clothing
+    sprite: Clothing/Uniforms/Jumpsuit/ez_supervisor.rsi
+    clothingVisuals:
+      innerclothing:
+      - state: equipped-INNERCLOTHING 
+
+- type: entity
+  parent: ClothingUniformBase
+  id: ClothingUniformJumpsuitHCZCommander
+  name: HCZ commander uniform
+  description: Heavy containment zone commander's jumpsuit.
+  components:
+  - type: Sprite
+    sprite: Clothing/Uniforms/Jumpsuit/hcz_commander.rsi
+  - type: Clothing
+    sprite: Clothing/Uniforms/Jumpsuit/hcz_commander.rsi
+    clothingVisuals:
+      innerclothing:
+      - state: equipped-INNERCLOTHING
+
+- type: entity
+  parent: ClothingUniformBase
+  id: ClothingUniformJumpsuitHCZGuard
+  name: HCZ guard uniform
+  description: Standard jumpsuit for Heavy Containment Zone security.
+  components:
+  - type: Sprite
+    sprite: Clothing/Uniforms/Jumpsuit/hcz_guard.rsi
+  - type: Clothing
+    sprite: Clothing/Uniforms/Jumpsuit/hcz_guard.rsi
+    clothingVisuals:
+      innerclothing:
+      - state: equipped-INNERCLOTHING
+
+- type: entity
+  parent: ClothingUniformBase
+  id: ClothingUniformJumpsuitHCZSergeant
+  name: HCZ sergeant uniform
+  description: Jumpsuit for Heavy Containment Zone sergeants.
+  components:
+  - type: Sprite
+    sprite: Clothing/Uniforms/Jumpsuit/hcz_sergeant.rsi
+  - type: Clothing
+    sprite: Clothing/Uniforms/Jumpsuit/hcz_sergeant.rsi
+    clothingVisuals:
+      innerclothing:
+      - state: equipped-INNERCLOTHING
+
+- type: entity
+  parent: ClothingUniformBase
+  id: ClothingUniformJumpsuitGuardCommander
+  name: guard commander uniform
+  description: A high-visibility uniform for the Guard Commander.
+  components:
+  - type: Sprite
+    sprite: Clothing/Uniforms/Jumpsuit/guard_commander.rsi 
+  - type: Clothing
+    sprite: Clothing/Uniforms/Jumpsuit/guard_commander.rsi
+    clothingVisuals:
+      innerclothing:
+      - state: equipped-INNERCLOTHING
+
+- type: entity
+  parent: ClothingUniformBase
+  id: ClothingUniformJumpsuitGOC
+  name: GOC uniform
+  description: Official jumpsuit of the Global Occult Coalition.
+  components:
+  - type: Sprite
+    sprite: Clothing/Uniforms/Jumpsuit/goc_1.rsi 
+  - type: Clothing
+    sprite: Clothing/Uniforms/Jumpsuit/goc_1.rsi
+    clothingVisuals:
+      innerclothing:
+      - state: equipped-INNERCLOTHING
