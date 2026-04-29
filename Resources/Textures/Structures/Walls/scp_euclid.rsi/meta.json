@@ -11,35 +11,35 @@
             "name": "full"
         },
         {
-            "name": "keter0",
+            "name": "euclid0",
             "directions": 4
         },
         {
-            "name": "keter1",
+            "name": "euclid1",
             "directions": 4
         },
         {
-            "name": "keter2",
+            "name": "euclid2",
             "directions": 4
         },
         {
-            "name": "keter3",
+            "name": "euclid3",
             "directions": 4
         },
         {
-            "name": "keter4",
+            "name": "euclid4",
             "directions": 4
         },
         {
-            "name": "keter5",
+            "name": "euclid5",
             "directions": 4
         },
         {
-            "name": "keter6",
+            "name": "euclid6",
             "directions": 4
         },
         {
-            "name": "keter7",
+            "name": "euclid7",
             "directions": 4
         }
     ]

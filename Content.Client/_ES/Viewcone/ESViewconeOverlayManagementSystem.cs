@@ -109,6 +109,7 @@ public sealed class ESViewconeOverlayManagementSystem : EntitySystem
 
         var angleToTarget = diff.ToAngle();
         var playerAngle = xformSys.GetWorldRotation(playerXform);
+        var correctedAngle = playerAngle.Theta - Math.PI / 2;
 
         if (HasComp<MouseRotatorComponent>(player))
         {
@@ -118,12 +119,11 @@ public sealed class ESViewconeOverlayManagementSystem : EntitySystem
             if (mousePos.MapId != MapId.Nullspace)
             {
                 var mouseAngle = (mousePos.Position - playerPos).ToAngle();
-                playerAngle = new Angle(mouseAngle.Theta + Math.PI / 2.0); 
             }
         }
 
-        var angleDiff = Angle.ShortestDistance(playerAngle, angleToTarget);
+        var angleDiff = Angle.ShortestDistance(new Angle(correctedAngle), angleToTarget);
 
-        return Math.Abs(angleDiff.Degrees) <= (viewcone.ConeAngle / 2f) + (viewcone.ConeFeather / 2f);
+        return Math.Abs(angleDiff.Degrees) <= (viewcone.ConeAngle / 2f);
     }
 }
