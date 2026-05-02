@@ -131,6 +131,7 @@
     spawned:
     - id: FoodMeatHuman
       amount: 5
+  - type: Blinking 
   - type: LanguageKnowledge # Einstein Engines - Languages
     speaks:
     - TauCetiBasic

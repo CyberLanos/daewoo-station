@@ -1888,3 +1888,17 @@
     clothingVisuals:
       innerclothing:
       - state: equipped-INNERCLOTHING
+
+- type: entity
+  parent: ClothingUniformBase
+  id: ClothingUniformJumpsuitCI
+  name: CI uniform
+  description: Chaos Insurgency's standard jumpsuit, made for the most rebellious of rebels.
+  components:
+  - type: Sprite
+    sprite: Clothing/Uniforms/Jumpsuit/CI.rsi 
+  - type: Clothing
+    sprite: Clothing/Uniforms/Jumpsuit/CI.rsi
+    clothingVisuals:
+      innerclothing:
+      - state: equipped-INNERCLOTHING

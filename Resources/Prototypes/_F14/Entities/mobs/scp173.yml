@@ -1,0 +1,33 @@
+- type: entity
+  id: MobSCP173
+  parent: SimpleMobBase
+  name: SCP-173 "The Sculpture"
+  description: saatas
+  components:
+  - type: SCPFreezeOnSight
+    walkSpeed: 8
+    sprintSpeed: 12
+  - type: Sprite
+    sprite: _F14/Mobs/scp173.rsi
+    state: alive
+    scale: 1,1
+  - type: Damageable
+    damageContainer: Inorganic
+  - type: MobState
+    allowedStates:
+    - Alive
+  - type: MeleeWeapon
+    damage:
+      types:
+        Blunt: 175
+    soundHit:
+      collection: SCP173NeckBreak 
+  - type: FootstepModifier
+    footstepSoundCollection:
+      collection: SCP173Footsteps
+  - type: HTN
+    rootTask:
+      task: SimpleHostileCompound 
+  - type: NpcFactionMember
+    factions:
+    - SimpleHostile

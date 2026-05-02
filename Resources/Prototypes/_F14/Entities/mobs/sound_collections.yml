@@ -1,0 +1,9 @@
+- type: soundCollection
+  id: SCP173Footsteps
+  files:
+    - /Audio/_F14/Effects/scp173_step1.ogg
+- type: soundCollection
+  id: SCP173NeckBreak
+  files:
+    - /Audio/_F14/Effects/bone_crack.ogg
+

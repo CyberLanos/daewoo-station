@@ -52,6 +52,7 @@
   name: Urist McWebs
   parent: BaseMobSpeciesOrganic
   id: BaseMobArachnid
+  roundstart: false
   abstract: true
   components:
   - type: Body
