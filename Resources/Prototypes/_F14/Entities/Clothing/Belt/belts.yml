@@ -1,0 +1,76 @@
+
+- type: entity
+  parent: [ClothingBeltStorageBase, ContentsExplosionResistanceBase]
+  id: ClothingBeltCI
+  name: Chaos Insurgency belt
+  description: Belt used by Chaos Insurgency operatives, can hold various equipment and provides some protection against explosions.
+  components:
+  - type: Sprite
+    sprite: _F14/Clothing/Belt/CI.rsi
+  - type: Clothing
+    sprite: Clothing/Belt/CI.rsi
+  - type: ExplosionResistance # Goobstation
+    damageCoefficient: 0.5
+  - type: Storage
+    whitelist:
+      tags:
+        - CigPack
+        - Taser
+        - SecBeltEquip
+        - Radio
+        - Sidearm
+        - MagazinePistol
+        - MagazineMagnum
+        - CombatKnife
+        - Truncheon
+        - BolaEnergy # Goobstation
+        - EnergySpeedloader # Goobstation
+        - MilitaryPowerCell # Goobstation
+        - EnergyMagAmmo # Goobstation
+        - HandGrenade
+        - Explosive
+        - Flashbang
+      components:
+        - Stunbaton
+        - FlashOnTrigger
+        - SmokeOnTrigger
+        - Flash
+        - Handcuff
+        - BallisticAmmoProvider
+        - CartridgeAmmo
+        - DoorRemote
+        - Whistle
+        - BalloonPopper
+        - ScatteringGrenade # goobstation
+  - type: ItemMapper
+    mapLayers:
+      flashbang:
+        whitelist:
+          components:
+          - FlashOnTrigger
+      stunbaton:
+        whitelist:
+          components:
+          - Stunbaton
+      tear_gas_grenade:
+        whitelist:
+          components:
+          - SmokeOnTrigger
+    sprite: Clothing/Belt/belt_overlay.rsi
+  - type: Appearance
+
+
+- type: entity
+  parent: [ClothingBeltStorageBase, ContentsExplosionResistanceBase]
+  id: ClothingBeltCIWebbing
+  name: CI Webbing
+  description: Webbing used by Chaos Insurgency operatives, can hold various equipment and provides some protection against explosions.
+  components:
+  - type: Sprite
+    sprite: _F14/Clothing/Belt/CIWebbing.rsi
+  - type: Clothing
+    sprite: _F14/Clothing/Belt/CIWebbing.rsi
+  - type: ExplosionResistance
+    damageCoefficient: 0.1
+  - type: StaticPrice
+    price: 500

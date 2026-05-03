@@ -1762,14 +1762,3 @@
     tags:
     - PetWearable
     - CorgiWearable
-
-- type: entity
-  parent: ClothingHeadBase
-  id: ClothingHeadHatCICap
-  name: Chaos insurgency officer cap
-  description: Chaos Insurgency officer cap, shows that you have authority in the Chaos Insurgency and gives man nearby a sense of confidence.
-  components:
-  - type: Sprite
-    sprite: Clothing/Head/Hats/CIofficer.rsi
-  - type: Clothing
-    sprite: Clothing/Head/Hats/CIofficer.rsi

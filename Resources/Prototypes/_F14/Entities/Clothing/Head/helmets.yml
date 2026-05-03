@@ -1,0 +1,328 @@
+#guard Helmet
+- type: entity
+  parent: [ClothingHeadHelmetBase, BaseSecurityContraband, ClothingHeadHelmetBaseFoldable] # Goob - ClothingHeadHelmetBaseFoldable
+  id: GuardHelmet
+  name: Guard helmet
+  description: Basic helmet used by foundation guards. Provides decent protection. Yet it seems visor should be able to open, but it doesn't. Maybe it's just a design choice?
+  components:
+  - type: Sprite
+    sprite: _F14/Clothing/Head/Helmets/guard.rsi
+  - type: Clothing
+    sprite: _F14/Clothing/Head/Helmets/guard.rsi
+  - type: Armor
+    coverage:
+    - Head
+    traumaDeductions:
+      Dismemberment: 0.3
+      OrganDamage: 0.3
+      BoneDamage: 0.3
+      VeinsDamage: 0
+      NerveDamage: 0
+    modifiers:
+      coefficients:
+        Blunt: 0.35
+        Slash: 0.35
+        Piercing: 0.35
+        Heat: 0.35
+        Radiation: 0.75
+        Caustic: 0.75
+  - type: ExplosionResistance
+    damageCoefficient: 0.75
+  - type: FaceHuggerBlocker # Goobstation
+  #- type: HideLayerClothing    #Goobstation
+  #  layers:
+  #    Hair: HEAD
+
+- type: entity
+  parent: ClothingHeadHelmetArmoredBase
+  id: ClothingHeadMTFTacticalNVG
+  name: Tactical helmet
+  description: Tactical helmet with NVG.
+  components:
+  - type: Sprite
+    sprite: _F14/Clothing/Head/Helmets/mtf_tactical.rsi
+    layers:
+    - state: icon
+    - state: icon_on
+      map: ["light"]
+      visible: false
+  - type: Appearance
+  - type: Clothing
+    sprite: _F14/Clothing/Head/Helmets/mtf_tactical.rsi
+    clothingVisuals:
+      head:
+      - state: equipped-HELMET
+  - type: NightVision
+    isEquipment: true 
+  - type: ItemToggle
+    predictable: false
+  - type: ToggleableVisuals
+    spriteLayer: light
+    clothingVisuals:
+      head:
+      - state: equipped-HELMET_on
+  - type: ToggleClothing
+    action: ActionToggleMTFNVG
+    mustEquip: true
+
+- type: entity
+  parent: BaseAction
+  id: ActionToggleMTFNVG
+  name: Change visor state
+  description: Lowers or raises the tactical visor.
+  components:
+  - type: Action
+    useDelay: 0.5
+    itemIconStyle: BigItem
+  - type: InstantAction
+    event: !type:ToggleActionEvent
+
+    
+- type: entity
+  parent: [ClothingHeadHelmetBase, BaseSecurityContraband, ClothingHeadHelmetBaseFoldable] # Goob - ClothingHeadHelmetBaseFoldable
+  id: HeavyMTFHelmet
+  name: Heavy MTF Helmet
+  description: Heavy helmet used by Mobile Task Force units. Provides excellent protection, but is quite heavy and bulky.
+  components:
+  - type: Sprite
+    sprite: _F14/Clothing/Head/Helmets/heavy.rsi
+  - type: Clothing
+    sprite: _F14/Clothing/Head/Helmets/heavy.rsi
+  - type: Armor
+    coverage:
+    - Head
+    traumaDeductions:
+      Dismemberment: 0.3
+      OrganDamage: 0.3
+      BoneDamage: 0.3
+      VeinsDamage: 0
+      NerveDamage: 0
+    modifiers:
+      coefficients:
+        Blunt: 0.25
+        Slash: 0.25
+        Piercing: 0.25
+        Heat: 0.35
+        Radiation: 0.75
+        Caustic: 0.75
+  - type: ExplosionResistance
+    damageCoefficient: 0.75
+  - type: FaceHuggerBlocker # Goobstation
+  #- type: HideLayerClothing    #Goobstation
+  #  layers:
+  #    Hair: HEAD
+
+- type: entity
+  parent: [ClothingHeadHelmetBase, BaseSecurityContraband, ClothingHeadHelmetBaseFoldable] # Goob - ClothingHeadHelmetBaseFoldable
+  id: Beta7Helmet
+  name: Beta-7 Helmet
+  description: Beta-7 helmet, used by the elite members of Mobile Task Force. Provides excellent protection, but is quite heavy and bulky.
+  components:
+  - type: Sprite
+    sprite: _F14/Clothing/Head/Helmets/beta.rsi
+  - type: Clothing
+    sprite: _F14/Clothing/Head/Helmets/beta.rsi
+  - type: Armor
+    coverage:
+    - Head
+    traumaDeductions:
+      Dismemberment: 0.3
+      OrganDamage: 0.3
+      BoneDamage: 0.3
+      VeinsDamage: 0
+      NerveDamage: 0
+    modifiers:
+      coefficients:
+        Blunt: 0.25
+        Slash: 0.25
+        Piercing: 0.25
+        Heat: 0.35
+        Radiation: 0.75
+        Caustic: 0.75
+  - type: ExplosionResistance
+    damageCoefficient: 0.75
+  - type: FaceHuggerBlocker # Goobstation
+  #- type: HideLayerClothing    #Goobstation
+  #  layers:
+  #    Hair: HEAD
+
+
+- type: entity
+  parent: [ClothingHeadHelmetBase, BaseSecurityContraband, ClothingHeadHelmetBaseFoldable] # Goob - ClothingHeadHelmetBaseFoldable
+  id: Eta10helmet
+  name: Eta-10 Helmet
+  description: Eta-10 helmet, used by the elite members of Mobile Task Force. Provides excellent protection, but is quite heavy and bulky.
+  components:
+  - type: Sprite
+    sprite: _F14/Clothing/Head/Helmets/eta.rsi
+  - type: Clothing
+    sprite: _F14/Clothing/Head/Helmets/eta.rsi
+  - type: Armor
+    coverage:
+    - Head
+    traumaDeductions:
+      Dismemberment: 0.3
+      OrganDamage: 0.3
+      BoneDamage: 0.3
+      VeinsDamage: 0
+      NerveDamage: 0
+    modifiers:
+      coefficients:
+        Blunt: 0.25
+        Slash: 0.25
+        Piercing: 0.25
+        Heat: 0.35
+        Radiation: 0.75
+        Caustic: 0.75
+  - type: ExplosionResistance
+    damageCoefficient: 0.75
+  - type: FaceHuggerBlocker # Goobstation
+  #- type: HideLayerClothing    #Goobstation
+  #  layers:
+  #    Hair: HEAD
+  - type: NightVision
+    isEquipment: true 
+  - type: ItemToggle
+    predictable: false
+
+
+- type: entity
+  parent: [ClothingHeadHelmetBase, BaseSecurityContraband, ClothingHeadHelmetBaseFoldable] # Goob - ClothingHeadHelmetBaseFoldable
+  id: HeavyCIHelmet
+  name: Heavy CI Helmet
+  description: Sturdy helmet with night vision used by the chaos insurgency. Provides excellent protection, but it apears that visor stuck, again.
+  components:
+  - type: Sprite
+    sprite: _F14/Clothing/Head/Helmets/CIheavy.rsi
+  - type: Clothing
+    sprite: _F14/Clothing/Head/Helmets/CIheavy.rsi
+  - type: Armor
+    coverage:
+    - Head
+    traumaDeductions:
+      Dismemberment: 0.3
+      OrganDamage: 0.3
+      BoneDamage: 0.3
+      VeinsDamage: 0
+      NerveDamage: 0
+    modifiers:
+      coefficients:
+        Blunt: 0.25
+        Slash: 0.25
+        Piercing: 0.25
+        Heat: 0.35
+        Radiation: 0.75
+        Caustic: 0.75
+  - type: ExplosionResistance
+    damageCoefficient: 0.75
+  - type: FaceHuggerBlocker # Goobstation
+  #- type: HideLayerClothing    #Goobstation
+  #  layers:
+  #    Hair: HEAD
+  - type: NightVision
+    isEquipment: true 
+  - type: ItemToggle
+    predictable: false
+
+- type: entity
+  parent: [ClothingHeadHelmetBase, BaseSecurityContraband, ClothingHeadHelmetBaseFoldable] # Goob - ClothingHeadHelmetBaseFoldable
+  id: CIHelmet1
+  name: CI Helmet
+  description: Basic helmet used by the chaos insurgency. Made of surprisingly sturdy materials.
+  components:
+  - type: Sprite
+    sprite: _F14/Clothing/Head/Helmets/CI1.rsi
+  - type: Clothing
+    sprite: _F14/Clothing/Head/Helmets/CI1.rsi
+  - type: Armor
+    coverage:
+    - Head
+    traumaDeductions:
+      Dismemberment: 0.3
+      OrganDamage: 0.3
+      BoneDamage: 0.3
+      VeinsDamage: 0
+      NerveDamage: 0
+    modifiers:
+      coefficients:
+        Blunt: 0.40
+        Slash: 0.40
+        Piercing: 0.40
+        Heat: 0.35
+        Radiation: 0.75
+        Caustic: 0.75
+  - type: ExplosionResistance
+    damageCoefficient: 0.75
+  - type: FaceHuggerBlocker # Goobstation
+  #- type: HideLayerClothing    #Goobstation
+  #  layers:
+  #    Hair: HEAD
+
+- type: entity
+  parent: [ClothingHeadHelmetBase, BaseSecurityContraband, ClothingHeadHelmetBaseFoldable] # Goob - ClothingHeadHelmetBaseFoldable
+  id: CIHelmet2
+  name: CI Helmet
+  description: Basic helmet used by the chaos insurgency. Made of surprisingly sturdy materials.
+  components:
+  - type: Sprite
+    sprite: _F14/Clothing/Head/Helmets/CI2.rsi
+  - type: Clothing
+    sprite: _F14/Clothing/Head/Helmets/CI2.rsi
+  - type: Armor
+    coverage:
+    - Head
+    traumaDeductions:
+      Dismemberment: 0.3
+      OrganDamage: 0.3
+      BoneDamage: 0.3
+      VeinsDamage: 0
+      NerveDamage: 0
+    modifiers:
+      coefficients:
+        Blunt: 0.40
+        Slash: 0.40
+        Piercing: 0.40
+        Heat: 0.35
+        Radiation: 0.75
+        Caustic: 0.75
+  - type: ExplosionResistance
+    damageCoefficient: 0.75
+  - type: FaceHuggerBlocker # Goobstation
+  #- type: HideLayerClothing    #Goobstation
+  #  layers:
+  #    Hair: HEAD
+
+- type: entity
+  parent: [ClothingHeadHelmetBase, BaseSecurityContraband, ClothingHeadHelmetBaseFoldable] # Goob - ClothingHeadHelmetBaseFoldable
+  id: CIPilotHelmet
+  name: CI Pilot Helmet
+  description: Basic helmet used by the chaos insurgency pilots. It stinks.
+  components:
+  - type: Sprite
+    sprite: _F14/Clothing/Head/Helmets/CIPilot.rsi
+  - type: Clothing
+    sprite: _F14/Clothing/Head/Helmets/CIPilot.rsi
+  - type: Armor
+    coverage:
+    - Head
+    traumaDeductions:
+      Dismemberment: 0.3
+      OrganDamage: 0.3
+      BoneDamage: 0.3
+      VeinsDamage: 0
+      NerveDamage: 0
+    modifiers:
+      coefficients:
+        Blunt: 0.5
+        Slash: 0.5
+        Piercing: 0.3
+        Heat: 0.35
+        Radiation: 0.75
+        Caustic: 0.75
+  - type: ExplosionResistance
+    damageCoefficient: 0.75
+  - type: FaceHuggerBlocker # Goobstation
+  #- type: HideLayerClothing    #Goobstation
+  #  layers:
+  #    Hair: HEAD
+
