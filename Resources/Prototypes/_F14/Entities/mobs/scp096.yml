@@ -1,0 +1,54 @@
+- type: entity
+  id: SCP096
+  parent: SimpleMobBase
+  name: SCP-096
+  components:
+  - type: SCP096
+    calmSpeed: 0
+    enragedSpeed: 25 
+    chargeTime: 20
+    idleSound:
+      collection: scp096cry
+    chargeSound:
+      collection: scp096screaming
+    enrageSound:
+      collection: scp096chase
+  - type: Sprite
+    sprite: _F14/Mobs/scp096.rsi
+    layers:
+    - map: [ "base" ]
+      state: alive
+  - type: Appearance
+  - type: MeleeWeapon
+    angle: 30
+    animation: WeaponArcSlash
+    wideAnimation: WeaponArcSlash
+    hitSound:
+      path: /Audio/Effects/flesh_break.ogg
+    noHitSound:
+      path: /Audio/Weapons/Melee/swing.ogg
+    damage:
+      types:
+        Slash: 70
+        Piercing: 30 
+  - type: GenericVisualizer
+    visuals:
+      enum.SCP096Visuals.State:
+        base:
+          Idle: { state: "alive" }
+          Charging: { state: "screaming" }
+          Enraged: { state: "running" }
+          Dead: { state: "dead" } 
+  - type: NPCRetaliation
+  - type: NpcFactionMember
+    factions:
+    - Neutral
+  - type: Barotrauma
+    hasImmunity: true
+  - type: Respirator
+    damage:
+      types:
+        Asphyxiation: 0
+  - type: Temperature
+    coldDamageThreshold: 0
+    heatDamageThreshold: 10000

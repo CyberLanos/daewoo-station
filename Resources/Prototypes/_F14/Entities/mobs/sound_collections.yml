@@ -7,3 +7,16 @@
   files:
     - /Audio/_F14/Effects/bone_crack.ogg
 
+- type: soundCollection
+  id: scp096cry
+  files:
+    - /Audio/_F14/Effects/SCP/096/crying.ogg
+- type: soundCollection
+  id: scp096chase
+  files:
+    - /Audio/_F14/Effects/SCP/096/enraged.ogg
+- type: soundCollection
+  id: scp096screaming
+  files:
+    - /Audio/_F14/Effects/SCP/096/screaming.ogg 
+
