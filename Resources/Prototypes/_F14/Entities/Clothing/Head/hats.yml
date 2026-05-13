@@ -8,3 +8,25 @@
     sprite: _F14/Clothing/Head/Hats/CIofficer.rsi
   - type: Clothing
     sprite: _F14/Clothing/Head/Hats/CIofficer.rsi
+
+- type: entity
+  parent: ClothingHeadBase
+  id: ClothingHeadHatGOCBeret
+  name: Global Occult Coalition beret
+  description: Global Occult Coalition beret, worn by the fanciest peacekeepers.
+  components:
+  - type: Sprite
+    sprite: _F14/Clothing/Head/Hats/GOC.rsi
+  - type: Clothing
+    sprite: _F14/Clothing/Head/Hats/GOC.rsi
+
+- type: entity
+  parent: ClothingHeadBase
+  id: ClothingHeadHatGOCLeadBeret
+  name: GOC officer beret
+  description: Global Occult Coalition high ranking beret, worn by squad leads and specialists.
+  components:
+  - type: Sprite
+    sprite: _F14/Clothing/Head/Hats/GOClead.rsi
+  - type: Clothing
+    sprite: _F14/Clothing/Head/Hats/GOClead.rsi

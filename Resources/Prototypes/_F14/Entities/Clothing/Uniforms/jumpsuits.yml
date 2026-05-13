@@ -309,9 +309,9 @@
 
 - type: entity
   parent: ClothingUniformBase
-  id: ClothingUniformJumpsuitGOC
+  id: ClothingUniformJumpsuitCivilGOC
   name: GOC uniform
-  description: Official jumpsuit of the Global Occult Coalition.
+  description: Official uniform of the Global Occult Coalition.
   components:
   - type: Sprite
     sprite: _F14/Clothing/Uniforms/Jumpsuit/goc_1.rsi 
@@ -331,6 +331,20 @@
     sprite: _F14/Clothing/Uniforms/Jumpsuit/CI.rsi 
   - type: Clothing
     sprite: _F14/Clothing/Uniforms/Jumpsuit/CI.rsi
+    clothingVisuals:
+      innerclothing:
+      - state: equipped-INNERCLOTHING
+
+- type: entity
+  parent: ClothingUniformBase
+  id: ClothingUniformJumpsuitGOC
+  name: GOC jumpsuit
+  description: GOC combat jumpsuit, made with durable materials and sturdy texture.
+  components:
+  - type: Sprite
+    sprite: _F14/Clothing/Uniforms/Jumpsuit/GOC.rsi 
+  - type: Clothing
+    sprite: _F14/Clothing/Uniforms/Jumpsuit/GOC.rsi
     clothingVisuals:
       innerclothing:
       - state: equipped-INNERCLOTHING
