@@ -506,3 +506,42 @@
   - type: ClothingSpeedModifier
     walkModifier: 0.95
     sprintModifier: 0.95
+
+- type: entity
+  parent: [ ClothingOuterBaseLarge, BaseMajorContraband, AllowSuitStorageClothing ]
+  id: GOCHeavyArmour
+  name: GOC Heavy armour
+  description: Heavy armour for Global Occult Coalition operatives.
+  components:
+  - type: Sprite
+    sprite: _F14/Clothing/OuterClothing/Armor/goc_heavy.rsi
+  - type: Clothing
+    sprite: _F14/Clothing/OuterClothing/Armor/goc_heavy.rsi
+  - type: Armor
+    coverage:
+    - Chest
+    - Groin
+    - Arm
+    - Leg
+    - Hand
+    traumaDeductions:
+      Dismemberment: 0.33
+      OrganDamage: 0.33
+      BoneDamage: 0.33
+      VeinsDamage: 0
+      NerveDamage: 0
+    modifiers:
+      coefficients:
+        Blunt: 0.60
+        Slash: 0.30
+        Piercing: 0.30
+        Heat: 0.6
+  - type: GroupExamine
+  - type: ModifyDelayedKnockdown
+    delayDelta: 2.5
+    knockdownTimeDelta: -2.5
+  - type: StaminaResistance
+    damageCoefficient: 0.6
+  - type: ClothingSpeedModifier
+    walkModifier: 0.85
+    sprintModifier: 0.85

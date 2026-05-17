@@ -1,0 +1,10 @@
+- type: entity
+  parent: ClothingOuterBase
+  id: gocjacket
+  name: GOC Representative jacket
+  description: Fancy jacket for GOC Representatives. It looks quite bulky, but despite everything has some drip in it.
+  components:
+  - type: Sprite
+    sprite: _F14/Clothing/OuterClothing/Misc/GOCjacket.rsi
+  - type: Clothing
+    sprite: _F14/Clothing/OuterClothing/Misc/GOCjacket.rsi
