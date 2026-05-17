@@ -23,7 +23,7 @@
     baseWalkSpeed: 2.5
     baseSprintSpeed: 4.0
   - type: Sprite
-    sprite: Mobs/Customization/plague_doctor.rsi 
+    sprite: Mobs/Customization/scp049.rsi 
     layers:
     - map: [ "base" ]
       state: alive
