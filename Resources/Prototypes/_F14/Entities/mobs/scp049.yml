@@ -1,0 +1,29 @@
+- type: entity
+  id: SCP049
+  parent: SimpleMobBase
+  name: SCP-049
+  description: Humanoid creature with .
+  components:
+  - type: Hands 
+  - type: Damageable
+    damageContainer: Biological
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      5000: Dead 
+  - type: MeleeWeapon
+    hidden: true 
+    altDisarm: false
+    angle: 60
+    animation: WeaponArcSlash
+    damage:
+      types:
+        Cellular: 200 
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 2.5
+    baseSprintSpeed: 4.0
+  - type: Sprite
+    sprite: Mobs/Customization/plague_doctor.rsi 
+    layers:
+    - map: [ "base" ]
+      state: alive

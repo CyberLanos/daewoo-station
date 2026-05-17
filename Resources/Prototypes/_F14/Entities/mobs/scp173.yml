@@ -2,7 +2,7 @@
   id: MobSCP173
   parent: SimpleMobBase
   name: SCP-173 "The Sculpture"
-  description: saatas
+  description: Huge and strange looking Sculpture
   components:
   - type: SCPFreezeOnSight
     walkSpeed: 8

@@ -1,0 +1,44 @@
+- type: entity
+  id: ActionSCP106Phase
+  name: Phase Shift
+  description: Sink into the floor to pass through walls.
+  components:
+  - type: Action 
+    icon: { sprite: _F14/Mobs/scp106.rsi, state: sinking }
+    useDelay: 5 
+    checkCanInteract: false
+    event: !type:SCP106PhaseActionEvent {}
+
+- type: entity
+  id: SCP106
+  parent: SimpleMobBase
+  name: SCP-106
+  components:
+  - type: SCP106
+    normalSpeed: 2.5
+    slowedSpeed: 0.8
+  - type: Actions 
+  - type: Hands # 
+  - type: StatusEffects
+    allowed:
+    - Flashed
+    - Stun
+  - type: Damageable
+    damageContainer: Biological
+  - type: Sprite
+    sprite: _F14/Mobs/scp106.rsi
+    layers:
+    - map: [ "base" ]
+      state: alive
+  - type: GenericVisualizer
+    visuals:
+      enum.SCP106Visuals.State:
+        base:
+          Idle: { state: "alive" }
+          Sinking: { state: "sinking" }
+          Phased: { state: "phased" }
+          Emerging: { state: "emerging" }
+  - type: MeleeWeapon
+    angle: 30
+    animation: WeaponArcSlash
+    wideAnimation: WeaponArcSlash
