@@ -6,6 +6,8 @@ using Robust.Shared.Serialization.Manager.Attributes;
 using Robust.Shared.Audio;
 using Robust.Shared.Map; 
 using Content.Shared.Actions;
+using Robust.Shared.Serialization; 
+using Content.Shared.DoAfter;
 
 namespace Content.Shared._F14.SCP;
 
@@ -84,3 +86,14 @@ public sealed partial class AntiPhaseWallComponent : Component { }
 
 [DataDefinition]
 public sealed partial class SCP106PhaseActionEvent : InstantActionEvent { }
+
+
+//scp scp scp 049
+[RegisterComponent]
+public sealed partial class SCP049Component : Component { }
+
+//SCP-049-2
+[RegisterComponent]
+public sealed partial class SCP0492Component : Component { }
+[Serializable, NetSerializable]
+public sealed partial class SCP049CureDoAfterEvent : SimpleDoAfterEvent { }

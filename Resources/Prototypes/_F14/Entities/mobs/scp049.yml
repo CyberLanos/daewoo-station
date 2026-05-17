@@ -1,16 +1,42 @@
+- type: npcFaction 
+  id: SCP
+  name: SCP
+  description: Anomalous entities.
+  hostile:
+  - NanoTrasen 
+  - Syndicate
+
+
 - type: entity
   id: SCP049
-  parent: SimpleMobBase
+  parent: MobHumanoidBase
   name: SCP-049
-  description: Humanoid creature with .
+  description: The Plague Doctor. Do not let him cure you.
   components:
+  - type: SCP049
+  - type: NpcFactionMember
+    factions:
+    - SCP
   - type: Hands 
+    hands:
+      left:
+        location: left
+      right:
+        location: right
+  - type: ComplexInteraction 
+  - type: Inventory 
+    template: humanoid
+  - type: Strippable 
+  - type: UserInterface
+    interfaces:
+      enum.StrippingUiKey.Key:
+        type: StrippableBoundUserInterface
   - type: Damageable
     damageContainer: Biological
   - type: MobThresholds
     thresholds:
       0: Alive
-      5000: Dead 
+      3000: Dead 
   - type: MeleeWeapon
     hidden: true 
     altDisarm: false
@@ -18,12 +44,12 @@
     animation: WeaponArcSlash
     damage:
       types:
-        Cellular: 200 
+        Cellular: 222 
   - type: MovementSpeedModifier
     baseWalkSpeed: 2.5
     baseSprintSpeed: 4.0
   - type: Sprite
-    sprite: Mobs/Customization/scp049.rsi 
+    sprite: _F14/Mobs/scp049.rsi 
     layers:
     - map: [ "base" ]
       state: alive

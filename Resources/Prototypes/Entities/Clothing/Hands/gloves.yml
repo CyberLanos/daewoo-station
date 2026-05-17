@@ -608,19 +608,7 @@
     fiberColor: fibers-yellow
   - type: FingerprintMask
 
-- type: entity
-  parent: [ BaseSecurityCargoContraband, ClothingHandsGlovesCombat]
-  id: ClothingHandsGlovesCI
-  name: CI combat gloves
-  description: High-quality combat gloves to protect hands from mechanical damage during combat.
-  components:
-  - type: Sprite
-    sprite: Clothing/Hands/Gloves/CI.rsi
-  - type: Clothing
-    sprite: Clothing/Hands/Gloves/CI.rsi
-  - type: Fiber
-    fiberMaterial: fibers-insulative
-    fiberColor: fibers-olive
+
 
 #Knuckledusters TODO: MOVE GOOB KNUCKLEDUSTER PROTOTYPES TO WIZDEN KNUCKLEDUSTERS
 # - type: entity
