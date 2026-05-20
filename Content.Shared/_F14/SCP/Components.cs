@@ -97,3 +97,30 @@ public sealed partial class SCP049Component : Component { }
 public sealed partial class SCP0492Component : Component { }
 [Serializable, NetSerializable]
 public sealed partial class SCP049CureDoAfterEvent : SimpleDoAfterEvent { }
+
+
+// SCP-330 
+
+[RegisterComponent]
+public sealed partial class SCP330Component : Component
+{
+    public Dictionary<EntityUid, int> TakenCount = new();
+}
+//scp-330 pink candy KABOOOOOM!
+[RegisterComponent]
+public sealed partial class SCP330PinkCandyComponent : Component { }
+
+//scp-999 NYAAAAAAAA!!!!!!!!!
+[RegisterComponent]
+public sealed partial class SCP999Component : Component
+{
+ 
+    [DataField("cooldown")]
+    public float Cooldown = 20f; 
+
+    public float Accumulator = 0f;
+
+   
+    [DataField("range")]
+    public float Range = 2f; 
+}

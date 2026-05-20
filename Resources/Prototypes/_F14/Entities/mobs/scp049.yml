@@ -9,7 +9,7 @@
 
 - type: entity
   id: SCP049
-  parent: MobHumanoidBase
+  parent: SimpleMobBase
   name: SCP-049
   description: The Plague Doctor. Do not let him cure you.
   components:
@@ -49,6 +49,7 @@
     baseWalkSpeed: 2.5
     baseSprintSpeed: 4.0
   - type: Sprite
+    noRotation: true 
     sprite: _F14/Mobs/scp049.rsi 
     layers:
     - map: [ "base" ]

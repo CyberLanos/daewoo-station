@@ -1,0 +1,18 @@
+- type: entity
+  parent: SimpleMobBase
+  id: SCP999
+  name: SCP-999
+  description: "A huge, gelatinous mass of translucent orange slime. It smells like peanut butter and just wants to make everyone happy."
+  components:
+  - type: SCP999 
+  - type: Sprite
+    sprite: _F14/Mobs/scp999.rsi 
+    state: alive
+    noRotation: true 
+  - type: NpcFactionMember 
+    factions:
+    - NanoTrasen 
+  - type: GhostRole
+    name: SCP-999
+    description: "You are the Tickle Monster! Wander around, hug people, and make them laugh. YAPPPPPPIEEEEE!"
+  - type: GhostTakeoverAvailable

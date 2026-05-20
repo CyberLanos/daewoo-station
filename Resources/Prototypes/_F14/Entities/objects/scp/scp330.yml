@@ -1,0 +1,161 @@
+- type: entity
+  id: SCP330
+  name: SCP-330
+  description: "Small round stainless steel bowl filled with a variable amount of individually wrapped pieces of candy. Taped to the side of the bowl is a handwritten note, reading “take no more than two, please!!”."
+  components:
+  - type: Transform
+    anchored: true
+  - type: Sprite
+    sprite: _F14/Objects/SCP/scp330.rsi
+    state: icon
+  - type: Clickable
+  - type: InteractionOutline
+  - type: Physics
+    bodyType: Static
+  - type: SCP330
+
+
+- type: entity
+  parent: BaseItem
+  id: BaseSCP330Candy
+  abstract: true
+  name: "Цукерка SCP-330"
+  description: "Small and sweat looking candy in a shining wrap"
+  components:
+  - type: Food
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        maxVol: 30
+
+# red one
+- type: entity
+  parent: BaseSCP330Candy
+  id: SCP330Candy1
+  components:
+  - type: Sprite
+    sprite: _F14/Objects/SCP/scp330candies.rsi
+    state: candy1
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        maxVol: 30
+        reagents:
+        - ReagentId: Sugar 
+          Quantity: 5.0
+        - ReagentId: Omnizine
+          Quantity: 15.0
+
+# blue one
+- type: entity
+  parent: BaseSCP330Candy
+  id: SCP330Candy2
+  components:
+  - type: Sprite
+    sprite: _F14/Objects/SCP/scp330candies.rsi
+    state: candy2
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        maxVol: 30
+        reagents:
+        - ReagentId: Sugar
+          Quantity: 5.0
+        - ReagentId: Tramadol
+          Quantity: 15.0
+
+# green one
+- type: entity
+  parent: BaseSCP330Candy
+  id: SCP330Candy3
+  components:
+  - type: Sprite
+    sprite: _F14/Objects/SCP/scp330candies.rsi
+    state: candy3
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        maxVol: 30
+        reagents:
+        - ReagentId: Sugar
+          Quantity: 5.0
+        - ReagentId: Dylovene
+          Quantity: 10.0
+        - id: Bicaridine 
+          ReagentId: Bicaridine
+          Quantity: 10.0
+
+# 4. yellow one
+- type: entity
+  parent: BaseSCP330Candy
+  id: SCP330Candy4
+  components:
+  - type: Sprite
+    sprite: _F14/Objects/SCP/scp330candies.rsi
+    state: candy4
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        maxVol: 30
+        reagents:
+        - ReagentId: Sugar
+          Quantity: 5.0
+        - ReagentId: Ephedrine
+          Quantity: 20.0
+
+# 5. Purple one
+- type: entity
+  parent: BaseSCP330Candy
+  id: SCP330Candy5
+  components:
+  - type: Sprite
+    sprite: _F14/Objects/SCP/scp330candies.rsi
+    state: candy5
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        maxVol: 30
+        reagents:
+        - ReagentId: Sugar
+          Quantity: 5.0
+        - ReagentId: Caffeine
+          Quantity: 15.0
+
+# KABOOOM!
+- type: entity
+  parent: BaseSCP330Candy
+  id: SCP330Candy6
+  components:
+  - type: SCP330PinkCandy
+  - type: Sprite
+    sprite: _F14/Objects/SCP/scp330candies.rsi
+    state: candy6
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        maxVol: 30
+        reagents:
+        - ReagentId: Sugar
+          Quantity: 5.0
+
+# Rainbow one
+- type: entity
+  parent: BaseSCP330Candy
+  id: SCP330Candy7
+  components:
+  - type: Sprite
+    sprite: _F14/Objects/SCP/scp330candies.rsi
+    state: candy7
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        maxVol: 30
+        reagents:
+        - ReagentId: Sugar
+          Quantity: 5.0
+        - ReagentId: Omnizine
+          Quantity: 10.0
+        - ReagentId: Ephedrine
+          Quantity: 10.0
+        - ReagentId: Tramadol
+          Quantity: 10.0
