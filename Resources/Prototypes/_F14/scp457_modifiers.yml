@@ -1,0 +1,15 @@
+- type: damageModifierSet
+  id: SCP457FireImmune
+  coefficients:
+    Heat:        0.0   # completely immune to fire/heat
+    Radiation:   0.0
+    Blunt:       1
+    Slash:       1
+    Piercing:    1
+    Shock:       0.5
+    # ── Weakness: water-based damage (Cold maps to foam/water projectiles)
+    Cold:        3.0   # water extinguishers, foam grenadesand anything water related deal ×3 damage
+    Caustic:     1.0
+    Poison:      0.0   # no blood/organs to poison
+    Asphyxiation: 0.0  # doesn't breathe
+    Bloodloss:   0.0   # no blood

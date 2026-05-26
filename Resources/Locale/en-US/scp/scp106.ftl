@@ -1,0 +1,3 @@
+scp106-pocket-teleport = You are dragged into the Pocket Dimension!
+scp106-femur-breaker-activate = The femur breaker activates — a sickening crack echoes across the facility...
+scp106-femur-breaker-no-victim = Nobody is in position to activate the femur breaker.

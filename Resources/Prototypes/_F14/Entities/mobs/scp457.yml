@@ -1,0 +1,67 @@
+- type: entity
+  name: SCP-457
+  id: MobSCP457
+  parent: SimpleMobBase
+  description: It's humanoid looking entity that is covered in flames
+  components:
+  - type: SCP457
+  - type: Damageable
+    damageContainer: Biological
+    damageModifierSet: SCP457FireImmune
+
+  - type: MobState
+    allowedStates:
+      - Alive
+      - Critical
+      - Dead
+
+  - type: MobThresholds
+    thresholds:
+      0:    Alive
+      2700: Critical
+      3000: Dead
+  - type: Hunger
+    enabled: false
+  - type: Thirst
+    enabled: false
+  - type: Metabolizer
+    enabled: false
+  - type: Temperature
+    currentTemperature: 1200   
+    heatDamageThreshold: 99999 
+    coldDamageThreshold: 0
+  - type: MeleeWeapon
+    damage:
+      types:
+        Heat: 30
+    animation: WeaponArcClaw
+  - type: Physics
+    bodyType: KinematicController
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeCircle
+          radius: 0.35
+        density: 60
+        mask:
+        - MobMask
+        layer:
+        - MobLayer
+  - type: Appearance
+  - type: Sprite
+    netsync: false
+    shader: unshaded
+    sprite: /Textures/_F14/Mobs/scp457.rsi  
+    layers:
+    - map: [ "enum.SCP457VisualLayers.Base" ]  
+      state: idle
+      shader: unshaded
+  - type: PointLight
+    radius: 4.0
+    energy: 3.0
+    color: "#FF6A00"   
+    castShadows: false 
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 3.0
+    baseSprintSpeed: 4.0

@@ -1,44 +1,55 @@
 - type: entity
-  id: ActionSCP106Phase
-  name: Phase Shift
-  description: Sink into the floor to pass through walls.
-  components:
-  - type: Action 
-    icon: { sprite: _F14/Mobs/scp106.rsi, state: sinking }
-    useDelay: 5 
-    checkCanInteract: false
-    event: !type:SCP106PhaseActionEvent {}
-
-- type: entity
-  id: SCP106
-  parent: SimpleMobBase
   name: SCP-106
+  id: MobSCP106
+  parent: SimpleMobBase
+  description: 
+    You see a big and black figure that appears to be an elderly humanoid,
+    with a general appearance of advanced decomposition.
   components:
   - type: SCP106
-    normalSpeed: 2.5
-    slowedSpeed: 0.8
-  - type: Actions 
-  - type: Hands # 
-  - type: StatusEffects
-    allowed:
-    - Flashed
-    - Stun
   - type: Damageable
-    damageContainer: Biological
-  - type: Sprite
-    sprite: _F14/Mobs/scp106.rsi
-    layers:
-    - map: [ "base" ]
-      state: alive
-  - type: GenericVisualizer
-    visuals:
-      enum.SCP106Visuals.State:
-        base:
-          Idle: { state: "alive" }
-          Sinking: { state: "sinking" }
-          Phased: { state: "phased" }
-          Emerging: { state: "emerging" }
+    damageModifierSet: SCP106Invincible
+  - type: MobState
+    allowedStates:
+      - Alive
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+  - type: Hunger
+    enabled: false
+  - type: Thirst
+    enabled: false
   - type: MeleeWeapon
-    angle: 30
-    animation: WeaponArcSlash
-    wideAnimation: WeaponArcSlash
+    damage:
+      types:
+        Caustic: 25
+    animation: WeaponArcClaw
+    soundHit:
+      path: /Audio/_F14/Effects/SCP/scp106_touch.ogg
+      params:
+        volume: -3
+  - type: Physics
+    bodyType: KinematicController
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeCircle
+          radius: 0.35
+        density: 80
+        mask:
+        - MobMask
+        layer:
+        - MobLayer
+  - type: Appearance
+  - type: Sprite
+    netsync: false
+    sprite: /Textures/_F14/Mobs/scp106.rsi
+    layers:
+    - map: [ "enum.SCP106VisualLayers.Base" ]
+      state: alive
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 3.5
+    baseSprintSpeed: 4.5
+  - type: Metabolizer
+    enabled: false

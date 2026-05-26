@@ -1,0 +1,1 @@
+Hi,i must admit, most of the visualizer systems is made by AI, if you can, please rewrite them, i spent like 4 hours of my time trying to make visualizer system for 096 and failed miserably. Thank you if you rewrite this code and make it better and not AI generated. Thank you again and good luck!

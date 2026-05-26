@@ -1,0 +1,12 @@
+- type: entity
+  parent: BaseItem
+  id: SCP113
+  name: SCP-113
+  description: "A small piece of red jasper. Touching it gives you a strange tingling sensation..."
+  components:
+  - type: SCP113 
+  - type: Sprite
+    sprite: _F14/objects/SCP/scp113.rsi
+    state: icon
+  - type: Item
+    size: Small

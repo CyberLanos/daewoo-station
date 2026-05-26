@@ -8,7 +8,7 @@ using Robust.Shared.Map;
 using Content.Shared.Actions;
 using Robust.Shared.Serialization; 
 using Content.Shared.DoAfter;
-
+using Content.Shared.Movement.Systems;
 namespace Content.Shared._F14.SCP;
 
 // Blinking component for SCP-173
@@ -60,33 +60,6 @@ public sealed partial class SCP096Component : Component
     [DataField("enrageSound")] public SoundSpecifier? EnrageSound;
 }
 
-// SCP-106
-[Serializable, NetSerializable]
-public enum SCP106State : byte { Idle, Sinking, Phased, Emerging }
-
-[Serializable, NetSerializable]
-public enum SCP106Visuals : byte { State }
-
-[RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
-public sealed partial class SCP106Component : Component
-{
-    [AutoNetworkedField] public SCP106State State = SCP106State.Idle;
-    [AutoNetworkedField] public float CurrentTimer = 0f;
-    [DataField("normalSpeed")] public float NormalSpeed = 2.5f;
-    [DataField("slowedSpeed")] public float SlowedSpeed = 0.8f;
-    [DataField("pocketDimensionMap")] public MapId? PocketDimensionMap;
-    [DataField("pocketDimensionX")] public float PocketDimensionX = 0f;
-    [DataField("pocketDimensionY")] public float PocketDimensionY = 0f;
-    [DataField("phaseAction")] public string? PhaseAction = "ActionSCP106Phase";
-    [DataField] public EntityUid? PhaseActionEntity;
-}
-
-[RegisterComponent]
-public sealed partial class AntiPhaseWallComponent : Component { }
-
-[DataDefinition]
-public sealed partial class SCP106PhaseActionEvent : InstantActionEvent { }
-
 
 //scp scp scp 049
 [RegisterComponent]
@@ -124,3 +97,136 @@ public sealed partial class SCP999Component : Component
     [DataField("range")]
     public float Range = 2f; 
 }
+//scp-113
+[RegisterComponent]
+public sealed partial class SCP113Component : Component
+{
+}
+
+
+//scp-106 
+[Serializable, NetSerializable]
+public enum SCP106Visuals : byte
+{
+    Submerged,
+    FlashlightSlowed,
+}
+
+[Serializable, NetSerializable]
+public enum SCP106VisualLayers : byte
+{
+    Base,
+}
+
+//main scp-106 components
+[RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
+public sealed partial class SCP106Component : Component
+{
+    [AutoNetworkedField]
+    public bool IsSubmerged = false;
+
+    [DataField]
+    public float TileDecayChance = 0.40f;
+
+    [DataField]
+    public float FlashlightSpeedMult = 0.55f;
+
+    [DataField]
+    public float FlashlightLingerTime = 1.5f;
+
+    public float FlashlightSlowTimer = 0f;
+
+    [AutoNetworkedField]
+    public bool IsFlashlightSlowed = false;
+
+    [DataField]
+    public string SCPPocketDimensionMap = "PocketDimension";
+}
+
+[RegisterComponent]
+public sealed partial class SCP106SubmergedComponent : Component { }
+
+[RegisterComponent]
+public sealed partial class SCP106FlashlightSlowedComponent : Component
+{
+    public float SpeedMultiplier = 0.55f;
+}
+
+public sealed class SCP106FlashlightSlowSystem : EntitySystem
+{
+    public override void Initialize()
+    {
+        base.Initialize();
+        SubscribeLocalEvent<SCP106FlashlightSlowedComponent, RefreshMovementSpeedModifiersEvent>(OnRefresh);
+    }
+
+    private void OnRefresh(EntityUid uid,
+        SCP106FlashlightSlowedComponent comp,
+        RefreshMovementSpeedModifiersEvent args)
+    {
+        args.ModifySpeed(comp.SpeedMultiplier, comp.SpeedMultiplier);
+    }
+}
+
+[RegisterComponent]
+public sealed partial class SCPPocketDimensionComponent : Component { }
+
+//femure brake or evil ass rape machine
+[Serializable, NetSerializable]
+public enum FemurBreakerVisuals : byte
+{
+    State,
+}
+
+[Serializable, NetSerializable]
+public enum FemurBreakerState : byte
+{
+    Idle,
+    Activating,
+    Used,
+}
+
+[RegisterComponent, NetworkedComponent]
+public sealed partial class FemurBreakerComponent : Component
+{
+    [DataField]
+    public SoundSpecifier ActivationSound =
+        new SoundPathSpecifier("/Audio/SCP/femur_breaker.ogg");
+
+    [DataField]
+    public float VictimRange = 1.2f;
+
+    [DataField]
+    public float ActivationDelay = 1.5f;
+
+    public bool Used = false;
+
+    public float ActivationTimer = 0f;
+
+    public bool Activating = false;
+}
+
+
+//scp-457 component
+[Serializable, NetSerializable] 
+public enum SCP457Visuals : byte
+{
+    Attacking,
+}
+
+[Serializable, NetSerializable] 
+public enum SCP457VisualLayers : byte
+{
+    Base,
+}
+[RegisterComponent] 
+public sealed partial class SCP457Component : Component
+{
+    [DataField] public float IgniteRadius = 2.5f;
+    [DataField] public float IgniteInterval = 1.0f;
+    public float IgniteTimer = 0f;
+    [DataField] public float FireDamagePerPulse = 8f;
+
+    public bool IsAttacking = false; 
+}
+
