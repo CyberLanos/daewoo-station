@@ -6,6 +6,7 @@ using Robust.Client.Graphics;
 using Robust.Client.Input;
 using Robust.Shared.Enums;
 using Robust.Shared.Map.Components;
+using Robust.Client.Player;
 
 namespace Content.Client._ES.Viewcone.Overlays;
 
@@ -20,13 +21,14 @@ public sealed class ESViewconeSetAlphaOverlay : Overlay
     [Dependency] private readonly IEntityManager _ent = default!;
     [Dependency] private readonly IEyeManager _eye = default!;
     [Dependency] private readonly IInputManager _input = default!;
+    [Dependency] private readonly IPlayerManager _playerManager = default!;
+
     private readonly ESViewconeOverlayManagementSystem _cone;
     private readonly ESViewconeOccludableTreeSystem _tree;
     private readonly TransformSystem _xform;
     private readonly SpriteSystem _sprite;
 
     public override OverlaySpace Space => OverlaySpace.WorldSpaceBelowEntities;
-
     // slightly sus but cached from beforedraw to use in draw.
     private Entity<EyeComponent, ESViewconeComponent>? _nextEye;
 
@@ -40,27 +42,23 @@ public sealed class ESViewconeSetAlphaOverlay : Overlay
         _sprite = _ent.EntitySysManager.GetEntitySystem<SpriteSystem>();
     }
 
-    protected override bool BeforeDraw(in OverlayDrawArgs args)
+   protected override bool BeforeDraw(in OverlayDrawArgs args)
     {
         _nextEye = null;
 
-        if (args.Viewport.Eye == null)
+        var player = _playerManager.LocalEntity;
+        if (player == null)
             return false;
 
-        // This is really stupid but there isn't another way to reverse an eye entity from just an IEye afaict
-        // It's not really inefficient though. theres barely any of those fuckin things anyway (? verify that) (maybe this scales with players in view) (shit)
-        var enumerator = _ent.AllEntityQueryEnumerator<EyeComponent, ESViewconeComponent>();
-        while (enumerator.MoveNext(out var uid, out var eye, out var viewcone))
+        if (_ent.TryGetComponent<EyeComponent>(player.Value, out var eye) &&
+            _ent.TryGetComponent<ESViewconeComponent>(player.Value, out var viewcone))
         {
-            if (args.Viewport.Eye != eye.Eye)
-                continue;
-
-            _nextEye = (uid, eye, viewcone);
-            break;
+            _nextEye = (player.Value, eye, viewcone);
         }
 
         return _nextEye != null;
     }
+
 
     protected override void Draw(in OverlayDrawArgs args)
     {

@@ -131,6 +131,7 @@ public sealed class EntityHealthBarOverlay : Overlay
     public override OverlaySpace Space => OverlaySpace.WorldSpaceBelowFOV;
     public HashSet<string> DamageContainers = new();
     public ProtoId<HealthIconPrototype>? StatusIcon;
+    [Dependency] private readonly IPlayerManager _playerManager = default!;
 
     public EntityHealthBarOverlay(IEntityManager entManager, IPrototypeManager prototype)
     {

@@ -94,7 +94,7 @@ public sealed partial class AudioMuffleSystem : SharedAudioMuffleSystem
 
         SubscribeNetworkEvent<RoundRestartCleanupEvent>(OnRestart);
 
-        _audio.GetOcclusionOverride += OnOcclusion;
+       // _audio.GetOcclusionOverride += OnOcclusion;
 
         Subs.CVar(_cfg, PirateVars.AudioMufflePathfinding, value => _pathfindingEnabled = value, true);
         Subs.CVar(_cfg, CVars.AudioRaycastLength, value => _maxRayLength = value, true);
@@ -111,7 +111,7 @@ public sealed partial class AudioMuffleSystem : SharedAudioMuffleSystem
 
         _xform.OnGlobalMoveEvent -= OnMove;
 
-        _audio.GetOcclusionOverride -= OnOcclusion;
+        //_audio.GetOcclusionOverride -= OnOcclusion;
     }
 
     private void OnRestart(RoundRestartCleanupEvent ev)

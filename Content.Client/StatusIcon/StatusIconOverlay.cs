@@ -13,7 +13,6 @@
 
 using Content.Shared.StatusIcon;
 using Content.Shared.StatusIcon.Components;
-using Content.Client._Pirate.Photo; // Pirate: camera
 using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
 using Robust.Shared.Enums;
@@ -38,7 +37,6 @@ public sealed class StatusIconOverlay : Overlay
     private readonly SpriteSystem _sprite;
     private readonly TransformSystem _transform;
     private readonly StatusIconSystem _statusIcon;
-    private readonly PhotoCaptureFilterSystem _photoCaptureFilter; // Pirate: camera
     private readonly ShaderInstance _unshadedShader;
     private readonly ESViewconeOverlayManagementSystem _viewcone;
 
@@ -51,16 +49,12 @@ public sealed class StatusIconOverlay : Overlay
         _sprite = _entity.System<SpriteSystem>();
         _transform = _entity.System<TransformSystem>();
         _statusIcon = _entity.System<StatusIconSystem>();
-        _photoCaptureFilter = _entity.System<PhotoCaptureFilterSystem>(); // Pirate: camera
         _viewcone = _entity.System<ESViewconeOverlayManagementSystem>();
         _unshadedShader = _prototype.Index(UnshadedShader).Instance();
     }
 
     protected override void Draw(in OverlayDrawArgs args)
     {
-        if (_photoCaptureFilter.IsSuppressedForEye(args.Viewport.Eye, PhotoCaptureSuppressionMask.StatusIndicators)) // Pirate: camera
-            return;
-
         var handle = args.WorldHandle;
 
         var eyeRot = args.Viewport.Eye?.Rotation ?? default;
@@ -69,13 +63,11 @@ public sealed class StatusIconOverlay : Overlay
         var scaleMatrix = Matrix3Helpers.CreateScale(new Vector2(1, 1));
         var rotationMatrix = Matrix3Helpers.CreateRotation(-eyeRot);
 
-        // Отримуємо локального гравця перед циклом
         var localPlayer = _player.LocalSession?.AttachedEntity;
 
         var query = _entity.AllEntityQueryEnumerator<StatusIconComponent, SpriteComponent, TransformComponent, MetaDataComponent>();
         while (query.MoveNext(out var uid, out var comp, out var sprite, out var xform, out var meta))
         {
-            // ПЕРЕВІРКА КОНУСА ЗОРУ
             if (localPlayer != null && uid != localPlayer)
             {
                 if (!_viewcone.IsEntityInView(localPlayer.Value, uid))
