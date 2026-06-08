@@ -87,11 +87,14 @@
   - type: Tag
     tags:
     - Trash
+    - FoodBowlBig #Pirate
   - type: ThrowableBlocked # Goobstation
     behavior: Damage
     damage:
       types:
         Blunt: 5
+  - type: FitsInDispenser # Goobstation
+    solution: food
 
 - type: entity
   name: broken bowl

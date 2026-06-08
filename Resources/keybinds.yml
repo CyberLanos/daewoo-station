@@ -775,6 +775,27 @@ binds:
   type: State
   key: MouseRight
   canFocus: true
+<<<<<<< HEAD
 - function: Blink
   key: V
   type: State
+=======
+
+# Pirate VVV
+
+- function: OfferItem
+  type: State
+  key: F
+  mod1: Control
+- function: ToggleCrawlingUnder
+  type: State
+  key: R
+  mod1: Shift
+
+# Pirate: multiz
+- function: CEToggleShootDownZLevel
+  type: State
+  key: Z
+  mod1: Shift
+  mod2: Control
+>>>>>>> pr-3

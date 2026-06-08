@@ -138,6 +138,7 @@ using Content.Shared.Damage.Systems;
 using Content.Shared.Database;
 using Content.Goobstation.Maths.FixedPoint;
 using Content.Shared._Lavaland.Weapons;
+using Content.Shared._Shitcode.Heretic.Components;
 using Content.Shared._Shitmed.Targeting;
 using Content.Shared.Coordinates;
 using Content.Shared.Hands;
@@ -236,6 +237,7 @@ public abstract class SharedMeleeWeaponSystem : EntitySystem
     /// If an attack is released within this buffer it's assumed to be full damage.
     /// </summary>
     public const float GracePeriod = 0.05f;
+    private const float ArmOrHandDisarmChanceMultiplier = 1.5f; // DOWNSTREAM-TPirates: combat actions
 
     public override void Initialize()
     {
@@ -579,6 +581,18 @@ public abstract class SharedMeleeWeaponSystem : EntitySystem
                     return false;
                 }
 
+                // <Trauma>
+                if (TryComp(target, out TargetInteractionRelayComponent? relay) && relay.RelayMelee &&
+                    Exists(relay.RelayEntity) && relay.RelayEntity.Value != target)
+                {
+                    return AttemptAttack(user,
+                        weaponUid,
+                        weapon,
+                        new LightAttackEvent(GetNetEntity(relay.RelayEntity.Value), light.Weapon, light.Coordinates),
+                        session);
+                }
+                // </Trauma>
+
                 if (!Blocker.CanAttack(user, target, (weaponUid, weapon)))
                     return false;
 
@@ -600,6 +614,17 @@ public abstract class SharedMeleeWeaponSystem : EntitySystem
                     // Target was lightly attacked & deleted.
                     return false;
                 }
+
+                // <Trauma>
+                if (TryComp(target, out relay) && relay.RelayMelee && Exists(relay.RelayEntity))
+                {
+                    return AttemptAttack(user,
+                        weaponUid,
+                        weapon,
+                        new DisarmAttackEvent(GetNetEntity(relay.RelayEntity.Value), disarm.Coordinates),
+                        session);
+                }
+                // </Trauma>
 
                 if (!Blocker.CanAttack(user, target, (weaponUid, weapon), true))
                     return false;
@@ -734,7 +759,7 @@ public abstract class SharedMeleeWeaponSystem : EntitySystem
         }
 
         // Goobstation start
-        var beforeEvent = new BeforeHarmfulActionEvent(user, HarmfulActionType.Harm);
+        var beforeEvent = new BeforeHarmfulActionEvent(user, HarmfulActionType.Harm, damage); // Pirate: katana
         RaiseLocalEvent(target.Value, beforeEvent);
         if (beforeEvent.Cancelled)
             return;
@@ -892,7 +917,7 @@ public abstract class SharedMeleeWeaponSystem : EntitySystem
                 continue;
 
             // Goobstation start
-            var beforeEvent = new BeforeHarmfulActionEvent(user, HarmfulActionType.Harm);
+            var beforeEvent = new BeforeHarmfulActionEvent(user, HarmfulActionType.Harm, damage); // Pirate: katana
             RaiseLocalEvent(entity, beforeEvent);
             if (beforeEvent.Cancelled)
                 continue;
@@ -1188,6 +1213,13 @@ public abstract class SharedMeleeWeaponSystem : EntitySystem
             return true;
 
         var chance = CalculateDisarmChance(user, target, inTargetHand, combatMode);
+        #region DOWNSTREAM-TPirates: combat actions
+        if (TryComp<TargetingComponent>(user, out var targeting) && IsArmOrHandTarget(targeting.Target))
+        {
+            // Aiming at arms/hands should improve disarm odds, but not bypass stamina/health/item malus checks.
+            chance = Math.Clamp(chance * ArmOrHandDisarmChanceMultiplier, 0f, 1f);
+        }
+        #endregion
 
         _audio.PlayPredicted(combatMode.DisarmSuccessSound,
             user, user,
@@ -1345,4 +1377,14 @@ public abstract class SharedMeleeWeaponSystem : EntitySystem
             }
         }
     }
+    
+    #region DOWNSTREAM-TPirates: combat actions
+    private static bool IsArmOrHandTarget(TargetBodyPart targetPart)
+    {
+        return targetPart is TargetBodyPart.LeftArm
+            or TargetBodyPart.RightArm
+            or TargetBodyPart.LeftHand
+            or TargetBodyPart.RightHand;
+    }
+    #endregion
 }

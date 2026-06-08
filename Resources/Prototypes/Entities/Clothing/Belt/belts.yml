@@ -404,6 +404,11 @@
           - SmokeOnTrigger
     sprite: Clothing/Belt/belt_overlay.rsi
   - type: Appearance
+  - type: EmitsSoundOnMove # Pirate: gear step sounds
+    soundCollection: # Pirate: gear step sounds
+      collection: PirateFootstepTacticalWebbing # Pirate: gear step sounds
+      params: # Pirate: gear step sounds
+        volume: -10 # Pirate: gear step sounds
 
 - type: entity
   parent: ClothingBeltStorageBase
@@ -554,7 +559,7 @@
   - type: Storage
     whitelist:
       tags:
-        # - PlantAnalyzer
+        - PlantAnalyzer # Pirate
         - PlantSampleTaker
         - BotanyShovel
         - BotanyHoe
@@ -575,10 +580,12 @@
         whitelist:
           tags:
           - BotanyHatchet
-      # hydro:
-      #   whitelist:
-      #     tags:
-      #     - PlantAnalyzer # Dunno what to put here, should be aight.
+      # Pirate VVV
+      hydro:
+        whitelist:
+          tags:
+          - PlantAnalyzer
+      # Pirate ^^^
       hoe:
         whitelist:
           tags:
@@ -741,6 +748,11 @@
           - SmokeOnTrigger
     sprite: Clothing/Belt/belt_overlay.rsi
   - type: Appearance
+  - type: EmitsSoundOnMove # Pirate: gear step sounds
+    soundCollection: # Pirate: gear step sounds
+      collection: PirateFootstepTacticalWebbing # Pirate: gear step sounds
+      params: # Pirate: gear step sounds
+        volume: -10 # Pirate: gear step sounds
 
 - type: entity
   parent: [ClothingBeltBase, ClothingSlotBase, BaseCommandContraband]
@@ -882,6 +894,11 @@
     sprite: Clothing/Belt/securitywebbing.rsi
   - type: Clothing
     sprite: Clothing/Belt/securitywebbing.rsi
+  - type: EmitsSoundOnMove # Pirate: gear step sounds
+    soundCollection: # Pirate: gear step sounds
+      collection: PirateFootstepTacticalWebbing # Pirate: gear step sounds
+      params: # Pirate: gear step sounds
+        volume: -10 # Pirate: gear step sounds
 
 - type: entity
   parent: [ ClothingBeltStorageBase, BaseSecurityCargoContraband ]
@@ -893,6 +910,11 @@
     sprite: Clothing/Belt/mercwebbing.rsi
   - type: Clothing
     sprite: Clothing/Belt/mercwebbing.rsi
+  - type: EmitsSoundOnMove # Pirate: gear step sounds
+    soundCollection: # Pirate: gear step sounds
+      collection: PirateFootstepTacticalWebbing # Pirate: gear step sounds
+      params: # Pirate: gear step sounds
+        volume: -10 # Pirate: gear step sounds
 
 - type: entity
   parent: ClothingBeltStorageBase

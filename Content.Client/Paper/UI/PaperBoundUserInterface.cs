@@ -109,6 +109,8 @@ public sealed class PaperBoundUserInterface : BoundUserInterface
 
         _window = this.CreateWindow<PaperWindow>();
         _window.OnSaved += InputOnTextEntered;
+        _window.OnMacroMenuUsed += OnMacroMenuUsed; // Pirate: paperwork tags
+        _window.OnSignatureRequested += OnSignatureRequested; // Starlight-edit
 
         if (EntMan.TryGetComponent<PaperComponent>(Owner, out var paper))
         {
@@ -136,4 +138,14 @@ public sealed class PaperBoundUserInterface : BoundUserInterface
             _window.Input.CursorPosition = new TextEdit.CursorPos(0, TextEdit.LineBreakBias.Top);
         }
     }
+
+    #region Pirate: paperwork tags
+    private void OnMacroMenuUsed()
+    {
+        SendMessage(new PaperMacroMenuUsedMessage(PaperAction.Write));
+    }
+    #endregion
+
+    // Starlight
+    private void OnSignatureRequested(int signatureIndex) => SendMessage(new PaperSignatureRequestMessage(signatureIndex));
 }

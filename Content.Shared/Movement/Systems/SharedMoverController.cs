@@ -119,12 +119,14 @@ using Content.Shared.Maps;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Movement.Components;
 using Content.Shared.Movement.Events;
+using Content.Shared._Pirate.Clothing.Events; // Pirate: gear step sounds
 using Content.Shared._DV.StepTrigger.Components; // DeltaV - NoShoesSilentFootstepsComponent
 using Content.Shared.Tag;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Configuration;
 using Robust.Shared.Containers;
+using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Physics;
@@ -315,14 +317,8 @@ public abstract partial class SharedMoverController : VirtualController
         // If we're not the target of a relay then handle lerp data.
         if (relaySource == null)
         {
-            if (TileMovementQuery.HasComponent(uid)) // Goobstation Change
+            if (TileMovementQuery.HasComponent(uid) || mover.LerpTarget < Timing.CurTime)
                 TryUpdateRelative(uid, mover, xform);
-
-            // Update relative movement
-            if (mover.LerpTarget < Timing.CurTime)
-            {
-                TryUpdateRelative(uid, mover, xform);
-            }
 
             LerpRotation(uid, mover, frameTime);
         }
@@ -718,6 +714,9 @@ public abstract partial class SharedMoverController : VirtualController
 
         if (mobMover.StepSoundDistance < distanceNeeded)
             return false;
+
+        var movementSoundEv = new PirateMakeFootstepSoundEvent(); // Pirate: gear step sounds
+        RaiseLocalEvent(uid, movementSoundEv); // Pirate: gear step sounds
 
         mobMover.StepSoundDistance -= distanceNeeded;
 

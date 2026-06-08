@@ -53,6 +53,7 @@ using Content.Shared._EinsteinEngines.Language;
 using Content.Shared.Radio;
 using Content.Shared.Radio.Components;
 using Content.Shared.Speech;
+using Content.Shared.Ghost; // Pirate - Handheld Radios port
 using Robust.Shared.Map;
 using Robust.Shared.Network;
 using Robust.Shared.Player;
@@ -65,6 +66,8 @@ using Content.Shared.Chat.RadioIconsEvents; // Goobstation
 using Content.Shared.Whitelist; // Goobstation
 using Content.Shared.StatusIcon; // Goobstation
 using Content.Goobstation.Shared.Radio; // Goobstation
+using Content.Shared._Pirate.Radio; // Pirate: radio sounds
+using Content.Shared._Pirate.ZLevels.Core.EntitySystems; // Pirate: multiz
 
 namespace Content.Server.Radio.EntitySystems;
 
@@ -82,6 +85,7 @@ public sealed partial class RadioSystem : EntitySystem
     [Dependency] private readonly RadioJobIconSystem _radioIconSystem = default!; // Goobstation - radio icons
     [Dependency] private readonly LanguageSystem _language = default!; // Einstein Engines - Language
     [Dependency] private readonly EntityWhitelistSystem _whitelist = default!; // Goobstation - Whitelisted radio channels
+    [Dependency] private readonly CESharedZLevelsSystem _zLevels = default!; // Pirate: multiz
 
     // set used to prevent radio feedback loops.
     private readonly HashSet<string> _messages = new();
@@ -108,6 +112,16 @@ public sealed partial class RadioSystem : EntitySystem
             args.Channel = null; // prevent duplicate messages from other listeners.
         }
     }
+
+    // Pirate start - Handheld Radios port
+    public int GetFrequency(EntityUid source, RadioChannelPrototype channel)
+    {
+        if (TryComp<RadioMicrophoneComponent>(source, out var radioMicrophone))
+            return radioMicrophone.Frequency;
+
+        return channel.Frequency;
+    }
+    // Pirate end - Handheld Radios port
 
     private void OnIntrinsicReceive(EntityUid uid, IntrinsicRadioReceiverComponent component, ref RadioReceiveEvent args)
     {
@@ -139,10 +153,11 @@ public sealed partial class RadioSystem : EntitySystem
         string message,
         ProtoId<RadioChannelPrototype> channel,
         EntityUid radioSource,
+        int? frequency = null, // Pirate - Handheld Radios port
         LanguagePrototype? language = null,
         bool escapeMarkup = true)
     {
-        SendRadioMessage(messageSource, message, _prototype.Index(channel), radioSource, escapeMarkup: escapeMarkup, language: language); // Einstein Engines - Language
+        SendRadioMessage(messageSource, message, _prototype.Index(channel), radioSource, escapeMarkup: escapeMarkup, frequency: frequency, language: language); // Einstein Engines - Language // Pirate - frequency
     }
 
     /// <summary>
@@ -156,6 +171,7 @@ public sealed partial class RadioSystem : EntitySystem
         RadioChannelPrototype channel,
         EntityUid radioSource,
         LanguagePrototype? language = null,
+        int? frequency = null, // Pirate - Handheld Radios port
         bool escapeMarkup = true)
     {
         // Einstein Engines - Language begin
@@ -204,7 +220,7 @@ public sealed partial class RadioSystem : EntitySystem
         //     ("channel", $"\\[{channel.LocalizedName}\\]"),
         //     ("name", name),
         //     ("message", content));
-        var wrappedMessage = WrapRadioMessage(messageSource, channel, name, content, language, jobIcon, jobName); // Einstein Engines - Language
+        var wrappedMessage = WrapRadioMessage(messageSource, channel, name, content, language, frequency, jobIcon, jobName); // Einstein Engines - Language // Pirate - frequency
 
         // most radios are relayed to chat, so lets parse the chat message beforehand
         // var chat = new ChatMessage(
@@ -223,7 +239,7 @@ public sealed partial class RadioSystem : EntitySystem
         var obfuscated = _language.ObfuscateSpeech(content, language);
         // Goobstation - Chat Pings
         // Added GetNetEntity(messageSource), to source
-        var obfuscatedWrapped = WrapRadioMessage(messageSource, channel, name, obfuscated, language, jobIcon, jobName);
+        var obfuscatedWrapped = WrapRadioMessage(messageSource, channel, name, obfuscated, language, frequency, jobIcon, jobName); // Pirate - frequency
         var notUdsMsg = new ChatMessage(ChatChannel.Radio, obfuscated, obfuscatedWrapped, GetNetEntity(messageSource), null);
         var ev = new RadioReceiveEvent(messageSource, channel, msg, notUdsMsg, language, radioSource);
         // Einstein Engines - Language end
@@ -233,9 +249,24 @@ public sealed partial class RadioSystem : EntitySystem
         RaiseLocalEvent(radioSource, ref sendAttemptEv);
         var canSend = !sendAttemptEv.Cancelled;
 
-        var sourceMapId = Transform(radioSource).MapID;
-        var hasActiveServer = HasActiveServer(sourceMapId, channel.ID);
+        var sourceCoverage = _zLevels.GetGridCoverage(radioSource); // Pirate: multiz
+        var sourceMapId = sourceCoverage.FallbackMapId; // Pirate: multiz
+        var hasActiveServer = HasActiveServer(sourceCoverage, channel.ID); // Pirate: multiz
         var sourceServerExempt = _exemptQuery.HasComp(radioSource);
+
+        // Pirate start - handheld radios port
+        if (frequency == null)
+            frequency = GetFrequency(messageSource, channel);
+        // Pirate end - handheld radios port
+
+        #region Pirate: radio sounds
+        var importantRadioSound = HasComp<HeadsetComponent>(radioSource) && HasActiveRadioLoudspeaker(messageSource);
+        if (canSend) 
+        {
+            var soundEv = new PirateRadioSentEvent(messageSource, channel, radioSource, frequency.Value);
+            RaiseLocalEvent(radioSource, ref soundEv);
+        } 
+        #endregion
 
         var radioQuery = EntityQueryEnumerator<ActiveRadioComponent, TransformComponent>();
         while (canSend && radioQuery.MoveNext(out var receiver, out var radio, out var transform))
@@ -247,7 +278,12 @@ public sealed partial class RadioSystem : EntitySystem
                     continue;
             }
 
-            if (!channel.LongRange && transform.MapID != sourceMapId && !radio.GlobalReceive
+            // Pirate start - Handheld Radios port
+            if (!HasComp<GhostComponent>(receiver) && GetFrequency(receiver, channel) != frequency)
+                continue;
+            // Pirate end - Handheld Radios port
+
+            if (!channel.LongRange && !_zLevels.IsInCoverage(sourceCoverage, receiver, transform) && !radio.GlobalReceive // Pirate: multiz
                 && !(HasActiveTransmitter(transform.MapID) && HasActiveTransmitter(sourceMapId))) // goob - intermap transmitters
                 continue;
 
@@ -264,6 +300,8 @@ public sealed partial class RadioSystem : EntitySystem
                 continue;
 
             // send the message
+            var receiveSoundEv = new PirateRadioReceivedEvent(messageSource, channel, radioSource, receiver, frequency.Value, importantRadioSound); // Pirate: radio sounds
+            RaiseLocalEvent(receiver, ref receiveSoundEv); // Pirate: radio sounds
             RaiseLocalEvent(receiver, ref ev);
         }
 
@@ -283,7 +321,8 @@ public sealed partial class RadioSystem : EntitySystem
         string name,
         string message,
         LanguagePrototype language,
-        ProtoId<JobIconPrototype>? jobIcon, // Goob edit
+        int? frequency = null, // Pirate - Handheld Radios port
+        ProtoId<JobIconPrototype>? jobIcon = null, // Goob edit // Pirate - "null"
         string? jobName = null) // Gaby Radio icons
     {
         // TODO: code duplication with ChatSystem.WrapMessage
@@ -328,6 +367,14 @@ public sealed partial class RadioSystem : EntitySystem
             : Loc.GetString("chat-radio-message-name-with-icon", ("jobIcon", jobIcon), ("jobName", jobName ?? ""), ("name", name));
         // goob end
 
+        // Pirate start - Handheld Radios port
+        string channelText;
+        if (channel.ShowFrequency && frequency.HasValue)
+            channelText = $"\\[{frequency}\\]";
+        else
+            channelText = $"\\[{channel.LocalizedName}\\]";
+        // Pirate end - Handheld Radios port
+
         return Loc.GetString(wrapId,
             ("color", channel.Color),
             ("languageColor", languageColor),
@@ -335,7 +382,7 @@ public sealed partial class RadioSystem : EntitySystem
             ("fontSize", loudSpeakFont ?? language.SpeechOverride.FontSize ?? speech.FontSize), // goob edit - "loudSpeakFont"
             ("boldFontType", language.SpeechOverride.BoldFontId ?? language.SpeechOverride.FontId ?? speech.FontId), // Goob Edit - Custom Bold Fonts
             ("verb", Loc.GetString(_random.Pick(speech.SpeechVerbStrings))),
-            ("channel", $"\\[{channel.LocalizedName}\\]"),
+            ("channel", channelText), // Pirate - Handheld Radios port
             ("name", nameString), // goob
             ("message", message),
             ("language", languageDisplay));
@@ -343,12 +390,14 @@ public sealed partial class RadioSystem : EntitySystem
     // Einstein Engines - Language end
 
     /// <inheritdoc cref="TelecomServerComponent"/>
-    private bool HasActiveServer(MapId mapId, string channelId)
+    private bool HasActiveServer(CEZGridCoverage coverage, string channelId) // Pirate: multiz
     {
-        var servers = EntityQuery<TelecomServerComponent, EncryptionKeyHolderComponent, ApcPowerReceiverComponent, TransformComponent>();
-        foreach (var (_, keys, power, transform) in servers)
+        var servers = EntityQueryEnumerator<TelecomServerComponent, EncryptionKeyHolderComponent, ApcPowerReceiverComponent, TransformComponent>(); // Pirate: multiz
+        while (servers.MoveNext(out var server, out _, out var keys, out var power, out var transform)) // Pirate: multiz
         {
-            if (transform.MapID == mapId &&
+            var serverInCoverage = _zLevels.IsInCoverage(coverage, server, transform); // Pirate: multiz
+
+            if (serverInCoverage && // Pirate: multiz
                 power.Powered &&
                 keys.Channels.Contains(channelId))
             {
@@ -365,4 +414,26 @@ public sealed partial class RadioSystem : EntitySystem
             .Any(server => server.Item3.MapID == mapId && server.Item2.Powered);
     }
     // goob end
+
+    #region Pirate: radio sounds
+    private bool HasActiveRadioLoudspeaker(EntityUid source)
+    {
+        var getLoudspeakerEv = new GetLoudspeakerEvent();
+        RaiseLocalEvent(source, ref getLoudspeakerEv);
+
+        if (getLoudspeakerEv.Loudspeakers == null)
+            return false;
+
+        foreach (var loudspeaker in getLoudspeakerEv.Loudspeakers)
+        {
+            var loudSpeakerEv = new GetLoudspeakerDataEvent();
+            RaiseLocalEvent(loudspeaker, ref loudSpeakerEv);
+
+            if (loudSpeakerEv.IsActive && loudSpeakerEv.AffectRadio)
+                return true;
+        }
+
+        return false;
+    }
+    #endregion
 }

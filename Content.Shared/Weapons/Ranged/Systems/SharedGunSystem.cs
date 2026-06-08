@@ -65,6 +65,8 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 using Content.Shared._Shitmed.Weapons.Ranged.Events; // Shitmed Change
+using Content.Shared._Lavaland.Weapons.Ranged.Events; // Pirate: gunplay
+using Content.Shared._Pirate.ZLevels.Shooting; // Pirate: multiz
 using Content.Shared.ActionBlocker;
 using Content.Shared.Actions;
 using Content.Shared.Administration.Logs;
@@ -136,6 +138,7 @@ public abstract partial class SharedGunSystem : EntitySystem
     [Dependency] protected readonly ThrowingSystem ThrowingSystem = default!;
     [Dependency] private   readonly UseDelaySystem _useDelay = default!;
     [Dependency] private readonly EntityWhitelistSystem _whitelistSystem = default!;
+    [Dependency] private readonly CEZLevelShootingSystem _zLevelShooting = default!; // Pirate: multiz
 
     private const float InteractNextFire = 0.3f;
     private const double SafetyNextFire = 0.5;
@@ -229,6 +232,9 @@ public abstract partial class SharedGunSystem : EntitySystem
             gun.Target = potentialTarget;
         // Goob edit end
         AttemptShoot(user.Value, ent, gun);
+        // Pirate: gunplay
+        if (msg.Continuous)
+            gun.ShotCounter = 0;
     }
 
     private void OnStopShootRequest(RequestStopShootEvent ev, EntitySessionEventArgs args)
@@ -446,6 +452,27 @@ public abstract partial class SharedGunSystem : EntitySystem
         }
 
         var fromCoordinates = Transform(user).Coordinates;
+
+        #region Pirate: multiz
+        // Cross-Z shoot redirect (ShootDown toggle, or LookUp + wielded gun): rewrite the shot onto
+        // the adjacent Z map, pre-shifted by the layer's render displacement so it renders on the
+        // aim line and hits where clicked. On failure (no layer / no opening) abort.
+        var sourceFromCoordinates = fromCoordinates;
+        if (!_zLevelShooting.TryAdjustShotCoordinates(user, fromCoordinates, toCoordinates.Value, out fromCoordinates, out var zAdjustedTo))
+        {
+            // Same safety throttle a cancelled attempt uses, so a latched ShootDown/LookUp with no
+            // valid target doesn't burn the trigger at full fire rate (popup/sound spam).
+            gun.NextFire = TimeSpan.FromSeconds(Math.Max(lastFire.TotalSeconds + SafetyNextFire, gun.NextFire.TotalSeconds));
+            return;
+        }
+        toCoordinates = zAdjustedTo;
+
+        // Prime the per-projectile visual offset (barrel-shift + depth) so cross-Z projectiles
+        // render back on the aim line; the EndShotOffset() calls below clear it.
+        if (_zLevelShooting.TryGetProjectileVisualOffset(user, sourceFromCoordinates, fromCoordinates, out var barrelShift, out var shotDepth))
+            _zLevelShooting.BeginShotOffset(barrelShift, shotDepth);
+        #endregion
+
         // Remove ammo
         var ev = new TakeAmmoEvent(shots, new List<(EntityUid? Entity, IShootable Shootable)>(), fromCoordinates, user);
 
@@ -464,6 +491,8 @@ public abstract partial class SharedGunSystem : EntitySystem
 
         if (ev.Ammo.Count <= 0)
         {
+            _zLevelShooting.EndShotOffset(); // Pirate: multiz — every return in this block skips the normal EndShotOffset below
+
             // triggers effects on the gun if it's empty
             var emptyGunShotEvent = new OnEmptyGunShotEvent(user);
             RaiseLocalEvent(gunUid, ref emptyGunShotEvent);
@@ -517,6 +546,7 @@ public abstract partial class SharedGunSystem : EntitySystem
 
         // Shoot confirmed - sounds also played here in case it's invalid (e.g. cartridge already spent).
         Shoot(gunUid, gun, ev.Ammo, fromCoordinates, toCoordinates.Value, out var userImpulse, user, throwItems: attemptEv.ThrowItems);
+        _zLevelShooting.EndShotOffset(); // Pirate: multiz
         var shotEv = new GunShotEvent(user, ev.Ammo);
         RaiseLocalEvent(gunUid, ref shotEv);
         var shotBodyEv = new GunShotBodyEvent(gunUid, gun); // Shitmed Change
@@ -574,9 +604,31 @@ public abstract partial class SharedGunSystem : EntitySystem
         if (shooter != null)
             Projectiles.SetShooter(uid, projectile, shooter.Value);
 
-        TransformSystem.SetWorldRotation(uid, direction.ToWorldAngle() + projectile.Angle);
+        // Pirate: gunplay
+        Physics.UpdateIsPredicted(uid, physics);
+
+        // Pirate: gunplay (fix projectile rotation on fire, it had 0 angle(south) regardless of gun target)
+        TransformSystem.SetWorldRotationNoLerp((uid, Transform(uid)), direction.ToWorldAngle() + projectile.Angle);
         if (targetCoordinates.HasValue) // Goobstation
             projectile.TargetCoordinates = targetCoordinates.Value; // Goobstation
+
+        #region Pirate: gunplay
+        if (user is { } userUid)
+        {
+            var ev = new Content.Shared._Pirate.Projectiles.PlayerShotProjectileEvent(uid, userUid);
+            RaiseLocalEvent(ref ev);
+        }
+
+        // Pirate: gunplay
+        if (gunUid is { } gun)
+        {
+            var shotEv = new ProjectileShotEvent
+            {
+                FiredProjectile = uid,
+            };
+            RaiseLocalEvent(gun, shotEv);
+        }
+        #endregion
     }
 
     protected abstract void Popup(string message, EntityUid? uid, EntityUid? user);

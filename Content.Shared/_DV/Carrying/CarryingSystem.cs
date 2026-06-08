@@ -10,6 +10,7 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+using Content.Pirate.Common.Traits.Lightweight; // Pirate - Traits Rework
 using Content.Shared._DV.Polymorph;
 using Content.Shared.ActionBlocker;
 using Content.Shared.Buckle.Components;
@@ -168,8 +169,9 @@ public sealed class CarryingSystem : EntitySystem
         if (xform.MapUid != args.OldMapId)
             return;
 
-        // Do not drop the carried entity if the new parent is a grid
-        if (xform.ParentUid == xform.GridUid)
+        // Do not drop the carried entity if the new parent is a grid, or the map itself — the
+        // latter happens transiently while descending over an open tile between z-levels.
+        if (xform.ParentUid == xform.GridUid || xform.ParentUid == xform.MapUid) // Pirate: multiz
             return;
 
         DropCarried(ent, ent.Comp.Carried);
@@ -376,7 +378,8 @@ public sealed class CarryingSystem : EntitySystem
         var mod = _contests.MassContest(carried, carrier);
         length *= mod;
 
-        return length;
+        TryComp<LightweightComponent>(carried, out var lightweight); // Pirate - Traits Rework
+        return length / float.Max(lightweight?.PickupSpeedMultiplier ?? 1f, 1f); // Pirate - Traits Rework
     }
 
     private void OnDelete(Entity<BeingCarriedComponent> ent, ref EntityTerminatingEvent args)

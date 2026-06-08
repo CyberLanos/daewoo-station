@@ -10,6 +10,7 @@
   id: SecurityBoardsStaticGoob
   recipes:
   - ContrabandDetectorCircuitboard
+  - PrinterDocMachineCircuitboard # Pirate document printer
 
 - type: latheRecipePack
   id: MedicalBoardsStaticGoob
@@ -45,3 +46,4 @@
   - TapeDeckCircuitboard
   - StationRadioServerCircuitboard
   - StationRadioRigCircuitboard
+  - ServiceEnergyChemMachineCircuitboard

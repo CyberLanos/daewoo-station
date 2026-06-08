@@ -144,6 +144,31 @@ public sealed partial class PaperComponent : Component
         }
     }
 
+    #region Pirate: paperwork tags
+    [Serializable, NetSerializable]
+    public sealed class PaperMacroMenuUsedMessage : BoundUserInterfaceMessage
+    {
+        public readonly PaperAction Action;
+
+        public PaperMacroMenuUsedMessage(PaperAction action)
+        {
+            Action = action;
+        }
+    }
+    #endregion
+
+    // Starlight-start
+    [Serializable, NetSerializable]
+    public sealed class PaperSignatureRequestMessage : BoundUserInterfaceMessage
+    {
+        public readonly int SignatureIndex;
+
+        public PaperSignatureRequestMessage(int signatureIndex)
+        {
+            SignatureIndex = signatureIndex;
+        }
+    }
+    // Starlight-end
     [Serializable, NetSerializable]
     public enum PaperUiKey
     {

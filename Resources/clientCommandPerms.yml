@@ -39,7 +39,6 @@
     - gc
     - gc_mode
     - cvar
-    - fuckrules
     - midipanic
     - replay_recording_start
     - replay_recording_stop
@@ -88,6 +87,7 @@
     - fullstatereset
     - dumpentities
     - showaccessreaders
+    - showaudiomuffle # Pirate: audio muffle
 
 - Flags: MAPPING
   Commands:

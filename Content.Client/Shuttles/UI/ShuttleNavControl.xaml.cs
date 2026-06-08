@@ -13,6 +13,8 @@
 
 using System.Numerics;
 using Content.Client._Mono.Radar;
+using Content.Client.Station; // Pirate port - Monolith shields
+using Content.Shared._Pirate.ShipShields; // Pirate port - Monolith shields
 using Content.Shared.Shuttles.BUIStates;
 using Content.Shared.Shuttles.Components;
 using Content.Shared.Shuttles.Systems;
@@ -28,6 +30,9 @@ using Robust.Shared.Physics;
 using Robust.Shared.Physics.Components;
 using Robust.Shared.Timing;
 using Content.Shared._Mono.Radar;
+using Content.Shared._Pirate.ZLevels.Core.Components; // Pirate: multiz
+using Content.Shared._Pirate.ZLevels.Core.EntitySystems; // Pirate: multiz
+using Robust.Shared.Physics.Collision.Shapes; // Pirate port - Monolith shields
 
 namespace Content.Client.Shuttles.UI;
 
@@ -75,6 +80,8 @@ public sealed partial class ShuttleNavControl : BaseShuttleControl
     public Action<EntityCoordinates>? OnRadarClick;
 
     private List<Entity<MapGridComponent>> _grids = new();
+    private HashSet<EntityUid> _zLevelGrids = new(); // Pirate: multiz - grids from adjacent Z-levels
+    private readonly HashSet<EntityUid> _zIffSuppressed = new(); // Pirate: multiz - non-rep peers we hide IFF labels for
 
     #region Mono
     // These 2 handle timing updates
@@ -276,6 +283,8 @@ public sealed partial class ShuttleNavControl : BaseShuttleControl
         Matrix3x2.Invert(shuttleToWorld, out var worldToShuttle);
         var shuttleToView = Matrix3x2.CreateScale(new Vector2(MinimapScale, -MinimapScale)) * Matrix3x2.CreateTranslation(MidPointVector);
 
+        DrawShields(handle, xform, worldToShuttle); // Pirate port - Monolith shields
+
         // Frontier Corvax: north line drawing
         var rot = ourEntRot + _rotation.Value;
         DrawNorthLine(handle, rot);
@@ -312,6 +321,40 @@ public sealed partial class ShuttleNavControl : BaseShuttleControl
         _grids.Clear();
         _mapManager.FindGridsIntersecting(xform.MapID, new Box2(mapPos.Position - MaxRadarRangeVector, mapPos.Position + MaxRadarRangeVector), ref _grids, approx: true, includeMap: false);
 
+        #region Pirate: multiz - query adjacent Z-level grids
+        _zLevelGrids.Clear();
+        var zLevels = EntManager.System<CESharedZLevelsSystem>();
+        if (xform.MapUid is { } radarMapUid)
+        {
+            for (var zOff = -1; zOff <= 1; zOff++)
+            {
+                if (zOff == 0)
+                    continue;
+                if (!zLevels.TryMapOffset(radarMapUid, zOff, out var adjMap))
+                    continue;
+                if (!EntManager.TryGetComponent<MapComponent>(adjMap.Value, out var adjMapComp))
+                    continue;
+                var adjGrids = new List<Entity<MapGridComponent>>();
+                _mapManager.FindGridsIntersecting(adjMapComp.MapId, new Box2(mapPos.Position - MaxRadarRangeVector, mapPos.Position + MaxRadarRangeVector), ref adjGrids, approx: true, includeMap: false);
+                foreach (var g in adjGrids)
+                {
+                    _zLevelGrids.Add(g.Owner);
+                    _grids.Add(g);
+                }
+            }
+        }
+        #endregion Pirate: multiz
+
+        #region Pirate: multiz - suppress IFF for adjacent-layer grids
+        // Simpler than dedup: only draw IFF for grids on the focused layer. Adjacent-layer
+        // grids stay visible as dimmed silhouettes but have their labels suppressed, so the
+        // operator sees the label from the deck that's actually rendered bright (and whose
+        // name is the one synced to the network).
+        _zIffSuppressed.Clear();
+        foreach (var gridUid in _zLevelGrids)
+            _zIffSuppressed.Add(gridUid);
+        #endregion Pirate: multiz
+
         // Frontier - collect blip location data outside foreach - more changes ahead
         var blipDataList = new List<BlipData>();
 
@@ -332,6 +375,8 @@ public sealed partial class ShuttleNavControl : BaseShuttleControl
             var curGridToView = curGridToWorld * worldToShuttle * shuttleToView;
 
             var labelColor = _shuttles.GetIFFColor(grid, self: false, iff);
+            if (_zLevelGrids.Contains(gUid)) // Pirate: multiz - dim Z-level grids
+                labelColor = labelColor.WithAlpha(labelColor.A * 0.4f); // Pirate: multiz
             var coordColor = new Color(labelColor.R * 0.8f, labelColor.G * 0.8f, labelColor.B * 0.8f, 0.5f);
 
             // Others default:
@@ -340,7 +385,8 @@ public sealed partial class ShuttleNavControl : BaseShuttleControl
             var labelName = _shuttles.GetIFFLabel(grid, self: false, iff);
 
             var shouldDrawIFF = ShowIFF && labelName != null;
-            if (IFFFilter != null)
+            shouldDrawIFF &= !_zIffSuppressed.Contains(gUid); // Pirate: multiz - dedupe multi-deck IFF
+            if (IFFFilter != null && !_zIffSuppressed.Contains(gUid)) // Pirate: multiz - dedupe peer labels
             {
                 var gridBounds = grid.Comp.LocalAABB;
 
@@ -785,15 +831,57 @@ public sealed partial class ShuttleNavControl : BaseShuttleControl
     /// <summary>
     /// Draws a shield ring with constant thickness regardless of zoom level.
     /// </summary>
-    private void DrawShieldRing(DrawingHandleScreen handle, Vector2 position, float radius, Color color)
+    private void DrawShieldRing(DrawingHandleScreen handle, Vector2 position, float worldRadius, Color color)
     {
+        var displayRadius = worldRadius * MinimapScale * 0.85f; // Pirate port - Monolith shields
+
         // Draw the shield outline as a ring with constant thickness
         const float ringThickness = 2.0f; // Fixed thickness in pixels
 
         // Draw multiple circles with slightly different radii to create a solid ring effect
         for (float offset = 0; offset <= ringThickness; offset += 0.5f)
         {
-            handle.DrawCircle(position, radius + offset, color.WithAlpha(0.5f), false);
+            handle.DrawCircle(position, displayRadius + offset, color.WithAlpha(0.5f), false);
         }
     }
+
+    // Pirate port start - Monolith shields
+    private void DrawShields(DrawingHandleScreen handle, TransformComponent consoleXform, Matrix3x2 matrix)
+    {
+        var shields = EntManager.AllEntityQueryEnumerator<ShipShieldVisualsComponent, FixturesComponent, TransformComponent>();
+        while (shields.MoveNext(out var uid, out var visuals, out var fixtures, out var xform))
+        {
+            if (!EntManager.TryGetComponent<TransformComponent>(xform.GridUid, out var parentXform))
+                continue;
+        if (xform.MapID != consoleXform.MapID)
+            continue;
+            var shieldFixture = fixtures.Fixtures.TryGetValue("shield", out var fixture) ? fixture : null;
+
+            if (shieldFixture == null || shieldFixture.Shape is not ChainShape)
+                continue;
+
+            ChainShape chain = (ChainShape) shieldFixture.Shape;
+
+            var count = chain.Count;
+            var verticies = chain.Vertices;
+
+            var center = xform.LocalPosition;
+
+            for (int i = 1; i < count; i++)
+            {
+                var v1 = Vector2.Add(center, verticies[i - 1]);
+                v1 = Vector2.Transform(v1, parentXform.WorldMatrix); // transform to world matrix
+                v1 = Vector2.Transform(v1, matrix); // get back to local matrix for drawing
+                v1.Y = -v1.Y;
+                v1 = ScalePosition(v1);
+                var v2 = Vector2.Add(center, verticies[i]);
+                v2 = Vector2.Transform(v2, parentXform.WorldMatrix);
+                v2 = Vector2.Transform(v2, matrix);
+                v2.Y = -v2.Y;
+                v2 = ScalePosition(v2);
+                handle.DrawLine(v1, v2, visuals.ShieldColor);
+            }
+        }
+    }
+    // Pirate port end - Monolith shields
 }

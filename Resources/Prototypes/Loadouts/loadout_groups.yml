@@ -241,6 +241,8 @@
   - TapeRecorder
   - DrinkOniGourd
   # End DeltaV Additions
+  subgroups: # Pirate
+  - PirateTrinkets
 
 - type: loadoutGroup
   id: Glasses
@@ -321,6 +323,7 @@
   - CaptainHead
   - CaptainCap
   - CaptainCapcapSenior # goob
+  - CaptainBunnyears # Pirate
 
 - type: loadoutGroup
   id: CaptainJumpsuit
@@ -367,6 +370,7 @@
   minLimit: 0
   loadouts:
   - HoPHead
+  - HOPHeadBunnyears # Pirate
 
 - type: loadoutGroup
   id: HoPJumpsuit
@@ -390,10 +394,10 @@
   id: HoPBackpack
   name: loadout-group-hop-backpack
   loadouts:
-  - CommonBackpack
-  - CommonSatchel
-  - CommonDuffel
-  - CommonMessenger # Frontier
+  - HOPBackpack # Pirate
+  - HOPBackpackSatchel # Pirate
+  - HOPBackpackDuffel # Pirate
+  - HOPBackpackMessengerBase # Pirate
   - HoPBackpackIan
 
 - type: loadoutGroup
@@ -414,6 +418,7 @@
   - AncientJumpsuit
   - RainbowJumpsuit
   - RainbowJumpskirt
+  - OverallsJumpsuit
  # goob changes start
   - GreyMJ
   - BlackMJ
@@ -432,6 +437,7 @@
   - MaroonMJ
   - QuarterzipJumpsuit
  # goob changes end
+  - UniformRat # Pirate
 
 - type: loadoutGroup
   id: PassengerFace
@@ -863,6 +869,7 @@
   loadouts:
   - QuartermasterHead
   - QuartermasterBeret
+  - QuartermasterHeadBunnyears # Pirate
 
 - type: loadoutGroup
   id: QuartermasterJumpsuit
@@ -973,6 +980,8 @@
   loadouts:
   - ChiefEngineerHead
   - ChiefEngineerBeret
+  - HatAwaria
+  - ChiefEngineerHeadBunnyears
 
 - type: loadoutGroup
   id: ChiefEngineerJumpsuit
@@ -984,15 +993,19 @@
   - ChiefEngineerTurtleneckSkirt
   - ChiefEngineerMJ # goob
   - CESummerShirt # goob
+  - JumpsuitAwaria # Pirate
 
 - type: loadoutGroup
   id: ChiefEngineerNeck
   name: loadout-group-chief-engineer-neck
   minLimit: 0
   loadouts:
-  - ChiefEngineerCloak
-  - ChiefEngineerMantle
-  - ChiefEngineerEnsemble # goob
+  - ClothingNeckCloakWhiteCe # goob
+  - ClothingNeckCloakGreenCe # goob
+  - ClothingNeckMantleWhiteCE # goob
+  - ClothingNeckMantleOrangeCE # goob
+  - ClothingNeckEnsembleChiefEngineerWhite # goob
+  - ClothingNeckEnsembleChiefEngineerGreen # goob
 
 - type: loadoutGroup
   id: ChiefEngineerOuterClothing
@@ -1000,6 +1013,7 @@
   minLimit: 0
   loadouts:
   - ChiefEngineerWintercoat
+  - CoatAwaria # Pirate
 
 - type: loadoutGroup
   id: ChiefEngineerShoes
@@ -1007,6 +1021,7 @@
   loadouts:
   - BrownShoes
   - EngineeringWinterBoots
+  - BootsAwaria # Pirate
 
 - type: loadoutGroup
   id: TechnicalAssistantJumpsuit
@@ -1025,6 +1040,7 @@
   - StationEngineerHardhatOrange
   - StationEngineerHardhatRed
   - SeniorEngineerBeret
+  - HatAwaria # Pirate
 
 - type: loadoutGroup
   id: StationEngineerJumpsuit
@@ -1036,6 +1052,7 @@
   - SeniorEngineerJumpsuit
   - SeniorEngineerJumpskirt
   - EngiMJ # goob
+  - JumpsuitAwaria # Pirate
 
 - type: loadoutGroup
   id: StationEngineerBackpack
@@ -1053,6 +1070,7 @@
   loadouts:
   - StationEngineerOuterVest
   - StationEngineerWintercoat
+  - CoatAwaria # Pirate
 
 - type: loadoutGroup
   id: StationEngineerShoes
@@ -1060,6 +1078,7 @@
   loadouts:
   - WorkBoots
   - EngineeringWinterBoots
+  - BootsAwaria # Pirate
 
 - type: loadoutGroup
   id: StationEngineerID
@@ -1074,6 +1093,7 @@
   minLimit: 0
   loadouts:
   - SeniorEngineerBeret   # Goobstation
+  - HatAwaria # Pirate
 
 - type: loadoutGroup
   id: AtmosphericTechnicianJumpsuit
@@ -1085,6 +1105,7 @@
   - SeniorEngineerJumpskirt  # Goobstation
   - SeniorEngineerJumpsuit   # Goobstation
   - AtmosMJ # goob
+  - JumpsuitAwaria # Pirate
 
 - type: loadoutGroup
   id: AtmosphericTechnicianOuterClothing
@@ -1092,6 +1113,7 @@
   minLimit: 0
   loadouts:
   - AtmosphericTechnicianWintercoat
+  - CoatAwaria # Pirate
 
 - type: loadoutGroup
   id: AtmosphericTechnicianBackpack
@@ -1108,6 +1130,7 @@
   loadouts:
   - WhiteShoes
   - EngineeringWinterBoots
+  - BootsAwaria # Pirate
 
 - type: loadoutGroup
   id: SurvivalExtended
@@ -1130,6 +1153,8 @@
   minLimit: 0
   loadouts:
   - ResearchDirectorBeret
+  subgroups: # Pirate
+  - MantisHead
 
 - type: loadoutGroup
   id: ResearchDirectorNeck
@@ -1257,6 +1282,7 @@
   - HeadofSecurityHead
   - HeadofSecurityBeret
   - HeadofSecuritySpecialBeret # Goobstation
+  - HeadOfSecurityBunnyears # Pirate
 
 - type: loadoutGroup
   id: HeadofSecurityJumpsuit
@@ -1269,6 +1295,7 @@
   - HeadofSecurityFormalSuit
   - HeadofSecurityFormalSkirt
   - HoSSummerShirt # goob
+  - HeadOfSecurityBlueSkirt # Pirate
 
 - type: loadoutGroup
   id: HeadofSecurityNeck
@@ -1278,6 +1305,7 @@
   - HeadofSecurityCloak
   - HeadofSecurityMantle
   - Bodycam # Goobstation - Body cameras
+  - CameraCollar # Pirate
   - HeadOfSecurityEnsemble # goob
 
 - type: loadoutGroup
@@ -1317,11 +1345,11 @@
   name: loadout-group-security-head
   minLimit: 0
   loadouts:
-  - SecurityHelmet
+  # - SecurityHelmet # Pirate
   - SecurityHelmetAlt # Goobstation
   - SecurityBeret
   - SecurityHat
-  - TrooperHat
+  # - TrooperHat # Pirate
 
 - type: loadoutGroup
   id: SecurityJumpsuit
@@ -1331,10 +1359,11 @@
   - SecurityJumpskirt
   - SecurityJumpsuitGrey
   - SecurityJumpskirtGrey
-  - SeniorOfficerJumpsuit
-  - SeniorOfficerJumpskirt
-  - TrooperUniform
-  - VeteranOfficerBlackJumpsuit # Goobstation
+  #- SeniorOfficerJumpsuit # Pirate
+  #- SeniorOfficerJumpskirt # Pirate
+  #- TrooperUniform # Pirate
+  #- VeteranOfficerBlackJumpsuit # Goobstation
+  - SecurityOfficerBlueSkirt # Pirate
 
 - type: loadoutGroup
   id: SecurityBackpack
@@ -1360,8 +1389,8 @@
   - ArmorVest
   - ArmorVestSlim
   - SecurityOfficerWintercoat
-  - WinterCoatSeniorSecArmored # Goobstation
-  - VeteranOfficerArmor # Goobstation
+  #- WinterCoatSeniorSecArmored # Goobstation # Pirate disable
+  #- VeteranOfficerArmor # Goobstation # Pirate disable
 
 - type: loadoutGroup
   id: SecurityShoes
@@ -1376,7 +1405,7 @@
   name: loadout-group-security-id
   loadouts:
   - SecurityPDA
-  - SeniorOfficerPDA
+  #- SeniorOfficerPDA # Pirate disable
 
 - type: loadoutGroup
   id: DetectiveHead
@@ -1393,6 +1422,7 @@
   loadouts:
   - DetectiveTie
   - Bodycam # Goobstation - Body cameras
+  - CameraCollar # Pirate
 
 - type: loadoutGroup
   id: DetectiveJumpsuit
@@ -1415,8 +1445,8 @@
   id: SecurityCadetJumpsuit
   name: loadout-group-security-cadet-jumpsuit
   loadouts:
-  - RedJumpsuit
-  - RedJumpskirt
+  - CadetJumpsuit
+  #- RedJumpskirt
 
 - type: loadoutGroup
   id: SurvivalSecurity
