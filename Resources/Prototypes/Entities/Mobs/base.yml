@@ -39,14 +39,23 @@
   - type: Eye
   - type: ContentEye
   - type: CameraRecoil
+  - type: CEZPhysics # Pirate: multiz
   - type: MindContainer
   - type: MovementSpeedModifier
   - type: RequireProjectileTarget
     active: False
   - type: AnimatedEmotes
+  - type: CollectiveMind # Goobstation - Starlight collective mind port
+  - type: SpecialAnimationViewer # Goobstation - Cool Animations!!!!
+  - type: Penetratable # Goobstation - Better snipers
+    penetrateDamage: 15 # Kill million mices
+    damagePenalty: 0.05
   - type: LanguageSpeaker 
   - type: Fart
   - type: StunVisuals
+  - type: OwnInteractionVerbs # Pirate
+    allowedVerbs: [] # Pirate
+
   - type: ESViewcone
     coneAngle: 140
     coneFeather: 20

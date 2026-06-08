@@ -26,6 +26,7 @@ public sealed class ESViewconeResetAlphaOverlay : Overlay
 
         _cone = _ent.EntitySysManager.GetEntitySystem<ESViewconeOverlayManagementSystem>();
         _sprite = _ent.EntitySysManager.GetEntitySystem<SpriteSystem>();
+        ZIndex = 100;
     }
 
     protected override void Draw(in OverlayDrawArgs args)

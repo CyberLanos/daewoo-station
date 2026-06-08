@@ -499,7 +499,7 @@
         amount: -3
         conditions:
         - !type:UniqueBloodstreamChemThreshold
-          max: 3 # the gist is, 2 and below this sucks, 3 and above it's great; mix with water etc for good results
+          max: 2
       - !type:AdjustReagent
         group: Poison
         amount: -3
@@ -513,7 +513,7 @@
       - !type:HealthChange
         conditions:
         - !type:UniqueBloodstreamChemThreshold
-          min: 2
+          min: 3
         damage:
           types:
             Poison: -3
@@ -778,10 +778,12 @@
         ignoreBlockers: false
         damage:
           types:
-            Heat: -1.5
-            Cold: -1.5
-            Shock: -1
-            Caustic: -1
+          # Pirate edit start
+            Heat: -0.75
+            Cold: -0.75
+            Shock: -0.5
+            Caustic: -0.5
+          # Pirate edit end
         conditions:
         - !type:HasComponentOnEquipmentCondition
           components:
@@ -843,9 +845,11 @@
         ignoreBlockers: false
         damage:
           types:
-            Blunt: -2
-            Piercing: -1 # limits combat effectivness
-            Slash: -2
+          # Pirate edit start
+            Blunt: -1
+            Piercing: -0.5 # limits combat effectivness
+            Slash: -1
+          # Pirate edit end
         conditions:
         - !type:HasComponentOnEquipmentCondition
           components:

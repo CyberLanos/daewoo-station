@@ -46,6 +46,8 @@
   - LanguageKnowledge
   - ForeignerTrait
   # Einstein Engines - Language end
+  eventComponents:
+  - Trainability # Pirate
   blacklist:
     components:
     - AttachedClothing # helmets, which are part of the suit

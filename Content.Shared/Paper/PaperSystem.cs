@@ -87,6 +87,22 @@ using Robust.Shared.Player;
 using Robust.Shared.Audio.Systems;
 using static Content.Shared.Paper.PaperComponent;
 using Robust.Shared.Prototypes;
+// Starlight-start
+using Content.Shared.IdentityManagement;
+using Content.Shared.IdentityManagement.Components;
+using Content.Shared.Mind.Components;
+using Content.Shared.Roles;
+// Starlight-end
+
+#region Pirate: paperwork tags
+using System.Globalization;
+using System.Text.RegularExpressions;
+using Content.Shared._Pirate.Paper;
+using Content.Shared.Access.Systems;
+using Content.Shared.GameTicking;
+using Content.Shared.Station;
+#endregion
+
 
 namespace Content.Shared.Paper;
 
@@ -100,9 +116,20 @@ public sealed class PaperSystem : EntitySystem
     [Dependency] private readonly SharedUserInterfaceSystem _uiSystem = default!;
     [Dependency] private readonly MetaDataSystem _metaSystem = default!;
     [Dependency] private readonly SharedAudioSystem _audio = default!;
+    [Dependency] private readonly SharedIdentitySystem _identitySystem = default!; // Starlight-edit
 
     private static readonly ProtoId<TagPrototype> WriteIgnoreStampsTag = "WriteIgnoreStamps";
     private static readonly ProtoId<TagPrototype> WriteTag = "Write";
+    #region Pirate: paperwork tags
+    [Dependency] private readonly SharedIdCardSystem _idCard = default!;
+    [Dependency] private readonly SharedStationSystem _station = default!;
+    [Dependency] private readonly SharedGameTicker _ticker = default!;
+    private const int StationBaseYear = Content.Shared._Pirate.PirateStationCalendar.CurrentYear; // Pirate: camera (nanochat gallery)
+    private static readonly Regex StationCodeRegex = new(@"\b[A-Z]{2,5}-\d{1,4}\b", RegexOptions.Compiled);
+    private static readonly Regex StationLabelRegex = new(
+        @"(?:^|\s)(?:Station|Станція|Станция)\s*:\s*(?<value>[^\s,.;:]+)",
+        RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+    #endregion
 
     public override void Initialize()
     {
@@ -114,6 +141,8 @@ public sealed class PaperSystem : EntitySystem
         SubscribeLocalEvent<PaperComponent, ExaminedEvent>(OnExamined);
         SubscribeLocalEvent<PaperComponent, InteractUsingEvent>(OnInteractUsing);
         SubscribeLocalEvent<PaperComponent, PaperInputTextMessage>(OnInputTextMessage);
+        SubscribeLocalEvent<PaperComponent, PaperMacroMenuUsedMessage>(OnMacroMenuUsedMessage); // Pirate: paperwork tags
+        SubscribeLocalEvent<PaperComponent, PaperSignatureRequestMessage>(OnSignatureRequest); // Starlight-edit
 
         SubscribeLocalEvent<ActivateOnPaperOpenedComponent, PaperWriteEvent>(OnPaperWrite);
     }
@@ -258,11 +287,13 @@ public sealed class PaperSystem : EntitySystem
         if (ev.Cancelled)
             return;
 
-        if (args.Text.Length <= entity.Comp.ContentSize)
-        {
-            SetContent(entity, args.Text);
+        var processedText = ExpandPaperMacros(entity, args.Actor, args.Text); // Pirate: paperwork tags
 
-            var paperStatus = string.IsNullOrWhiteSpace(args.Text) ? PaperStatus.Blank : PaperStatus.Written;
+        if (processedText.Length <= entity.Comp.ContentSize) // Pirate: paperwork tags
+        {
+            SetContent(entity, processedText); // Pirate: paperwork tags
+
+            var paperStatus = string.IsNullOrWhiteSpace(processedText) ? PaperStatus.Blank : PaperStatus.Written; // Pirate: paperwork tags
 
             if (TryComp<AppearanceComponent>(entity, out var appearance))
                 _appearance.SetData(entity, PaperVisuals.Status, paperStatus, appearance);
@@ -272,7 +303,7 @@ public sealed class PaperSystem : EntitySystem
 
             _adminLogger.Add(LogType.Chat,
                 LogImpact.Low,
-                $"{ToPrettyString(args.Actor):player} has written on {ToPrettyString(entity):entity} the following text: {args.Text}");
+                $"{ToPrettyString(args.Actor):player} has written on {ToPrettyString(entity):entity} the following text: {processedText}"); // Pirate: paperwork tags
 
             _audio.PlayPvs(entity.Comp.Sound, entity);
         }
@@ -280,6 +311,119 @@ public sealed class PaperSystem : EntitySystem
         entity.Comp.Mode = PaperAction.Read;
         UpdateUserInterface(entity);
     }
+
+    #region Pirate: paperwork tags
+    private void OnMacroMenuUsedMessage(Entity<PaperComponent> entity, ref PaperMacroMenuUsedMessage args)
+    {
+        if (args.Action != PaperAction.Write || entity.Comp.Mode != PaperAction.Write)
+            return;
+
+        var ev = new PaperWriteAttemptEvent(entity.Owner);
+        RaiseLocalEvent(args.Actor, ref ev);
+        if (ev.Cancelled)
+            return;
+
+        _audio.PlayPvs(entity.Comp.Sound, entity);
+    }
+
+    private string ExpandPaperMacros(Entity<PaperComponent> entity, EntityUid actor, string input)
+    {
+        if (string.IsNullOrEmpty(input))
+            return input;
+
+        var author = Name(actor);
+        var job = "N/A";
+
+        if (_idCard.TryFindIdCard(actor, out var idCard))
+        {
+            if (!string.IsNullOrWhiteSpace(idCard.Comp.FullName))
+                author = idCard.Comp.FullName;
+
+            if (!string.IsNullOrWhiteSpace(idCard.Comp.LocalizedJobTitle))
+                job = idCard.Comp.LocalizedJobTitle;
+        }
+
+        var nowUtc = DateTime.UtcNow;
+        var date = $"{nowUtc.Day:00}/{nowUtc.Month:00}/{StationBaseYear:0000}";
+        var time = _ticker.RoundDuration().ToString("hh\\:mm\\:ss", CultureInfo.InvariantCulture);
+        var dateTime = $"{date} {time}";
+        var stationNumber = GetStationNumber(entity.Owner, actor);
+        var stationCode = GetStationSecurityCode(entity.Owner, actor);
+
+        return input
+            .Replace("[author]", author)
+            .Replace("[job]", job)
+            .Replace("[datetime]", dateTime)
+            .Replace("[date]", date)
+            .Replace("[time]", time)
+            .Replace("[stn]", stationNumber)
+            .Replace("[code]", stationCode);
+    }
+
+    private string GetStationNumber(EntityUid paper, EntityUid actor)
+    {
+        var stationUid = _station.GetOwningStation(paper) ?? _station.GetOwningStation(actor);
+        if (stationUid == null)
+            return "0000";
+
+        var stationName = MetaData(stationUid.Value).EntityName;
+        var codeMatch = StationCodeRegex.Match(stationName);
+        if (codeMatch.Success)
+            return codeMatch.Value;
+
+        // Handles labels like "Станція: Дев" / "Station: Dev" (including no-space variants).
+        var stationLabelMatch = StationLabelRegex.Match(stationName);
+        if (stationLabelMatch.Success)
+        {
+            var labelValue = stationLabelMatch.Groups["value"].Value.Trim(',', '.', ':', ';');
+            if (!string.IsNullOrWhiteSpace(labelValue))
+                return labelValue;
+        }
+
+        // Fallback for station names like: "NTTG Станція Бокс"
+        // or "NTTG Station Box", returning the short station name.
+        var tokens = stationName
+            .Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+        for (var i = 0; i < tokens.Length - 1; i++)
+        {
+            var token = tokens[i].Trim(',', '.', ':', ';');
+            if (token.Equals("Станція", StringComparison.OrdinalIgnoreCase) ||
+                token.Equals("Station", StringComparison.OrdinalIgnoreCase))
+            {
+                var fallbackName = tokens[i + 1].Trim(',', '.', ':', ';');
+                if (!string.IsNullOrWhiteSpace(fallbackName))
+                    return fallbackName;
+            }
+        }
+
+        // Last resort: use the station value as-is (e.g. "Dev") instead of forcing 0000.
+        var rawFallback = stationName.Trim(',', '.', ':', ';', ' ');
+        if (!string.IsNullOrWhiteSpace(rawFallback))
+            return rawFallback;
+
+        return "0000";
+    }
+
+    private string GetStationSecurityCode(EntityUid paper, EntityUid actor)
+    {
+        var stationUid = _station.GetOwningStation(paper) ?? _station.GetOwningStation(actor);
+        if (stationUid == null)
+            return Loc.GetString("alert-level-unknown");
+
+        var ev = new PaperGetStationAlertLevelEvent();
+        RaiseLocalEvent(stationUid.Value, ref ev);
+
+        if (string.IsNullOrWhiteSpace(ev.AlertLevel))
+            return Loc.GetString("alert-level-unknown");
+
+        var alertLevelKey = $"alert-level-{ev.AlertLevel}";
+        if (Loc.TryGetString(alertLevelKey, out var localizedLevel))
+            return localizedLevel;
+
+        return ev.AlertLevel;
+    }
+    #endregion
 
     private void OnPaperWrite(Entity<ActivateOnPaperOpenedComponent> entity, ref PaperWriteEvent args)
     {
@@ -294,6 +438,13 @@ public sealed class PaperSystem : EntitySystem
         if (!entity.Comp.StampedBy.Contains(stampInfo))
         {
             entity.Comp.StampedBy.Add(stampInfo);
+
+            // Starlight-start: Clean unfilled form and signature tags when stamping to finalize the document
+            var cleanedContent = CleanUnfilledTags(entity.Comp.Content);
+            if (cleanedContent != entity.Comp.Content)
+                SetContent(entity, cleanedContent);
+            // Starlight-end
+
             Dirty(entity);
             if (entity.Comp.StampState == null && TryComp<AppearanceComponent>(entity, out var appearance))
             {
@@ -352,6 +503,113 @@ public sealed class PaperSystem : EntitySystem
     {
         _uiSystem.SetUiState(entity.Owner, PaperUiKey.Key, new PaperBoundUserInterfaceState(entity.Comp.Content, entity.Comp.StampedBy, entity.Comp.Mode));
     }
+
+    # region Starlight
+
+    private void OnSignatureRequest(Entity<PaperComponent> entity, ref PaperSignatureRequestMessage args)
+    {
+        var signature = GetPlayerSignature(args.Actor);
+        var newText = ReplaceNthSignatureTag(entity.Comp.Content, args.SignatureIndex, signature);
+        SetContent(entity, newText);
+
+        _adminLogger.Add(LogType.Chat, LogImpact.Low,
+            $"{ToPrettyString(args.Actor):player} signed {ToPrettyString(entity):entity} with signature: {signature}");
+    }
+
+    /// <summary>
+    /// Gets the player's signature using the identity system, including rank, name, and role.
+    /// </summary>
+    private string GetPlayerSignature(EntityUid player)
+    {
+        var name = string.Empty;
+        var rank = string.Empty;
+        var role = string.Empty;
+
+        // Get the identity entity (ID card, etc.)
+        var identityEntity = player;
+        if (TryComp<IdentityComponent>(player, out var identity) &&
+            identity.IdentityEntitySlot.ContainedEntity is { } idEntity)
+        {
+            identityEntity = idEntity;
+        }
+
+        // Get name from identity or fallback to entity name
+        name = MetaData(identityEntity).EntityName;
+
+        // Get role from mind system
+        if (TryComp<MindContainerComponent>(player, out var mindContainer) &&
+            mindContainer.Mind != null)
+        {
+            var roleSystem = EntityManager.System<SharedRoleSystem>();
+            var roleInfo = roleSystem.MindGetAllRoleInfo((mindContainer.Mind.Value, null));
+            if (roleInfo.Count > 0)
+            {
+                role = Loc.GetString(roleInfo[0].Name);
+            }
+        }
+
+        // Format: "Rank Name, Role" or fallback combinations
+        var signature = string.Empty;
+        if (!string.IsNullOrEmpty(rank) && !string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(role))
+        {
+            signature = $"{rank} {name}, {role}";
+        }
+        else if (!string.IsNullOrEmpty(rank) && !string.IsNullOrEmpty(name))
+        {
+            signature = $"{rank} {name}";
+        }
+        else if (!string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(role))
+        {
+            signature = $"{name}, {role}";
+        }
+        else
+        {
+            signature = name;
+        }
+
+        return signature;
+    }
+
+    /// <summary>
+    /// Replaces the nth occurrence of [signature] tag with replacement text.
+    /// </summary>
+    private static string ReplaceNthSignatureTag(string text, int index, string replacement)
+    {
+        const string signatureTag = "[signature]";
+        var currentIndex = 0;
+        var pos = 0;
+
+        while (pos < text.Length)
+        {
+            var foundPos = text.IndexOf(signatureTag, pos);
+            if (foundPos == -1) break;
+
+            if (currentIndex == index)
+            {
+                return text.Substring(0, foundPos) + replacement + text.Substring(foundPos + signatureTag.Length);
+            }
+
+            currentIndex++;
+            pos = foundPos + signatureTag.Length;
+        }
+
+        return text;
+    }
+
+    /// <summary>
+    /// Removes any unfilled [form] and [signature] tags, and converts [check] tags to ☐.
+    /// Called when the paper is stamped to finalize the document.
+    /// </summary>
+    /// <param name="text">The paper text to clean</param>
+    /// <returns>Text with unfilled tags cleaned</returns>
+    private static string CleanUnfilledTags(string text)
+    {
+        return text.Replace("[form]", string.Empty)
+                  .Replace("[signature]", string.Empty)
+                  .Replace("[check]", "☐");
+    }
+
+    # endregion
 }
 
 /// <summary>

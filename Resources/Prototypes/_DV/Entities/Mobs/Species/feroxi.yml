@@ -34,6 +34,7 @@
     noRot: true
     drawdepth: Mobs
     layers:
+      - map: [ "enum.HumanoidVisualLayers.TailBehind" ] # Pirate - port Floofstation custom layers
       - map: [ "enum.HumanoidVisualLayers.Chest" ]
       - map: [ "enum.HumanoidVisualLayers.Groin" ]
       - map: [ "enum.HumanoidVisualLayers.Head" ]
@@ -76,6 +77,7 @@
       - map: [ "enum.HumanoidVisualLayers.HeadSide" ]
       - map: [ "enum.HumanoidVisualLayers.HeadTop" ]
       - map: [ "enum.HumanoidVisualLayers.Tail" ]
+      - map: [ "enum.HumanoidVisualLayers.TailOversuit" ] # Pirate - port Floofstation custom layers
       - map: [ "mask" ]
       - map: [ "head" ]
       - map: [ "pocket1" ]
@@ -202,3 +204,28 @@
       sprite: "_DV/Effects/creampie.rsi"
       state: "creampie_feroxi"
       visible: false
+  - type: Inventory # Goob-Feroxi-Resprite-Start
+    speciesId: feroxi
+    femaleDisplacements:
+      jumpsuit:
+        sizeMaps:
+          32:
+            sprite: _White/Mobs/Species/displacement.rsi
+            state: jumpsuit-female
+      shoes:
+        sizeMaps:
+          32:
+            sprite: _White/Mobs/Species/displacement.rsi
+            state: shoes
+    displacements:
+      jumpsuit:
+        sizeMaps:
+          32:
+            sprite: _White/Mobs/Species/displacement.rsi
+            state: jumpsuit
+      shoes:
+        sizeMaps:
+          32:
+            sprite: _White/Mobs/Species/displacement.rsi
+            state: shoes
+    # Goob-Feroxi-Resprite-End

@@ -102,7 +102,10 @@
     - BibleSet
     - QuaranSet
     - TanakhSet
+    - NTEmployeeHandbookSet #Pirate changes atheist
     - ClockworkSet
+    - BibleVedaSet
+    - VelesBookSet
     maxSelectedSets: 1
 
 - type: selectableSet
@@ -144,6 +147,26 @@
     state: icon
   content:
   - BibleSlabClockwork
+
+- type: selectableSet
+  id: BibleVedaSet
+  name: Slavic-Aryan Vedas
+  description: Slavic neopaganisms.
+  sprite:
+    sprite: _Goobstation/Objects/Specific/Chapel/veda.rsi
+    state: icon
+  content:
+  - BibleVeda
+
+- type: selectableSet
+  id: VelesBookSet
+  name: Book of veles
+  description: Basis and proof of neopagan religiosity.
+  sprite:
+    sprite: _Goobstation/Objects/Specific/Chapel/veles_book.rsi
+    state: icon
+  content:
+  - BibleVelesBook
 ##END SET SELECTION
 
 - type: entity
@@ -163,6 +186,9 @@
       groups:
         Brute: 15
         Airloss: 15
+    damageOnUnholyUse: ## Pirate - What an unholy creature takes when picking up the bible
+      groups:
+        Burn: 20
     damageOnUntrainedUse: ## What a non-chaplain takes when attempting to heal someone
       groups:
         Burn: 10

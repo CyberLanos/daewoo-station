@@ -63,13 +63,11 @@ public sealed class StatusIconOverlay : Overlay
         var scaleMatrix = Matrix3Helpers.CreateScale(new Vector2(1, 1));
         var rotationMatrix = Matrix3Helpers.CreateRotation(-eyeRot);
 
-        // Отримуємо локального гравця перед циклом
         var localPlayer = _player.LocalSession?.AttachedEntity;
 
         var query = _entity.AllEntityQueryEnumerator<StatusIconComponent, SpriteComponent, TransformComponent, MetaDataComponent>();
         while (query.MoveNext(out var uid, out var comp, out var sprite, out var xform, out var meta))
         {
-            // ПЕРЕВІРКА КОНУСА ЗОРУ
             if (localPlayer != null && uid != localPlayer)
             {
                 if (!_viewcone.IsEntityInView(localPlayer.Value, uid))

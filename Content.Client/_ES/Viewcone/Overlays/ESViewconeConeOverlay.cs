@@ -18,6 +18,7 @@ public sealed class ESViewconeConeOverlay : Overlay
     [Dependency] private readonly IInputManager _input = default!;
     [Dependency] private readonly IEyeManager _eye = default!;
     [Dependency] private readonly IPrototypeManager _proto = default!;
+    [Dependency] private readonly IPlayerManager _playerManager = default!;
     private readonly SharedTransformSystem _xform;
 
     public override OverlaySpace Space => OverlaySpace.WorldSpace;
@@ -37,27 +38,32 @@ public sealed class ESViewconeConeOverlay : Overlay
         IoCManager.InjectDependencies(this);
         _xform = _ent.System<SharedTransformSystem>();
         _viewconeShader = _proto.Index(ShaderPrototype).InstanceUnique();
+        ZIndex = 200;
     }
 
     protected override bool BeforeDraw(in OverlayDrawArgs args)
     {
         _eyeEntity = null;
 
-        // This is really stupid but there isn't another way to reverse an eye entity from just an IEye afaict
-        // It's not really inefficient though. theres barely any of those fuckin things anyway (? verify that) (maybe this scales with players in view) (shit)
-        var enumerator = _ent.AllEntityQueryEnumerator<EyeComponent, ESViewconeComponent, TransformComponent>();
-        while (enumerator.MoveNext(out var uid, out var eye, out var viewcone, out var xform))
-        {
-            if (args.Viewport.Eye != eye.Eye)
-                continue;
+        var player = _playerManager.LocalEntity;
+        if (player == null)
+            return false;
 
-            _coneAngle = viewcone.ConeAngle;
-            _coneFeather = viewcone.ConeFeather;
-            _coneIgnoreRadius = (viewcone.ConeIgnoreRadius - viewcone.ConeIgnoreFeather) * 50f;
-            _coneIgnoreFeather = Math.Max(viewcone.ConeIgnoreFeather * 200f, 8f);
-            _eyeEntity = (uid, eye, xform);
-            break;
+        if (!_ent.TryGetComponent<EyeComponent>(player.Value, out var eye) ||
+            !_ent.TryGetComponent<ESViewconeComponent>(player.Value, out var viewcone) ||
+            !_ent.TryGetComponent<TransformComponent>(player.Value, out var xform))
+        {
+        return false;
         }
+
+        _coneAngle = viewcone.ConeAngle;
+        _coneFeather = viewcone.ConeFeather;
+        _coneIgnoreRadius = (viewcone.ConeIgnoreRadius - viewcone.ConeIgnoreFeather) * 50f;
+        _coneIgnoreFeather = Math.Max(viewcone.ConeIgnoreFeather * 200f, 8f);
+        _eyeEntity = (player.Value, eye, xform);
+
+        return true;
+        
 
         return _eyeEntity != null;
     }
