@@ -43,7 +43,7 @@
           enum.FemurBreakerState.Used:       { state: used }
 
   - type: Sprite
-    sprite: /Textures/_F14/Structures/femur_breaker.rsi   
+    sprite: Textures/_F14/Structures/femur_breaker.rsi   
     layers:
     - map: [ "BaseLayer" ]
       state: idle

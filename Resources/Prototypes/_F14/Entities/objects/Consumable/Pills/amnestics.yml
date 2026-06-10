@@ -1,0 +1,169 @@
+# ==================================
+# Reagents
+# ==================================
+- type: reagent
+  id: AmnesticClassA
+  name: Class-A Amnestic
+  group: Medicine
+  desc: A fast-acting memory wiping agent. Erases the last hour.
+  physicalDesc: a clear liquid
+  flavor: chalky
+  color: "#FFFFFF"
+  metabolisms:
+    Poison:
+      rate: 1
+      effects:
+      - !type:RPMessageEffect
+        message: "You forgot, what happend last hour"
+      - !type:GenericStatusEffect
+        key: Stutter
+        component: Stutter
+        time: 5.0
+
+- type: reagent
+  id: AmnesticClassB
+  name: Class-B Amnestic
+  group: Medicine
+  desc: A potent memory wiping agent. Erases the last 6 hours.
+  physicalDesc: a glowing green liquid
+  flavor: bitter
+  color: "#42f56f"
+  metabolisms:
+    Poison:
+      rate: 1
+      effects:
+      - !type:RPMessageEffect
+        message: "You forgot what happend last 6 hours."
+      - !type:GenericStatusEffect
+        key: Stutter
+        component: Stutter
+        time: 8.0
+      - !type:GenericStatusEffect
+        key: Drunk
+        component: Drunk
+        time: 8.0
+
+- type: reagent
+  id: AmnesticClassC
+  name: Class-C Amnestic
+  group: Medicine
+  desc: A heavy-duty memory wiping agent. Erases the last 24 hours and induces sleep.
+  physicalDesc: a thick red liquid
+  flavor: metallic
+  color: "#f54242"
+  metabolisms:
+    Poison:
+      rate: 2
+      effects:
+      - !type:RPMessageEffect
+        message: "You forgot everything that happend last day."
+      - !type:GenericStatusEffect
+        key: ForcedSleep
+        component: ForcedSleeping
+        time: 10.0
+      - !type:GenericStatusEffect
+        key: Drunk
+        component: Drunk
+        time: 15.0
+
+- type: reagent
+  id: AmnesticClassD
+  name: Class-D Amnestic
+  group: Medicine
+  desc: An extreme anomalous memory wiping agent. Induces complete retrograde amnesia and severe brain damage.
+  physicalDesc: a void-black liquid
+  flavor: ash
+  color: "#000000"
+  metabolisms:
+    Poison:
+      rate: 2
+      effects:
+      - !type:RPMessageEffect
+        message: "You forgot everything, where are you? Who are you? WHO ARE THOSE PEOPLE?!"
+      - !type:HealthChange
+        damage:
+          types:
+            Cellular: 2 
+      - !type:GenericStatusEffect
+        key: ForcedSleep
+        component: ForcedSleeping
+        time: 20.0
+      - !type:GenericStatusEffect
+        key: Jitter
+        component: Jittering
+        time: 15.0
+
+# ==================================
+# Pills
+# ==================================
+- type: entity
+  parent: Pill
+  id: PillAmnesticClassA
+  name: Class-A Amnestic pill
+  description: A standard Foundation memory-wiping pill. Erases the last few hours.
+  components:
+  - type: Sprite
+    sprite: Objects/Consumable/pills.rsi
+    state: pill1
+    color: "#FFFFFF"
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        maxVol: 50
+        reagents:
+        - ReagentId: AmnesticClassA
+          Quantity: 15
+
+- type: entity
+  parent: Pill
+  id: PillAmnesticClassB
+  name: Class-B Amnestic pill
+  description: A strong Foundation memory-wiping pill. Erases the last few days.
+  components:
+  - type: Sprite
+    sprite: Objects/Consumable/pills.rsi
+    state: pill2
+    color: "#42f56f"
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        maxVol: 50
+        reagents:
+        - ReagentId: AmnesticClassB
+          Quantity: 15
+
+- type: entity
+  parent: Pill
+  id: PillAmnesticClassC
+  name: Class-C Amnestic pill
+  description: A heavy-duty Foundation memory-wiping pill. Target will wake up with no recent memories.
+  components:
+  - type: Sprite
+    sprite: Objects/Consumable/pills.rsi
+    state: pill3
+    color: "#f54242"
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        maxVol: 50
+        reagents:
+        - ReagentId: AmnesticClassC
+          Quantity: 15
+
+- type: entity
+  parent: Pill
+  id: PillAmnesticClassD
+  name: Class-D Amnestic pill
+  description: EXTREME DANGER. Induces complete memory wipe and potential brain death.
+  components:
+  - type: Sprite
+    sprite: Objects/Consumable/pills.rsi
+    state: pill4
+    color: "#000000"
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        maxVol: 50
+        reagents:
+        - ReagentId: AmnesticClassD
+          Quantity: 15

@@ -8,13 +8,11 @@
   - type: Damageable
     damageContainer: Biological
     damageModifierSet: SCP457FireImmune
-
   - type: MobState
     allowedStates:
       - Alive
       - Critical
       - Dead
-
   - type: MobThresholds
     thresholds:
       0:    Alive
@@ -52,7 +50,7 @@
   - type: Sprite
     netsync: false
     shader: unshaded
-    sprite: /Textures/_F14/Mobs/scp457.rsi  
+    sprite: _F14/Mobs/scp457.rsi  
     layers:
     - map: [ "enum.SCP457VisualLayers.Base" ]  
       state: idle
@@ -65,3 +63,12 @@
   - type: MovementSpeedModifier
     baseWalkSpeed: 3.0
     baseSprintSpeed: 4.0
+  
+
+  - type: HTN
+    rootTask:
+      task: SimpleHostileCompound
+  - type: NpcFactionMember
+    factions:
+    - Neutral
+  - type: NPCRetaliation

@@ -6,7 +6,7 @@ using Content.Shared.Maps;
 using Content.Shared.Movement.Systems;
 using Content.Shared.Physics;
 using Content.Shared.Popups;
-using Content.Server.Flash;
+using Content.Shared.Administration;
 using Robust.Server.GameObjects;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
@@ -15,11 +15,18 @@ using Robust.Shared.Physics.Components;
 using Robust.Shared.Physics.Systems;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
+using Robust.Shared.Console;
+using Content.Shared.Actions;
+using Content.Shared._Pirate.ZLevels.Core.EntitySystems;
+using Content.Shared.Movement.Components;
+using Robust.Shared.Audio;
 
 namespace Content.Server._F14.SCP;
 
 public sealed class SCP106System : EntitySystem
 {
+    [Dependency] private readonly CESharedZLevelsSystem _zLevels = default!;
+    [Dependency] private readonly SharedActionsSystem _actions = default!;
     [Dependency] private readonly IRobustRandom               _random      = default!;
     [Dependency] private readonly IMapManager                 _mapManager  = default!;
     [Dependency] private readonly ITileDefinitionManager      _tileDefMan  = default!;
@@ -33,18 +40,37 @@ public sealed class SCP106System : EntitySystem
     [Dependency] private readonly EntityLookupSystem          _lookup      = default!;
 
     private const string MainFixture = "fix1";
-
     private const float LightCheckInterval = 0.25f;
-    private float _lightCheckTimer = 0f;
-
     private const float DecayInterval = 0.5f;
+    
+    private float _lightCheckTimer = 0f;
     private float _decayTimer = 0f;
 
     public override void Initialize()
     {
         base.Initialize();
+        SubscribeLocalEvent<SCP106Component, ComponentInit>(OnSCP106Init);
         SubscribeLocalEvent<SCP106Component, FlashAttemptEvent>(OnFlashed);
         SubscribeLocalEvent<SCP106Component, MeleeHitEvent>(OnMeleeHit);
+        
+        SubscribeLocalEvent<SCP106Component, SCP106ToggleSubmersionEvent>(OnToggleSubmerge);
+        SubscribeLocalEvent<SCP106Component, SCP106MoveUpEvent>(OnMoveUp);
+        SubscribeLocalEvent<SCP106Component, SCP106MoveDownEvent>(OnMoveDown);
+        SubscribeLocalEvent<SCP106Component, AttemptMeleeEvent>(OnAttemptMelee);
+    }
+
+    private void OnSCP106Init(EntityUid uid, SCP106Component comp, ComponentInit args)
+    {
+        if (TryComp<FixturesComponent>(uid, out var fixtures))
+        {
+            foreach (var (fixtureName, fixture) in fixtures.Fixtures)
+            {
+                _physics.SetCollisionMask(uid, fixtureName, fixture, 0, fixtures);
+            }
+        }
+        _actions.AddAction(uid, ref comp.ActionToggleSubmergeEntity, comp.ActionToggleSubmerge);
+        _actions.AddAction(uid, ref comp.ActionMoveUpEntity, comp.ActionMoveUp);
+        _actions.AddAction(uid, ref comp.ActionMoveDownEntity, comp.ActionMoveDown);
     }
 
     public override void Update(float frameTime)
@@ -66,7 +92,7 @@ public sealed class SCP106System : EntitySystem
         var query = EntityQueryEnumerator<SCP106Component, TransformComponent>();
         while (query.MoveNext(out var uid, out var comp, out var xform))
         {
-            if (doDecay) TryDecayTile(uid, comp, xform);
+            if (doDecay && !comp.IsSubmerged) TryDecayTile(uid, comp, xform);
             if (doLight) UpdateFlashlightFear(uid, comp, xform);
         }
     }
@@ -91,7 +117,10 @@ public sealed class SCP106System : EntitySystem
 
     private void OnFlashed(EntityUid uid, SCP106Component comp, FlashAttemptEvent args)
     {
-        Submerge(uid, comp);
+        if (!comp.IsSubmerged)
+        {
+            Submerge(uid, comp);
+        }
     }
 
     private void UpdateFlashlightFear(EntityUid uid, SCP106Component comp, TransformComponent xform)
@@ -152,6 +181,8 @@ public sealed class SCP106System : EntitySystem
 
     private void OnMeleeHit(EntityUid uid, SCP106Component comp, MeleeHitEvent args)
     {
+        if (comp.IsSubmerged) return;
+
         foreach (var hit in args.HitEntities)
         {
             if (HasComp<SCP106Component>(hit)) continue;
@@ -170,13 +201,10 @@ public sealed class SCP106System : EntitySystem
 
         comp.IsSubmerged = true;
         EnsureComp<SCP106SubmergedComponent>(uid);
+        
+        RemCompDeferred<FootstepModifierComponent>(uid);
+        
         Dirty(uid, comp);
-
-        if (TryComp<FixturesComponent>(uid, out var fixturesSub)
-            && fixturesSub.Fixtures.TryGetValue(MainFixture, out var fixtureSub))
-        {
-            _physics.SetCollisionMask(uid, MainFixture, fixtureSub, 0, fixturesSub);
-        }
 
         _appearance.SetData(uid, SCP106Visuals.Submerged, true);
     }
@@ -187,16 +215,15 @@ public sealed class SCP106System : EntitySystem
 
         comp.IsSubmerged = false;
         RemCompDeferred<SCP106SubmergedComponent>(uid);
+        
+        var footstep = EnsureComp<FootstepModifierComponent>(uid);
+        footstep.FootstepSoundCollection = new SoundCollectionSpecifier("SCP106Footsteps");
+        
         Dirty(uid, comp);
-
-        if (TryComp<FixturesComponent>(uid, out var fixturesEm)
-            && fixturesEm.Fixtures.TryGetValue(MainFixture, out var fixtureEm))
-        {
-            _physics.SetCollisionMask(uid, MainFixture, fixtureEm, (int)CollisionGroup.MobMask, fixturesEm);
-        }
 
         _appearance.SetData(uid, SCP106Visuals.Submerged, false);
     }
+
     public void TeleportToPocket(EntityUid victim, SCP106Component comp)
     {
         MapId? pocketMap = null;
@@ -214,5 +241,71 @@ public sealed class SCP106System : EntitySystem
         if (pocketMap == null) return;
 
         _transform.SetMapCoordinates(victim, new MapCoordinates(0f, 0f, pocketMap.Value));
+    }
+
+    private void OnToggleSubmerge(EntityUid uid, SCP106Component comp, SCP106ToggleSubmersionEvent args)
+    {
+        if (args.Handled) return;
+        
+        if (comp.IsSubmerged) Emerge(uid, comp);
+        else Submerge(uid, comp);
+
+        args.Handled = true;
+    }
+
+    private void OnMoveUp(EntityUid uid, SCP106Component comp, SCP106MoveUpEvent args)
+    {
+        if (args.Handled) return;
+        
+        if (!comp.IsSubmerged)
+        {
+            _popup.PopupEntity("You need to sink to move between floors!", uid, uid, PopupType.SmallCaution);
+            return;
+        }
+
+        if (_zLevels.TryMove(uid, 1))
+        {
+            _zLevels.NormalizeTransferredPullable(uid, 1); 
+            _popup.PopupEntity("Old man rises to the floor above...", uid, uid, PopupType.Small);
+        }
+        else
+        {
+            _popup.PopupEntity("There is no floor above you!", uid, uid, PopupType.SmallCaution);
+        }
+        
+        args.Handled = true;
+    }
+
+    private void OnMoveDown(EntityUid uid, SCP106Component comp, SCP106MoveDownEvent args)
+    {
+        if (args.Handled) return;
+        
+        if (!comp.IsSubmerged)
+        {
+            _popup.PopupEntity("You need to sink to move between floors!", uid, uid, PopupType.SmallCaution);
+            return;
+        }
+
+        if (_zLevels.TryMove(uid, -1))
+        {
+            _zLevels.NormalizeTransferredPullable(uid, -1); 
+            _popup.PopupEntity("Old man sinks underground...", uid, uid, PopupType.Small);
+        }
+        else
+        {
+            _popup.PopupEntity("There is nothing under you!", uid, uid, PopupType.SmallCaution);
+        }
+
+        args.Handled = true;
+    }
+    
+    private void OnAttemptMelee(EntityUid uid, SCP106Component comp, ref AttemptMeleeEvent args)
+    {
+        if (comp.IsSubmerged)
+        {
+            args.Cancelled = true; 
+            
+            _popup.PopupEntity("You cannot attack while submerged!", uid, uid, PopupType.SmallCaution);
+        }
     }
 }

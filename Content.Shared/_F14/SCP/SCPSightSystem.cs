@@ -3,6 +3,7 @@ using Content.Shared.Movement.Components;
 using Content.Shared.Movement.Systems;
 using Content.Shared.Ghost;
 using Content.Shared.Interaction.Events;
+using Content.Shared._Pirate.ZLevels.Core.Components; 
 using Robust.Shared.Maths; 
 using Robust.Shared.Physics; 
 using Robust.Shared.Physics.Components;
@@ -46,12 +47,35 @@ public sealed class SCPSightSystem : EntitySystem
                 if (TryComp<BlinkingComponent>(pUid, out var blink) && blink.IsBlinking)
                     continue;
 
-                if (scpXform.MapID != pXform.MapID) continue;
+                bool sameZNetwork = (scpXform.MapID == pXform.MapID);
+
+                if (!sameZNetwork && scpXform.GridUid != null && pXform.GridUid != null)
+                {
+                    if (TryComp<CEZLinkedGridComponent>(pXform.GridUid.Value, out var pLinked))
+                    {
+                        foreach (var peerGrid in pLinked.PeerGrids.Values)
+                        {
+                            if (peerGrid == scpXform.GridUid.Value)
+                            {
+                                sameZNetwork = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (!sameZNetwork) continue;
 
                 var pPos = _transform.GetWorldPosition(pXform);
                 var vecToScp = scpPos - pPos;
 
                 if (vecToScp.Length() > 15f) continue;
+
+                if (vecToScp.Length() < 0.1f)
+                {
+                    isWatched = true;
+                    break;
+                }
 
                 var dirToScp = vecToScp.Normalized();
                 var pRot = _transform.GetWorldRotation(pXform).GetDir().ToVec();

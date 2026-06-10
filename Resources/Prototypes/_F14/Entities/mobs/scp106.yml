@@ -2,9 +2,7 @@
   name: SCP-106
   id: MobSCP106
   parent: SimpleMobBase
-  description: 
-    You see a big and black figure that appears to be an elderly humanoid,
-    with a general appearance of advanced decomposition.
+  description: You see a big and black figure that appears to be an elderly humanoid, with a general appearance of advanced decomposition.
   components:
   - type: SCP106
   - type: Damageable
@@ -44,12 +42,52 @@
   - type: Appearance
   - type: Sprite
     netsync: false
-    sprite: /Textures/_F14/Mobs/scp106.rsi
+    sprite: _F14/Mobs/scp106.rsi
     layers:
     - map: [ "enum.SCP106VisualLayers.Base" ]
       state: alive
+    drawDepth: 0
   - type: MovementSpeedModifier
     baseWalkSpeed: 3.5
     baseSprintSpeed: 4.5
   - type: Metabolizer
     enabled: false
+  - type: Barotrauma
+    hasImmunity: true
+  - type: Respirator
+    damage:
+      types:
+        Asphyxiation: 0
+  - type: Temperature
+    coldDamageThreshold: 0
+    heatDamageThreshold: 10000
+
+- type: entity
+  id: ActionSCP106ToggleSubmerge
+  name: "Toggle Submerge"
+  description: "Allows SCP-106 to hide under the floor and wall textures."
+  components:
+  - type: Action # <-- ОДИН РЯДОК, ЯКИЙ РОБИТЬ ЇЇ КНОПКОЮ
+  - type: InstantAction
+    icon: { sprite: Textures/Interface/VerbIcons/drop.svg.192dpi.png }
+    event: !type:SCP106ToggleSubmersionEvent
+
+- type: entity
+  id: ActionSCP106MoveUp
+  name: "Move Up (Multi-Z)"
+  description: "Moves you to the floor above. Only possible while submerged."
+  components:
+  - type: Action
+  - type: InstantAction
+    icon: { sprite: Textures/Interface/VerbIcons/up.svg.192dpi.png }
+    event: !type:SCP106MoveUpEvent
+
+- type: entity
+  id: ActionSCP106MoveDown
+  name: "Move Down (Multi-Z)"
+  description: "Moves you to the floor below. Only possible while submerged."
+  components:
+  - type: Action
+  - type: InstantAction
+    icon: { sprite: Textures/Interface/VerbIcons/down.svg.192dpi.png }
+    event: !type:SCP106MoveDownEvent

@@ -1,0 +1,9 @@
+- type: entity
+  parent: BaseItem
+  id: Quater
+  name: Quater
+  description: Standard U.S. 25-cent coin with George Washington on it
+  components:
+  - type: Sprite
+    sprite: Textures/_F14/objects/misc/quater.rsi
+    state: icon

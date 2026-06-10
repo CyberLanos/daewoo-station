@@ -1,6 +1,7 @@
 using Content.Shared._F14.SCP;
 using Robust.Shared.GameObjects;
 using System.Numerics;
+using Content.Shared._Pirate.ZLevels.Core.Components; 
 
 namespace Content.Server._F14.SCP;
 
@@ -24,14 +25,30 @@ public sealed class BlinkingSystem : EntitySystem
             if (blink.IsBlinking && !blink.IsAutoBlinking)
                 continue;
 
-
             bool isScpNear = false;
             var pPos = _transform.GetWorldPosition(pXform);
 
             var scpQuery = EntityQueryEnumerator<SCPFreezeOnSightComponent, TransformComponent>();
             while (scpQuery.MoveNext(out var scpUid, out var scpComp, out var scpXform))
             {
-                if (pXform.MapID != scpXform.MapID) continue;
+                bool sameZNetwork = (scpXform.MapID == pXform.MapID);
+
+                if (!sameZNetwork && scpXform.GridUid != null && pXform.GridUid != null)
+                {
+                    if (TryComp<CEZLinkedGridComponent>(pXform.GridUid.Value, out var pLinked))
+                    {
+                        foreach (var peerGrid in pLinked.PeerGrids.Values)
+                        {
+                            if (peerGrid == scpXform.GridUid.Value)
+                            {
+                                sameZNetwork = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (!sameZNetwork) continue;
 
                 if ((_transform.GetWorldPosition(scpXform) - pPos).Length() < 20f)
                 {
@@ -52,14 +69,12 @@ public sealed class BlinkingSystem : EntitySystem
                 continue;
             }
 
-            
             blink.CurrentTimer -= frameTime;
 
             if (blink.CurrentTimer <= 0f)
             {
                 if (!blink.IsAutoBlinking)
                 {
-                    // shuts your eyes, the world is a scary place, especially with a BIG DIG RANDY nearby
                     blink.IsBlinking = true;
                     blink.IsAutoBlinking = true;
                     blink.CurrentTimer = blink.BlinkDuration; 
@@ -67,10 +82,9 @@ public sealed class BlinkingSystem : EntitySystem
                 }
                 else
                 {
-                    // open your eyes! MY LITTLE DARK AGE! ehm... sorry
                     blink.IsBlinking = false;
                     blink.IsAutoBlinking = false;
-                    blink.CurrentTimer = blink.BlinkInterval; // start timer
+                    blink.CurrentTimer = blink.BlinkInterval;
                     Dirty(uid, blink);
                 }
             }

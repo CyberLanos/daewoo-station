@@ -5,7 +5,7 @@ using Robust.Shared.Animations;
 using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
 using Robust.Shared.Maths;
-using System; // Потрібен для TimeSpan
+using System; 
 
 namespace Content.Client._F14.SCP;
 
@@ -15,6 +15,12 @@ public sealed class SCP457VisualizerSystem : VisualizerSystem<AppearanceComponen
 
     private const string IdleAnimId    = "scp457_idle";
     private const string AttackAnimId  = "scp457_attack";
+
+    public override void Initialize()
+    {
+        base.Initialize();
+        SubscribeLocalEvent<AppearanceComponent, AnimationCompletedEvent>(OnAnimCompleted);
+    }
 
     protected override void OnAppearanceChange(EntityUid uid, AppearanceComponent comp, ref AppearanceChangeEvent args)
     {
@@ -34,6 +40,20 @@ public sealed class SCP457VisualizerSystem : VisualizerSystem<AppearanceComponen
         }
     }
 
+    private void OnAnimCompleted(EntityUid uid, AppearanceComponent comp, AnimationCompletedEvent args)
+    {
+        if (args.Key == IdleAnimId)
+        {
+            if (AppearanceSystem.TryGetData<bool>(uid, SCP457Visuals.Attacking, out var attacking, comp) && attacking)
+                return;
+
+            if (TryComp<SpriteComponent>(uid, out var sprite))
+            {
+                EnsureIdle(uid, sprite);
+            }
+        }
+    }
+
     private void EnsureIdle(EntityUid uid, SpriteComponent sprite)
     {
         if (_anim.HasRunningAnimation(uid, IdleAnimId))
@@ -41,7 +61,6 @@ public sealed class SCP457VisualizerSystem : VisualizerSystem<AppearanceComponen
 
         _anim.Stop(uid, AttackAnimId);
 
-        // ЗАХИСТ ВІД КРАШУ: Якщо шар не знайдено (текстура не завантажилася), просто виходимо, гра не вилетить!
         if (!sprite.LayerMapTryGet(SCP457VisualLayers.Base, out var _))
             return;
 
@@ -80,7 +99,6 @@ public sealed class SCP457VisualizerSystem : VisualizerSystem<AppearanceComponen
 
         _anim.Stop(uid, IdleAnimId);
 
-        // ЗАХИСТ ВІД КРАШУ
         if (!sprite.LayerMapTryGet(SCP457VisualLayers.Base, out var _))
             return;
 

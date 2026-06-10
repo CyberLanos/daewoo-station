@@ -42,7 +42,7 @@ public sealed class SCP106VisualizerSystem : VisualizerSystem<SCP106Component>
         if (!args.Sprite.LayerMapTryGet(SCP106VisualLayers.Base, out var layer))
             return;
 
-        // 1. Якщо стан ДІЙСНО змінився
+        
         if (submerged != visComp.IsSubmerged)
         {
             visComp.IsSubmerged = submerged;
@@ -52,41 +52,41 @@ public sealed class SCP106VisualizerSystem : VisualizerSystem<SCP106Component>
                 _anim.Stop(uid, EmergeAnimId);
                 PlaySinking(uid);
                 
-                // ВИПРАВЛЕНО: Явно вказуємо повний шлях до ігрового DrawDepth
-                args.Sprite.DrawDepth = (int) Content.Shared.DrawDepth.DrawDepth.FloorObjects; 
+                args.Sprite.DrawDepth = (int)Content.Shared.DrawDepth.DrawDepth.FloorObjects;
+                args.Sprite.Color = new Color(1f, 1f, 1f, 0.05f); 
             }
             else
             {
                 _anim.Stop(uid, SinkAnimId);
                 PlayEmerging(uid);
                 
-                // ВИПРАВЛЕНО: Повертаємо на рівень мобів
-                args.Sprite.DrawDepth = (int) Content.Shared.DrawDepth.DrawDepth.Mobs;
+                args.Sprite.DrawDepth = (int)Content.Shared.DrawDepth.DrawDepth.Mobs;
+                args.Sprite.Color = Color.White; 
             }
         }
-        // 2. Якщо гравець щойно підключився або анімація вже закінчилася (Підстраховка)
         else
         {
             if (submerged && !_anim.HasRunningAnimation(uid, SinkAnimId))
             {
                 args.Sprite.LayerSetState(layer, "submerged");
-                args.Sprite.Color = new Color(1f, 1f, 1f, 0.05f);
-                args.Sprite.DrawDepth = (int) Content.Shared.DrawDepth.DrawDepth.FloorObjects; 
+                args.Sprite.Color = new Color(1f, 1f, 1f, 0.05f); 
+                args.Sprite.DrawDepth = (int)Content.Shared.DrawDepth.DrawDepth.FloorObjects;
             }
             else if (!submerged && !_anim.HasRunningAnimation(uid, EmergeAnimId))
             {
                 args.Sprite.LayerSetState(layer, "alive");
-                args.Sprite.DrawDepth = (int) Content.Shared.DrawDepth.DrawDepth.Mobs; 
+                args.Sprite.Color = Color.White; 
+                args.Sprite.DrawDepth = (int)Content.Shared.DrawDepth.DrawDepth.Mobs;
             }
         }
 
-        // 3. Світло від ліхтарика — Зберігаємо прозорість
         if (!submerged)
         {
             var currentAlpha = args.Sprite.Color.A;
+            
             args.Sprite.Color = slowed
-                ? new Color(1f, 0.30f, 0.30f, currentAlpha)
-                : new Color(1f, 1f, 1f, currentAlpha);
+                ? new Color(1f, 1f, 1f, currentAlpha) 
+                : new Color(1f, 1f, 1f, currentAlpha); 
         }
     }
 
@@ -113,8 +113,8 @@ public sealed class SCP106VisualizerSystem : VisualizerSystem<SCP106Component>
                     InterpolationMode = AnimationInterpolationMode.Linear,
                     KeyFrames =
                     {
-                        new AnimationTrackProperty.KeyFrame(Color.White,                   0.0f),
-                        new AnimationTrackProperty.KeyFrame(new Color(1f, 1f, 1f, 0.05f), (float)AnimDuration.TotalSeconds),
+                        new AnimationTrackProperty.KeyFrame(Color.White, 0.0f), 
+                        new AnimationTrackProperty.KeyFrame(new Color(1f, 1f, 1f, 0.05f), (float)AnimDuration.TotalSeconds), 
                     }
                 }
             }
@@ -145,8 +145,8 @@ public sealed class SCP106VisualizerSystem : VisualizerSystem<SCP106Component>
                     InterpolationMode = AnimationInterpolationMode.Linear,
                     KeyFrames =
                     {
-                        new AnimationTrackProperty.KeyFrame(new Color(1f, 1f, 1f, 0.05f), 0.0f),
-                        new AnimationTrackProperty.KeyFrame(Color.White,                   (float)AnimDuration.TotalSeconds),
+                        new AnimationTrackProperty.KeyFrame(new Color(1f, 1f, 1f, 0.05f), 0.0f), 
+                        new AnimationTrackProperty.KeyFrame(Color.White, (float)AnimDuration.TotalSeconds), 
                     }
                 }
             }

@@ -6,9 +6,9 @@ using Robust.Shared.Serialization.Manager.Attributes;
 using Robust.Shared.Audio;
 using Robust.Shared.Map; 
 using Content.Shared.Actions;
-using Robust.Shared.Serialization; 
 using Content.Shared.DoAfter;
 using Content.Shared.Movement.Systems;
+
 namespace Content.Shared._F14.SCP;
 
 // Blinking component for SCP-173
@@ -60,7 +60,6 @@ public sealed partial class SCP096Component : Component
     [DataField("enrageSound")] public SoundSpecifier? EnrageSound;
 }
 
-
 //scp scp scp 049
 [RegisterComponent]
 public sealed partial class SCP049Component : Component { }
@@ -71,14 +70,13 @@ public sealed partial class SCP0492Component : Component { }
 [Serializable, NetSerializable]
 public sealed partial class SCP049CureDoAfterEvent : SimpleDoAfterEvent { }
 
-
 // SCP-330 
-
 [RegisterComponent]
 public sealed partial class SCP330Component : Component
 {
     public Dictionary<EntityUid, int> TakenCount = new();
 }
+
 //scp-330 pink candy KABOOOOOM!
 [RegisterComponent]
 public sealed partial class SCP330PinkCandyComponent : Component { }
@@ -87,22 +85,20 @@ public sealed partial class SCP330PinkCandyComponent : Component { }
 [RegisterComponent]
 public sealed partial class SCP999Component : Component
 {
- 
     [DataField("cooldown")]
     public float Cooldown = 20f; 
 
     public float Accumulator = 0f;
 
-   
     [DataField("range")]
     public float Range = 2f; 
 }
+
 //scp-113
 [RegisterComponent]
 public sealed partial class SCP113Component : Component
 {
 }
-
 
 //scp-106 
 [Serializable, NetSerializable]
@@ -141,6 +137,15 @@ public sealed partial class SCP106Component : Component
 
     [DataField]
     public string SCPPocketDimensionMap = "PocketDimension";
+
+    [DataField] public string ActionToggleSubmerge = "ActionSCP106ToggleSubmerge";
+    [DataField, AutoNetworkedField] public EntityUid? ActionToggleSubmergeEntity;
+
+    [DataField] public string ActionMoveUp = "ActionSCP106MoveUp";
+    [DataField, AutoNetworkedField] public EntityUid? ActionMoveUpEntity;
+    
+    [DataField] public string ActionMoveDown = "ActionSCP106MoveDown";
+    [DataField, AutoNetworkedField] public EntityUid? ActionMoveDownEntity;
 }
 
 [RegisterComponent]
@@ -206,7 +211,6 @@ public sealed partial class FemurBreakerComponent : Component
     public bool Activating = false;
 }
 
-
 //scp-457 component
 [Serializable, NetSerializable] 
 public enum SCP457Visuals : byte
@@ -219,6 +223,7 @@ public enum SCP457VisualLayers : byte
 {
     Base,
 }
+
 [RegisterComponent] 
 public sealed partial class SCP457Component : Component
 {
@@ -230,3 +235,56 @@ public sealed partial class SCP457Component : Component
     public bool IsAttacking = false; 
 }
 
+// SCP-294 component
+[RegisterComponent]
+public sealed partial class SCP294Component : Component
+{
+    [DataField]
+    public int QuartersRequired = 2;
+    [DataField]
+    public string ContainerPrototype = "Cup";
+    [DataField]
+    public float DispenserAmount = 30f;
+}
+
+[Serializable, NetSerializable]
+public sealed class SCP294BuiState : BoundUserInterfaceState
+{
+    public int QuartersRequired { get; }
+    public int QuartersInserted { get; }
+    public string? LastMessage { get; }
+
+    public SCP294BuiState(int quartersRequired, int quartersInserted, string? lastMessage = null)
+    {
+        QuartersRequired = quartersRequired;
+        QuartersInserted = quartersInserted;
+        LastMessage = lastMessage;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SCP294RequestLiquidMessage : BoundUserInterfaceMessage
+{
+    public string LiquidName { get; }
+
+    public SCP294RequestLiquidMessage(string liquidName)
+    {
+        LiquidName = liquidName;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SCP294InsertQuarterMessage : BoundUserInterfaceMessage { }
+
+public enum SCP294UiKey : byte
+{
+    Key,
+}
+
+// ==================== SCP-106 EVENTS ====================
+
+public sealed partial class SCP106ToggleSubmersionEvent : InstantActionEvent { }
+
+public sealed partial class SCP106MoveUpEvent : InstantActionEvent { }
+
+public sealed partial class SCP106MoveDownEvent : InstantActionEvent { }

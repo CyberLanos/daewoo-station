@@ -1,12 +1,3 @@
-- type: npcFaction 
-  id: SCP
-  name: SCP
-  description: Anomalous entities.
-  hostile:
-  - NanoTrasen 
-  - Syndicate
-
-
 - type: entity
   id: SCP049
   parent: SimpleMobBase
@@ -49,8 +40,11 @@
     baseWalkSpeed: 2.5
     baseSprintSpeed: 4.0
   - type: Sprite
-    noRotation: true 
     sprite: _F14/Mobs/scp049.rsi 
     layers:
     - map: [ "base" ]
       state: alive
+  - type: HTN
+    rootTask:
+      task: SimpleHostileCompound
+  - type: NPCRetaliation

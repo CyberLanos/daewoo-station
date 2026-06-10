@@ -13,12 +13,14 @@ using Content.Shared.Weapons.Melee;
 using Content.Shared._F14.SCP;
 using Content.Server.NPC.Systems;
 using Content.Server.NPC.Components;
+using Content.Shared._Pirate.ZLevels.Core.Components;
 using Robust.Shared.Maths;
 using Robust.Shared.Physics;
 using Robust.Shared.Physics.Events;
 using Robust.Shared.Physics.Systems;
 using Robust.Shared.Physics.Components;
 using Robust.Shared.Audio.Systems;
+using Robust.Shared.Audio; 
 
 namespace Content.Server._F14.SCP;
 
@@ -95,17 +97,46 @@ public sealed class SCP096System : EntitySystem
 
                     while (playerQuery.MoveNext(out var pUid, out _, out var pXform))
                     {
-                        if (scpXform.MapID != pXform.MapID || HasComp<GhostComponent>(pUid)) continue;
+                        if (HasComp<GhostComponent>(pUid)) continue;
                         if (_mobState.IsDead(pUid)) continue;
+                        if (TryComp<BlinkingComponent>(pUid, out var blink) && blink.IsBlinking) continue;
 
-                        if (TryComp<BlinkingComponent>(pUid, out var blink) && blink.IsBlinking)
-                            continue;
+                        bool sameZNetwork = (scpXform.MapID == pXform.MapID);
+
+                        if (!sameZNetwork && scpXform.GridUid != null && pXform.GridUid != null)
+                        {
+                            if (TryComp<CEZLinkedGridComponent>(pXform.GridUid.Value, out var pLinked))
+                            {
+                                foreach (var peerGrid in pLinked.PeerGrids.Values)
+                                {
+                                    if (peerGrid == scpXform.GridUid.Value)
+                                    {
+                                        sameZNetwork = true;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+
+                        if (!sameZNetwork) continue;
 
                         var pPos = _transform.GetWorldPosition(pXform);
                         var distToPlayer = (scpPos - pPos).Length();
 
                         if (distToPlayer > 15f) continue;
-                        if (!_interaction.InRangeUnobstructed(pUid, scpUid, 15f)) continue;
+                        
+                        if (scpXform.GridUid == pXform.GridUid && distToPlayer >= 0.1f)
+                        {
+                            if (!_interaction.InRangeUnobstructed(pUid, scpUid, 15f)) continue;
+                        }
+
+                        if (distToPlayer < 0.1f)
+                        {
+                            scpComp.State = SCP096State.Charging;
+                            scpComp.CurrentChargeTimer = scpComp.ChargeTime;
+                            scpComp.Target = pUid;
+                            break;
+                        }
 
                         var pRot = _transform.GetWorldRotation(pXform).GetDir().ToVec();
                         var scpRot = _transform.GetWorldRotation(scpXform).GetDir().ToVec();
@@ -152,7 +183,23 @@ public sealed class SCP096System : EntitySystem
 
                     var targetXform = Transform(scpComp.Target.Value);
                     
-                    if (targetXform.MapID == scpXform.MapID)
+                    bool sameZNetworkEnraged = (targetXform.MapID == scpXform.MapID);
+                    if (!sameZNetworkEnraged && scpXform.GridUid != null && targetXform.GridUid != null)
+                    {
+                        if (TryComp<CEZLinkedGridComponent>(targetXform.GridUid.Value, out var tLinked))
+                        {
+                            foreach (var peerGrid in tLinked.PeerGrids.Values)
+                            {
+                                if (peerGrid == scpXform.GridUid.Value)
+                                {
+                                    sameZNetworkEnraged = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    if (sameZNetworkEnraged)
                     {
                         _steering.Register(scpUid, targetXform.Coordinates);
 
@@ -164,22 +211,44 @@ public sealed class SCP096System : EntitySystem
                         {
                             _physics.SetSleepingAllowed(scpUid, phys, false);
 
-                            if (phys.LinearVelocity.Length() < 1f && dist > 1.6f)
+                            if (phys.LinearVelocity.Length() < 1f && dist > 1.5f)
                             {
-                                var dirNorm = (targetPos - scpPosEnraged).Normalized();
-                                _physics.SetLinearVelocity(scpUid, dirNorm * scpComp.EnragedSpeed, body: phys);
-                                _transform.SetLocalRotation(scpUid, dirNorm.ToAngle());
+                                var diff = targetPos - scpPosEnraged;
+                                if (diff.LengthSquared() > 0.001f) 
+                                {
+                                    var dirNorm = diff.Normalized();
+                                    _physics.SetLinearVelocity(scpUid, dirNorm * scpComp.EnragedSpeed, body: phys);
+                                    _transform.SetLocalRotation(scpUid, dirNorm.ToAngle());
+                                }
                             }
                         }
                         
-                        if (dist < 1.6f)
+                        if (dist <= 1.6f)
                         {
-                            if (TryComp<MeleeWeaponComponent>(scpUid, out var weapon))
+                            if (scpXform.GridUid == targetXform.GridUid)
                             {
-                                _damageable.TryChangeDamage(scpComp.Target.Value, weapon.Damage, true, origin: scpUid);
-                                _audio.PlayPvs(weapon.HitSound, scpUid);
+                                // Так, б'ємо!
+                                if (TryComp<MeleeWeaponComponent>(scpUid, out var weapon))
+                                {
+                                    _damageable.TryChangeDamage(scpComp.Target.Value, weapon.Damage, true, origin: scpUid);
+                                    _audio.PlayPvs(weapon.HitSound, scpUid);
+                                }
+                            }
+                            else
+                            {
+                                _transform.SetCoordinates(scpUid, targetXform.Coordinates);
+                                
+                                _audio.PlayPvs(new SoundPathSpecifier("/Audio/Effects/flesh_break.ogg"), scpUid);
                             }
                         }
+                    }
+                    else
+                    {
+                        scpComp.State = SCP096State.Idle;
+                        scpComp.Target = null;
+                        RemComp<NPCSteeringComponent>(scpUid); 
+                        if (TryComp<PhysicsComponent>(scpUid, out var physIdle))
+                            _physics.SetSleepingAllowed(scpUid, physIdle, true);
                     }
                     break;
             }
