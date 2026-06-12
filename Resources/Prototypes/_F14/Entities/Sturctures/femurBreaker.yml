@@ -1,9 +1,10 @@
 - type: entity
   id: FemurBreaker
   name: femur breaker
+  parent: BaseStructure
   description: >-
     A hydraulic press repurposed to produce a specific auditory stimulus
-    known to attract SCP-106. Requires a human subject to be in position.
+    known to attract SCP-106. Requires a human subject to be buckled to it.
     Use only as a last resort.
   components:
   - type: FemurBreaker
@@ -11,48 +12,51 @@
       path: /Audio/_F14/Effects/femur_breaker.ogg
       params:
         volume: 5       
-    victimRange: 1.2
     activationDelay: 1.5
-    
   - type: Physics
     bodyType: Static
-    
   - type: Fixtures
     fixtures:
       fix1:
         shape:
           !type:PhysShapeAabb
-          bounds: "-0.4,-0.4,0.4,0.4"
+          bounds: "-0.45,-0.45,0.45,0.45"
+        density: 190
+        mask:
+        - TableMask
         layer:
         - WallLayer
-        mask:
-        - MobMask
-        
   - type: Anchorable
   - type: Pullable
   - type: InteractionOutline
-  
+  - type: DeviceLinkSink
+    ports:
+    - Trigger
+  - type: Strap
+    position: Down
+    rotation: -90
+  - type: PlaceableSurface
+    placeCentered: true
+  - type: HealOnBuckle
+    damage:
+      types:
+        Poison: -0.1
+        Blunt: -0.1
   - type: Appearance
-  
   - type: GenericVisualizer
     visuals:
       enum.FemurBreakerVisuals.State:
         BaseLayer:
-          enum.FemurBreakerState.Idle:       { state: idle }
+          enum.FemurBreakerState.Idle: { state: idle }
           enum.FemurBreakerState.Activating: { state: activating }
-          enum.FemurBreakerState.Used:       { state: used }
-
+          enum.FemurBreakerState.Used: { state: used }
   - type: Sprite
-    sprite: Textures/_F14/Structures/femur_breaker.rsi   
+    sprite: _F14/Structures/femur_breaker.rsi
     layers:
     - map: [ "BaseLayer" ]
       state: idle
-      
-  - type: Examine
-  
   - type: Damageable
     damageContainer: Inorganic
-    
   - type: Destructible
     thresholds:
     - trigger:
