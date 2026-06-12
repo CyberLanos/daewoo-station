@@ -19,6 +19,7 @@ using Robust.Shared.Console;
 using Content.Shared.Actions;
 using Content.Shared._Pirate.ZLevels.Core.EntitySystems;
 using Content.Shared.Movement.Components;
+using Robust.Shared.Physics.Events;
 using Robust.Shared.Audio;
 
 namespace Content.Server._F14.SCP;
@@ -57,17 +58,12 @@ public sealed class SCP106System : EntitySystem
         SubscribeLocalEvent<SCP106Component, SCP106MoveUpEvent>(OnMoveUp);
         SubscribeLocalEvent<SCP106Component, SCP106MoveDownEvent>(OnMoveDown);
         SubscribeLocalEvent<SCP106Component, AttemptMeleeEvent>(OnAttemptMelee);
+        
+        SubscribeLocalEvent<SCP106Component, PreventCollideEvent>(OnPreventCollide);
     }
 
     private void OnSCP106Init(EntityUid uid, SCP106Component comp, ComponentInit args)
     {
-        if (TryComp<FixturesComponent>(uid, out var fixtures))
-        {
-            foreach (var (fixtureName, fixture) in fixtures.Fixtures)
-            {
-                _physics.SetCollisionMask(uid, fixtureName, fixture, 0, fixtures);
-            }
-        }
         _actions.AddAction(uid, ref comp.ActionToggleSubmergeEntity, comp.ActionToggleSubmerge);
         _actions.AddAction(uid, ref comp.ActionMoveUpEntity, comp.ActionMoveUp);
         _actions.AddAction(uid, ref comp.ActionMoveDownEntity, comp.ActionMoveDown);
@@ -226,21 +222,15 @@ public sealed class SCP106System : EntitySystem
 
     public void TeleportToPocket(EntityUid victim, SCP106Component comp)
     {
-        MapId? pocketMap = null;
-
-        foreach (var mapId in _mapManager.GetAllMapIds())
+        var query = EntityQueryEnumerator<SCPPocketDimensionComponent, TransformComponent>();
+        
+        if (query.MoveNext(out var pocketUid, out var pocketComp, out var pocketXform))
         {
-            var mapEnt = _mapManager.GetMapEntityId(mapId);
-            if (HasComp<SCPPocketDimensionComponent>(mapEnt))
-            {
-                pocketMap = mapId;
-                break;
-            }
+            _transform.SetCoordinates(victim, pocketXform.Coordinates);
+            return;
         }
 
-        if (pocketMap == null) return;
-
-        _transform.SetMapCoordinates(victim, new MapCoordinates(0f, 0f, pocketMap.Value));
+        Log.Error("SCP-106 tried to teleport a player, but Pocket Dimension marker was not found!");
     }
 
     private void OnToggleSubmerge(EntityUid uid, SCP106Component comp, SCP106ToggleSubmersionEvent args)
@@ -304,8 +294,23 @@ public sealed class SCP106System : EntitySystem
         if (comp.IsSubmerged)
         {
             args.Cancelled = true; 
-            
             _popup.PopupEntity("You cannot attack while submerged!", uid, uid, PopupType.SmallCaution);
+        }
+    }
+
+    private void OnPreventCollide(EntityUid uid, SCP106Component comp, ref PreventCollideEvent args)
+    {
+        var other = args.OtherEntity;
+
+        if (HasComp<Robust.Shared.Map.Components.MapGridComponent>(other))
+            return;
+
+        if (HasComp<AntiSCP106WallComponent>(other))
+            return;
+
+        if (TryComp<PhysicsComponent>(other, out var phys) && phys.BodyType == BodyType.Static)
+        {
+            args.Cancelled = true; 
         }
     }
 }

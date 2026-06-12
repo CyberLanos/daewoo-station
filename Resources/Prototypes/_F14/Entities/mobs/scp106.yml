@@ -91,3 +91,16 @@
   - type: InstantAction
     icon: { sprite: Textures/Interface/VerbIcons/down.svg.192dpi.png }
     event: !type:SCP106MoveDownEvent
+
+
+- type: entity
+  id: MarkerPocketDimension
+  name: Pocket Dimension Spawn
+  description: A spawn point for SCP-106 victims.
+  components:
+  - type: SCPPocketDimension
+  - type: Transform
+    anchored: true
+  - type: Sprite
+    sprite: Markers/cross.rsi
+    state: green

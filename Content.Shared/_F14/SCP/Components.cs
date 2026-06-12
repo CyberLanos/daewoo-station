@@ -176,6 +176,9 @@ public sealed class SCP106FlashlightSlowSystem : EntitySystem
 [RegisterComponent]
 public sealed partial class SCPPocketDimensionComponent : Component { }
 
+[RegisterComponent]
+public sealed partial class AntiSCP106WallComponent : Component { }
+
 //femure brake or evil ass rape machine
 [Serializable, NetSerializable]
 public enum FemurBreakerVisuals : byte
@@ -281,7 +284,7 @@ public enum SCP294UiKey : byte
     Key,
 }
 
-// ==================== SCP-106 EVENTS ====================
+//  SCP-106 EVENT-ACTIONS
 
 public sealed partial class SCP106ToggleSubmersionEvent : InstantActionEvent { }
 
