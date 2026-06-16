@@ -1,0 +1,46 @@
+- type: reagent
+  id: SCP420J
+  name: SCP-420-J extract
+  group: Narcotics
+  desc: The best ████ in the world. Cures literally everything, man.
+  physicalDesc: a dank, pungent smoke
+  flavor: incredibly dank
+  color: "#42f54e" 
+  metabolisms:
+    Medicine:
+      rate: 1.0 
+      effects:
+      - !type:HealthChange
+        damage:
+          types:
+            Blunt: -3
+            Slash: -3
+            Piercing: -3
+            Heat: -3
+            Shock: -3
+            Poison: -5
+            Cellular: -2
+      - !type:GenericStatusEffect
+        key: Drunk
+        component: Drunk
+        time: 15.0 
+      - !type:ModifyStatusEffect
+        effectProto: StatusEffectSeeingRainbow
+        type: Add
+        time: 15
+        refresh: false
+
+- type: entity
+  parent: Cigar 
+  id: SCP420J_Joint
+  name: SCP-420-J
+  description: A perfectly rolled blunt containing the legendary SCP-420-J. "Man, this is the best ████ ever." - Dr. Snoop.
+  components:
+  - type: SolutionContainerManager
+    solutions:
+      cigar:
+        maxVol: 60
+        reagents:
+        - ReagentId: SCP420J
+          Quantity: 60
+  

@@ -284,10 +284,94 @@ public enum SCP294UiKey : byte
     Key,
 }
 
-//  SCP-106 EVENT-ACTIONS
+//  SCP-106 actions
 
 public sealed partial class SCP106ToggleSubmersionEvent : InstantActionEvent { }
 
 public sealed partial class SCP106MoveUpEvent : InstantActionEvent { }
 
 public sealed partial class SCP106MoveDownEvent : InstantActionEvent { }
+
+// KEYLOCK
+
+
+[RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
+public sealed partial class KeylockComponent : Component
+{
+    [DataField, AutoNetworkedField]
+    public string Code = "0000";
+ 
+    [DataField]
+    public int MaxAttempts = 5;
+ 
+    [AutoNetworkedField]
+    public int FailedAttempts = 0;
+ 
+    [AutoNetworkedField]
+    public bool IsLocked = true;
+ 
+    [AutoNetworkedField]
+    public TimeSpan? LockedUntil = null;
+ 
+    [DataField]
+    public TimeSpan LockoutDuration = TimeSpan.FromSeconds(30);
+ 
+    [DataField]
+    public int CodeLength = 4;
+}
+
+
+[Serializable, NetSerializable]
+public sealed class KeylockAttemptMessage : BoundUserInterfaceMessage
+{
+    public string AttemptedCode { get; }
+
+    public KeylockAttemptMessage(string attemptedCode)
+    {
+        AttemptedCode = attemptedCode;
+    }
+}
+
+// Компонент-вказівник, який каже замку, які двері треба відчиняти
+[RegisterComponent]
+public sealed partial class KeylockAccessComponent : Component
+{
+    [DataField("linkedDoor")]
+    public EntityUid? LinkedDoor;
+}
+
+// Локальні події (МИ ПРИБРАЛИ [Serializable, NetSerializable], щоб сервер більше не крашився)
+public sealed class KeylockAttemptEvent : EntityEventArgs
+{
+    public required string AttemptedCode { get; set; }
+    public EntityUid User { get; set; }
+}
+ 
+public sealed class KeylockOpenEvent : EntityEventArgs
+{
+    public EntityUid User { get; set; }
+}
+ 
+public sealed class KeylockLockEvent : EntityEventArgs
+{
+    public EntityUid User { get; set; }
+}
+[Serializable, NetSerializable]
+public sealed class KeylockBuiState : BoundUserInterfaceState
+{
+    public bool IsLocked { get; }
+    public int FailedAttempts { get; }
+    public int MaxAttempts { get; }
+
+    public KeylockBuiState(bool isLocked, int failedAttempts, int maxAttempts)
+    {
+        IsLocked = isLocked;
+        FailedAttempts = failedAttempts;
+        MaxAttempts = maxAttempts;
+    }
+}
+[Serializable, NetSerializable]
+public enum KeylockUiKey : byte
+{
+    Key
+}

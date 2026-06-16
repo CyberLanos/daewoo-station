@@ -1,0 +1,343 @@
+# ==========================================
+# BASE ACCESS LEVELS (БАЙЗОВІ РІВНІ)
+# ==========================================
+- type: accessLevel
+  id: O5
+  name: O5 Command
+- type: accessLevel
+  id: Admin5
+  name: Administration 5
+- type: accessLevel
+  id: Admin4
+  name: Administration 4
+- type: accessLevel
+  id: Admin3
+  name: Administration 3
+- type: accessLevel
+  id: Admin2
+  name: Administration 2
+- type: accessLevel
+  id: Admin1
+  name: Administration 1
+- type: accessLevel
+  id: Admin
+  name: Administration
+- type: accessLevel
+  id: Command
+  name: Command
+- type: accessLevel
+  id: Unrestricted
+  name: Unrestricted
+
+- type: accessLevel
+  id: Science5
+  name: Science Level 5
+- type: accessLevel
+  id: Science4
+  name: Science Level 4
+- type: accessLevel
+  id: Science3
+  name: Science Level 3
+- type: accessLevel
+  id: Science2
+  name: Science Level 2
+- type: accessLevel
+  id: Science1
+  name: Science Level 1
+- type: accessLevel
+  id: Science
+  name: Science
+- type: accessLevel
+  id: Research
+  name: Research
+- type: accessLevel
+  id: Lab
+  name: Laboratory
+
+- type: accessLevel
+  id: Security5
+  name: Security Level 5
+- type: accessLevel
+  id: Security4
+  name: Security Level 4
+- type: accessLevel
+  id: Security3
+  name: Security Level 3
+- type: accessLevel
+  id: Security2
+  name: Security Level 2
+- type: accessLevel
+  id: Security1
+  name: Security Level 1
+- type: accessLevel
+  id: Security
+  name: Security
+- type: accessLevel
+  id: Containment
+  name: Containment
+- type: accessLevel
+  id: LowSecurity
+  name: Low Security
+
+- type: accessLevel
+  id: ClassD
+  name: Class-D
+- type: accessLevel
+  id: Botany
+  name: Botany
+- type: accessLevel
+  id: Kitchen
+  name: Kitchen
+- type: accessLevel
+  id: Maintenance
+  name: Maintenance
+- type: accessLevel
+  id: Medical
+  name: Medical
+- type: accessLevel
+  id: Mining
+  name: Mining
+
+- type: accessLevel
+  id: CI
+  name: Chaos Insurgency
+- type: accessLevel
+  id: ChaosInsurgency
+  name: CI Operative
+- type: accessLevel
+  id: Infiltrator
+  name: Infiltrator
+- type: accessLevel
+  id: LimitedAccess
+  name: Limited Access
+- type: accessLevel
+  id: CILeader
+  name: CI Leader
+- type: accessLevel
+  id: HighAccess
+  name: High Access
+
+# ============================================================
+- type: accessGroup
+  id: O5
+  tags:
+  - O5
+  - Admin
+  - Science
+  - Security
+  - Command
+  - Unrestricted
+
+- type: accessGroup
+  id: SiteDirector
+  tags:
+  - Admin5
+  - Admin4
+  - Admin3
+  - Admin2
+  - Admin1
+  - Science5
+  - Science4
+  - Science3
+  - Science2
+  - Science1
+  - Security5
+  - Security4
+  - Security3
+  - Security2
+  - Security1
+  - Command
+  - Containment
+  - Research
+
+- type: accessGroup
+  id: AdminLevel5
+  tags:
+  - Admin5
+  - Admin4
+  - Admin3
+  - Admin2
+  - Admin1
+  - Containment
+  - Research
+  - Command
+
+- type: accessGroup
+  id: AdminLevel4
+  tags:
+  - Admin4
+  - Admin3
+  - Admin2
+  - Admin1
+  - Containment
+  - Research
+
+- type: accessGroup
+  id: AdminLevel3
+  tags:
+  - Admin3
+  - Admin2
+  - Admin1
+  - Containment
+
+- type: accessGroup
+  id: AdminLevel2
+  tags:
+  - Admin2
+  - Admin1
+
+- type: accessGroup
+  id: AdminLevel1
+  tags:
+  - Admin1
+
+- type: accessGroup
+  id: ResearchDirector
+  tags:
+  - Science5
+  - Science4
+  - Science3
+  - Science2
+  - Science1
+  - Research
+  - Containment
+  - Lab
+
+- type: accessGroup
+  id: ScienceLevel5
+  tags:
+  - Science5
+  - Science4
+  - Science3
+  - Science2
+  - Science1
+  - Research
+  - Lab
+
+- type: accessGroup
+  id: ScienceLevel4
+  tags:
+  - Science4
+  - Science3
+  - Science2
+  - Science1
+  - Research
+  - Lab
+
+- type: accessGroup
+  id: ScienceLevel3
+  tags:
+  - Science3
+  - Science2
+  - Science1
+  - Lab
+
+- type: accessGroup
+  id: ScienceLevel2
+  tags:
+  - Science2
+  - Science1
+  - Lab
+
+- type: accessGroup
+  id: ScienceLevel1
+  tags:
+  - Science1
+  - Lab
+
+- type: accessGroup
+  id: SecurityLevel5
+  tags:
+  - Security5
+  - Security4
+  - Security3
+  - Security2
+  - Security1
+  - Containment
+  - Command
+
+- type: accessGroup
+  id: SecurityLevel4
+  tags:
+  - Security4
+  - Security3
+  - Security2
+  - Security1
+  - Containment
+
+- type: accessGroup
+  id: SecurityLevel3
+  tags:
+  - Security3
+  - Security2
+  - Security1
+  - Containment
+
+- type: accessGroup
+  id: SecurityLevel2
+  tags:
+  - Security2
+  - Security1
+
+- type: accessGroup
+  id: SecurityLevel1
+  tags:
+  - Security1
+
+- type: accessGroup
+  id: ClassD
+  tags:
+  - ClassD
+  - LowSecurity
+
+- type: accessGroup
+  id: ClassDBotany
+  tags:
+  - ClassD
+  - Botany
+  - LowSecurity
+
+- type: accessGroup
+  id: ClassDCook
+  tags:
+  - ClassD
+  - Kitchen
+  - LowSecurity
+
+- type: accessGroup
+  id: ClassDJanitor
+  tags:
+  - ClassD
+  - Maintenance
+  - LowSecurity
+
+- type: accessGroup
+  id: ClassDMedical
+  tags:
+  - ClassD
+  - Medical
+  - LowSecurity
+
+- type: accessGroup
+  id: ClassDMining
+  tags:
+  - ClassD
+  - Mining
+  - LowSecurity
+
+- type: accessGroup
+  id: ChaosInsurgency
+  tags:
+  - CI
+  - ChaosInsurgency
+  - Infiltrator
+  - LimitedAccess
+
+- type: accessGroup
+  id: ChaosInsurgencyLeader
+  tags:
+  - CI
+  - ChaosInsurgency
+  - CILeader
+  - Infiltrator
+  - HighAccess

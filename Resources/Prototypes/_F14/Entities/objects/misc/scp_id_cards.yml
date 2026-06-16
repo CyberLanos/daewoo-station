@@ -1,7 +1,3 @@
-# ==========================================
-# TEMPLATE FOR KEYCARDS - DO NOT TOUCH 
-# ==========================================
-
 - type: entity
   parent: Clothing
   id: IDBaseKeycard
@@ -29,8 +25,8 @@
     - WhitelistChameleonIdCard
   - type: StealTarget
     stealGroup: IDCard
-  - type: MiningPoints 
-  - type: NanoChatCard 
+  - type: MiningPoints
+  - type: NanoChatCard
   - type: EmitSoundOnPickup
     sound:
       path: /Audio/_Goobstation/Items/handling/card_pickup.ogg
@@ -50,7 +46,6 @@
 # ==========================================
 # COMMAND & ADMINISTRATION CARDS
 # ==========================================
-
 - type: entity
   parent: IDBaseKeycard
   id: IDCardBase
@@ -58,6 +53,9 @@
   components:
   - type: Sprite
     state: base
+  - type: Access
+    groups:
+    - AdminLevel1 # ТУТ БУЛА ПОМИЛКА: у тебе було Admin1, але такої групи немає, є AdminLevel1
 
 - type: entity
   parent: IDBaseKeycard
@@ -67,6 +65,9 @@
   components:
   - type: Sprite
     state: o5
+  - type: Access
+    groups:
+    - O5
   - type: PresetIdCard
     job: O5
 
@@ -77,6 +78,9 @@
   components:
   - type: Sprite
     state: adminlvl1
+  - type: Access
+    groups:
+    - AdminLevel1
 
 - type: entity
   parent: IDBaseKeycard
@@ -85,6 +89,9 @@
   components:
   - type: Sprite
     state: adminlvl2
+  - type: Access
+    groups:
+    - AdminLevel2
 
 - type: entity
   parent: IDBaseKeycard
@@ -93,6 +100,9 @@
   components:
   - type: Sprite
     state: adminlvl3
+  - type: Access
+    groups:
+    - AdminLevel3
 
 - type: entity
   parent: IDBaseKeycard
@@ -101,6 +111,9 @@
   components:
   - type: Sprite
     state: adminlvl4
+  - type: Access
+    groups:
+    - AdminLevel4
 
 - type: entity
   parent: IDBaseKeycard
@@ -110,13 +123,15 @@
   components:
   - type: Sprite
     state: adminlvl5
+  - type: Access
+    groups:
+    - SiteDirector
   - type: PresetIdCard
     job: SiteDirector
 
 # ==========================================
 # SCIENCE CARDS
 # ==========================================
-
 - type: entity
   parent: IDBaseKeycard
   id: IDCardScience1
@@ -124,6 +139,9 @@
   components:
   - type: Sprite
     state: sciencelvl1
+  - type: Access
+    groups:
+    - ScienceLevel1
 
 - type: entity
   parent: IDBaseKeycard
@@ -132,6 +150,9 @@
   components:
   - type: Sprite
     state: sciencelvl2
+  - type: Access
+    groups:
+    - ScienceLevel2
 
 - type: entity
   parent: IDBaseKeycard
@@ -140,6 +161,9 @@
   components:
   - type: Sprite
     state: sciencelvl3
+  - type: Access
+    groups:
+    - ScienceLevel3
 
 - type: entity
   parent: IDBaseKeycard
@@ -148,6 +172,9 @@
   components:
   - type: Sprite
     state: sciencelvl4
+  - type: Access
+    groups:
+    - ScienceLevel4
 
 - type: entity
   parent: IDBaseKeycard
@@ -157,13 +184,15 @@
   components:
   - type: Sprite
     state: sciencelvl5
+  - type: Access
+    groups:
+    - ResearchDirector
   - type: PresetIdCard
     job: ResearchDirector
 
 # ==========================================
 # SECURITY CARDS
 # ==========================================
-
 - type: entity
   parent: IDBaseKeycard
   id: IDCardSecurity1
@@ -171,6 +200,9 @@
   components:
   - type: Sprite
     state: securitylvl1
+  - type: Access
+    groups:
+    - SecurityLevel1
 
 - type: entity
   parent: IDBaseKeycard
@@ -179,6 +211,9 @@
   components:
   - type: Sprite
     state: securitylvl2
+  - type: Access
+    groups:
+    - SecurityLevel2
 
 - type: entity
   parent: IDBaseKeycard
@@ -187,6 +222,9 @@
   components:
   - type: Sprite
     state: securitylvl3
+  - type: Access
+    groups:
+    - SecurityLevel3
 
 - type: entity
   parent: IDBaseKeycard
@@ -195,6 +233,9 @@
   components:
   - type: Sprite
     state: securitylvl4
+  - type: Access
+    groups:
+    - SecurityLevel4
 
 - type: entity
   parent: IDBaseKeycard
@@ -203,11 +244,13 @@
   components:
   - type: Sprite
     state: securitylvl5
+  - type: Access
+    groups:
+    - SecurityLevel5
 
 # ==========================================
 # CLASS-D CARDS
 # ==========================================
-
 - type: entity
   parent: IDBaseKeycard
   id: IDCardClassD
@@ -215,6 +258,9 @@
   components:
   - type: Sprite
     state: classd
+  - type: Access
+    groups:
+    - ClassD
 
 - type: entity
   parent: IDBaseKeycard
@@ -223,6 +269,9 @@
   components:
   - type: Sprite
     state: classdbot
+  - type: Access
+    groups:
+    - ClassDBotany
 
 - type: entity
   parent: IDBaseKeycard
@@ -231,6 +280,9 @@
   components:
   - type: Sprite
     state: classdcook
+  - type: Access
+    groups:
+    - ClassDCook
 
 - type: entity
   parent: IDBaseKeycard
@@ -239,6 +291,9 @@
   components:
   - type: Sprite
     state: classdjan
+  - type: Access
+    groups:
+    - ClassDJanitor
 
 - type: entity
   parent: IDBaseKeycard
@@ -247,6 +302,9 @@
   components:
   - type: Sprite
     state: classdmed
+  - type: Access
+    groups:
+    - ClassDMedical
 
 - type: entity
   parent: IDBaseKeycard
@@ -255,11 +313,13 @@
   components:
   - type: Sprite
     state: classdmine
+  - type: Access
+    groups:
+    - ClassDMining
 
 # ==========================================
 # CHAOS INSURGENCY CARDS
 # ==========================================
-
 - type: entity
   parent: IDBaseKeycard
   id: IDCardCI
@@ -268,6 +328,9 @@
   components:
   - type: Sprite
     state: ci
+  - type: Access
+    groups:
+    - ChaosInsurgency
   - type: PresetIdCard
     job: ChaosInsurgencyOperative
 
@@ -279,5 +342,8 @@
   components:
   - type: Sprite
     state: cilead
+  - type: Access
+    groups:
+    - ChaosInsurgencyLeader
   - type: PresetIdCard
     job: ChaosInsurgencyLeader

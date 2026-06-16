@@ -1,0 +1,86 @@
+- type: entity
+  name: Keylock Panel
+  id: KeylockPanel
+  description: A digital keylock panel. Swipe a card or enter a code.
+  components:
+  - type: Transform
+  - type: Sprite
+    sprite: _F14/Structures/keylock.rsi
+    state: panel_locked
+  - type: WallMount 
+    arc: 160
+  - type: Clickable
+  - type: InteractionOutline
+  - type: ActivatableUI
+    key: enum.KeylockUiKey.Key
+  - type: Keylock
+    code: "0000"
+    maxAttempts: 5
+    codeLength: 4
+    lockoutDuration: 100 
+  - type: Physics
+    bodyType: Static
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape: !type:PhysShapeAabb
+          bounds: "-0.4,-0.4,0.4,0.4" 
+        hard: false
+        mask: []
+  - type: UserInterface
+    interfaces:
+      enum.KeylockUiKey.Key:
+        type: KeylockBoundUserInterface
+
+- type: entity
+  parent: KeylockPanel
+  id: KeylockClintOffice
+  name: Dr. Clint's Office Keylock
+  components:
+  - type: Keylock
+    code: "4999"
+
+- type: entity
+  parent: KeylockPanel
+  id: KeylockResearchLab
+  name: Henry Breyt's office
+  components:
+  - type: Keylock
+    code: "1337"
+
+- type: entity
+  parent: KeylockPanel
+  id: KeylockGOCr
+  name: GOCr. M.
+  components:
+  - type: Keylock
+    code: "1984"
+    maxAttempts: 3
+    lockoutDuration: 60
+
+- type: entity
+  parent: KeylockPanel
+  id: KeylockDrLines
+  name: Dr's Lines office
+  components:
+  - type: Keylock
+    code: "2846"
+    maxAttempts: 1
+    lockoutDuration: 120
+
+- type: entity
+  parent: KeylockPanel
+  id: KeylockSidor
+  name: Professor Sidorovich's Office
+  components:
+  - type: Keylock
+    code: "6789"
+
+- type: entity
+  parent: KeylockPanel
+  id: KeylockStanislave
+  name: Dr Stanislave office
+  components:
+  - type: Keylock
+    code: "2851"
+    maxAttempts: 3
