@@ -1,1 +1,0 @@
-powered-light-component-burn-hand = Ти обпікаєш руку!

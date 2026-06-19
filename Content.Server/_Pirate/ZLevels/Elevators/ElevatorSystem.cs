@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Numerics;
@@ -19,6 +21,7 @@ using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
+using Robust.Shared.Maths;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Spawners;
 using Robust.Shared.Timing;
@@ -388,6 +391,8 @@ public sealed partial class ElevatorSystem : EntitySystem
                 _transform.Unanchor(rider, rxform);
 
             var localPos = Vector2.Transform(_transform.GetWorldPosition(rider), _transform.GetInvWorldMatrix(fromGridUid));
+            
+            _transform.SetCoordinates(rider, new EntityCoordinates(toGridUid, localPos));
             _zLevels.TeleportToZLevelCoordinates(rider, new EntityCoordinates(toGridUid, localPos), toDepth, dir);
 
             if (wasAnchored && _xformQuery.TryComp(rider, out var movedXform))
@@ -494,10 +499,19 @@ public sealed partial class ElevatorSystem : EntitySystem
         var result = new List<EntityUid>();
         var seen = new HashSet<EntityUid>();
 
+        var minX = float.MaxValue;
+        var minY = float.MaxValue;
+        var maxX = float.MinValue;
+        var maxY = float.MinValue;
+
         foreach (var tile in footprint)
         {
-            if (!_map.TryGetTileRef(gridUid, grid, tile, out var tileRef))
-                continue;
+            var center = (new Vector2(tile.X, tile.Y) + new Vector2(0.5f, 0.5f)) * grid.TileSize;
+            var halfSize = grid.TileSize / 2f;
+            minX = Math.Min(minX, center.X - halfSize);
+            minY = Math.Min(minY, center.Y - halfSize);
+            maxX = Math.Max(maxX, center.X + halfSize);
+            maxY = Math.Max(maxY, center.Y + halfSize);
 
             var anchored = _map.GetAnchoredEntitiesEnumerator(gridUid, grid, tile);
             while (anchored.MoveNext(out var anchoredUid))
@@ -509,28 +523,38 @@ public sealed partial class ElevatorSystem : EntitySystem
                 if (!CanRideCab(anchoredEnt, comp))
                     continue;
 
+                // Restrict to entities whose tile is on the footprint (the lookup also returns overlaps).
                 var anchoredTile = _map.WorldToTile(gridUid, grid, _transform.GetWorldPosition(anchoredEnt));
                 if (!footprint.Contains(anchoredTile))
                     continue;
 
                 result.Add(anchoredEnt);
             }
+        }
 
-            // Sundries is needed for loose dropped items (non-colliding, not in the dynamic/static trees).
-            foreach (var uid in _lookup.GetEntitiesInTile(tileRef, LookupFlags.Dynamic | LookupFlags.Static | LookupFlags.Sundries))
-            {
-                if (!seen.Add(uid))
-                    continue;
-                if (!CanRideCab(uid, comp))
-                    continue;
+        var localBounds = new Box2(minX, minY, maxX, maxY).Enlarged(-0.05f);
+        var worldBounds = _transform.GetWorldMatrix(gridUid).TransformBox(localBounds);
+        var mapId = _transform.GetMapId(gridUid);
 
-                // Restrict to entities whose tile is on the footprint (the lookup also returns overlaps).
-                var entTile = _map.WorldToTile(gridUid, grid, _transform.GetWorldPosition(uid));
-                if (!footprint.Contains(entTile))
-                    continue;
+        // Sundries is needed for loose dropped items (non-colliding, not in the dynamic/static trees).
+        var flags = LookupFlags.Dynamic | LookupFlags.Static | LookupFlags.Sundries | LookupFlags.Uncontained;
+        var intersecting = new HashSet<EntityUid>();
+        
+        _lookup.GetEntitiesIntersecting(mapId, worldBounds, intersecting, flags);
 
-                result.Add(uid);
-            }
+        foreach (var uid in intersecting)
+        {
+            if (!seen.Add(uid))
+                continue;
+            if (!CanRideCab(uid, comp))
+                continue;
+
+            // Restrict to entities whose tile is on the footprint (the lookup also returns overlaps).
+            var entTile = _map.WorldToTile(gridUid, grid, _transform.GetWorldPosition(uid));
+            if (!footprint.Contains(entTile))
+                continue;
+
+            result.Add(uid);
         }
 
         return result;

@@ -4,7 +4,7 @@ using Robust.Shared.GameStates;
 using Robust.Shared.Serialization;
 using Robust.Shared.Serialization.Manager.Attributes;
 using Robust.Shared.Audio;
-using Robust.Shared.Map; 
+using Robust.Shared.Map;
 using Content.Shared.Actions;
 using Content.Shared.DoAfter;
 using Content.Shared.Movement.Systems;
@@ -49,9 +49,9 @@ public enum SCP096Visuals : byte { State }
 public sealed partial class SCP096Component : Component
 {
     [AutoNetworkedField] public SCP096State State = SCP096State.Idle;
-    [AutoNetworkedField] public SCP096State PrevState = SCP096State.Idle; 
+    [AutoNetworkedField] public SCP096State PrevState = SCP096State.Idle;
     [AutoNetworkedField] public EntityUid? Target = null;
-    [DataField("chargeTime")] public float ChargeTime = 20f; 
+    [DataField("chargeTime")] public float ChargeTime = 20f;
     [AutoNetworkedField] public float CurrentChargeTimer = 0f;
     [DataField("calmSpeed")] public float CalmSpeed = 0f;
     [DataField("enragedSpeed")] public float EnragedSpeed = 15f;
@@ -86,12 +86,12 @@ public sealed partial class SCP330PinkCandyComponent : Component { }
 public sealed partial class SCP999Component : Component
 {
     [DataField("cooldown")]
-    public float Cooldown = 20f; 
+    public float Cooldown = 20f;
 
     public float Accumulator = 0f;
 
     [DataField("range")]
-    public float Range = 2f; 
+    public float Range = 2f;
 }
 
 //scp-113
@@ -143,7 +143,7 @@ public sealed partial class SCP106Component : Component
 
     [DataField] public string ActionMoveUp = "ActionSCP106MoveUp";
     [DataField, AutoNetworkedField] public EntityUid? ActionMoveUpEntity;
-    
+
     [DataField] public string ActionMoveDown = "ActionSCP106MoveDown";
     [DataField, AutoNetworkedField] public EntityUid? ActionMoveDownEntity;
 }
@@ -215,19 +215,19 @@ public sealed partial class FemurBreakerComponent : Component
 }
 
 //scp-457 component
-[Serializable, NetSerializable] 
+[Serializable, NetSerializable]
 public enum SCP457Visuals : byte
 {
     Attacking,
 }
 
-[Serializable, NetSerializable] 
+[Serializable, NetSerializable]
 public enum SCP457VisualLayers : byte
 {
     Base,
 }
 
-[RegisterComponent] 
+[RegisterComponent]
 public sealed partial class SCP457Component : Component
 {
     [DataField] public float IgniteRadius = 2.5f;
@@ -235,19 +235,18 @@ public sealed partial class SCP457Component : Component
     public float IgniteTimer = 0f;
     [DataField] public float FireDamagePerPulse = 8f;
 
-    public bool IsAttacking = false; 
+    public bool IsAttacking = false;
 }
 
 // SCP-294 component
+
 [RegisterComponent]
 public sealed partial class SCP294Component : Component
 {
-    [DataField]
-    public int QuartersRequired = 2;
-    [DataField]
-    public string ContainerPrototype = "Cup";
-    [DataField]
-    public float DispenserAmount = 30f;
+    [DataField] public int QuartersRequired = 2;
+    [DataField] public string ContainerPrototype = "Cup";
+    [DataField] public float DispenserAmount = 30f;
+    [ViewVariables(VVAccess.ReadWrite)] public int QuartersInserted = 0;
 }
 
 [Serializable, NetSerializable]
@@ -279,6 +278,7 @@ public sealed class SCP294RequestLiquidMessage : BoundUserInterfaceMessage
 [Serializable, NetSerializable]
 public sealed class SCP294InsertQuarterMessage : BoundUserInterfaceMessage { }
 
+[Serializable, NetSerializable]
 public enum SCP294UiKey : byte
 {
     Key,
@@ -300,22 +300,22 @@ public sealed partial class KeylockComponent : Component
 {
     [DataField, AutoNetworkedField]
     public string Code = "0000";
- 
+
     [DataField]
     public int MaxAttempts = 5;
- 
+
     [AutoNetworkedField]
     public int FailedAttempts = 0;
- 
+
     [AutoNetworkedField]
     public bool IsLocked = true;
- 
+
     [AutoNetworkedField]
     public TimeSpan? LockedUntil = null;
- 
+
     [DataField]
     public TimeSpan LockoutDuration = TimeSpan.FromSeconds(30);
- 
+
     [DataField]
     public int CodeLength = 4;
 }
@@ -332,7 +332,6 @@ public sealed class KeylockAttemptMessage : BoundUserInterfaceMessage
     }
 }
 
-// Компонент-вказівник, який каже замку, які двері треба відчиняти
 [RegisterComponent]
 public sealed partial class KeylockAccessComponent : Component
 {
@@ -340,18 +339,17 @@ public sealed partial class KeylockAccessComponent : Component
     public EntityUid? LinkedDoor;
 }
 
-// Локальні події (МИ ПРИБРАЛИ [Serializable, NetSerializable], щоб сервер більше не крашився)
 public sealed class KeylockAttemptEvent : EntityEventArgs
 {
     public required string AttemptedCode { get; set; }
     public EntityUid User { get; set; }
 }
- 
+
 public sealed class KeylockOpenEvent : EntityEventArgs
 {
     public EntityUid User { get; set; }
 }
- 
+
 public sealed class KeylockLockEvent : EntityEventArgs
 {
     public EntityUid User { get; set; }

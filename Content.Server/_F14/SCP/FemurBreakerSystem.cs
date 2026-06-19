@@ -4,7 +4,7 @@ using Content.Shared.Interaction;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Popups;
-using Content.Shared.Verbs; 
+using Content.Shared.Verbs;
 using Content.Shared.Buckle.Components;
 using Content.Shared.DeviceLinking.Events;
 using Content.Shared.Damage;
@@ -15,8 +15,8 @@ using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
 using Robust.Shared.Localization;
 using Robust.Shared.Player;
-using Robust.Shared.Map; 
-using System.Numerics;   
+using Robust.Shared.Map;
+using System.Numerics;
 
 namespace Content.Server._F14.SCP.FemurBreaker;
 
@@ -24,18 +24,18 @@ namespace Content.Server._F14.SCP.FemurBreaker;
 public sealed partial class FemurBreakerSummoningComponent : Component
 {
     public EntityCoordinates TargetCoords;
-    public float Timer = 2.5f; 
+    public float Timer = 2.5f;
 }
 
 public sealed class FemurBreakerSystem : EntitySystem
 {
-    [Dependency] private readonly SharedAudioSystem    _audio      = default!;
-    [Dependency] private readonly TransformSystem      _transform  = default!;
-    [Dependency] private readonly SCP106System         _scp106     = default!;
-    [Dependency] private readonly MobStateSystem       _mobState   = default!;
-    [Dependency] private readonly SharedPopupSystem    _popup      = default!;
-    [Dependency] private readonly AppearanceSystem     _appearance = default!;
-    [Dependency] private readonly DamageableSystem     _damageable = default!;
+    [Dependency] private readonly SharedAudioSystem _audio = default!;
+    [Dependency] private readonly TransformSystem _transform = default!;
+    [Dependency] private readonly SCP106System _scp106 = default!;
+    [Dependency] private readonly MobStateSystem _mobState = default!;
+    [Dependency] private readonly SharedPopupSystem _popup = default!;
+    [Dependency] private readonly AppearanceSystem _appearance = default!;
+    [Dependency] private readonly DamageableSystem _damageable = default!;
 
     public override void Initialize()
     {
@@ -75,7 +75,7 @@ public sealed class FemurBreakerSystem : EntitySystem
             return false;
         }
 
-        comp.Activating      = true;
+        comp.Activating = true;
         comp.ActivationTimer = comp.ActivationDelay;
 
         if (user != null)
@@ -111,9 +111,9 @@ public sealed class FemurBreakerSystem : EntitySystem
             if (summonComp.Timer <= 0f)
             {
                 _transform.SetCoordinates(sUid, summonComp.TargetCoords);
-                
+
                 _scp106.Emerge(sUid, scpComp);
-                
+
                 RemComp<FemurBreakerSummoningComponent>(sUid);
             }
         }
@@ -133,7 +133,7 @@ public sealed class FemurBreakerSystem : EntitySystem
             foreach (var buckled in strap.BuckledEntities)
             {
                 var dmg = new DamageSpecifier();
-                dmg.DamageDict.Add("Blunt", 300); 
+                dmg.DamageDict.Add("Blunt", 300);
                 _damageable.TryChangeDamage(buckled, dmg, true, origin: uid);
             }
         }
@@ -161,7 +161,7 @@ public sealed class FemurBreakerSystem : EntitySystem
 
     private bool HasVictim(EntityUid uid)
     {
-        if (!TryComp<StrapComponent>(uid, out var strap)) 
+        if (!TryComp<StrapComponent>(uid, out var strap))
             return false;
 
         foreach (var buckled in strap.BuckledEntities)
@@ -170,7 +170,7 @@ public sealed class FemurBreakerSystem : EntitySystem
                 continue;
 
             if (TryComp<MobStateComponent>(buckled, out var mobState) && _mobState.IsAlive(buckled, mobState))
-                return true; 
+                return true;
         }
         return false;
     }
@@ -184,10 +184,10 @@ public sealed class FemurBreakerSystem : EntitySystem
 
         var resetVerb = new Verb
         {
-            Text     = Loc.GetString("femur-breaker-reset-verb") ?? "Reset",
-            Act      = () =>
+            Text = Loc.GetString("femur-breaker-reset-verb") ?? "Reset",
+            Act = () =>
             {
-                comp.Used       = false;
+                comp.Used = false;
                 comp.Activating = false;
                 _appearance.SetData(uid, FemurBreakerVisuals.State, FemurBreakerState.Idle);
 

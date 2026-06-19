@@ -25,11 +25,11 @@ namespace Content.Server._F14.SCP;
 ///   i realy should start making more summaries and comments
 public sealed class SCP457System : EntitySystem
 {
-    [Dependency] private readonly FlammableSystem       _flammable   = default!;
-    [Dependency] private readonly EntityLookupSystem    _lookup      = default!;
-    [Dependency] private readonly AppearanceSystem      _appearance  = default!;
-    [Dependency] private readonly DamageableSystem      _damageable  = default!;
-    [Dependency] private readonly SharedPopupSystem     _popup       = default!;
+    [Dependency] private readonly FlammableSystem _flammable = default!;
+    [Dependency] private readonly EntityLookupSystem _lookup = default!;
+    [Dependency] private readonly AppearanceSystem _appearance = default!;
+    [Dependency] private readonly DamageableSystem _damageable = default!;
+    [Dependency] private readonly SharedPopupSystem _popup = default!;
 
     public override void Initialize()
     {
@@ -72,13 +72,13 @@ public sealed class SCP457System : EntitySystem
 
             // Also apply direct heat damage so non-flammable mobs still get hurt.
             var damage = new DamageSpecifier();
-            damage.DamageDict["Heat"] = (double)comp.FireDamagePerPulse;
+            damage.DamageDict["Heat"] = (double) comp.FireDamagePerPulse;
             _damageable.TryChangeDamage(target, damage, ignoreResistances: false, interruptsDoAfters: true, origin: uid);
         }
     }
 
-    // Melee hit — extra ignition on strike
-   private void OnMeleeHit(EntityUid uid, SCP457Component comp, MeleeHitEvent args)
+    // Melee hit — extra ignition on atack
+    private void OnMeleeHit(EntityUid uid, SCP457Component comp, MeleeHitEvent args)
     {
         comp.IsAttacking = true;
         _appearance.SetData(uid, SCP457Visuals.Attacking, true);

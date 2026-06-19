@@ -1,1 +1,0 @@
-department-Interdyne = Корпорація Інтердайн

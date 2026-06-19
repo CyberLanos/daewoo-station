@@ -1,1 +1,0 @@
-health-analyzer-window-entity-unborgable-text = [color=red]Сигнатури мозку пацієнта не придатні для боргофікації![/color]

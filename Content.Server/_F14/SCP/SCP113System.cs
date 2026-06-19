@@ -1,14 +1,14 @@
 using Content.Shared._F14.SCP;
-using Content.Shared.Interaction; 
-using Content.Shared.Humanoid; 
-using Content.Shared.Damage; 
+using Content.Shared.Interaction;
+using Content.Shared.Humanoid;
+using Content.Shared.Damage;
 using Content.Shared.Popups;
-using Content.Shared.Stunnable; 
-using Content.Server.Chat.Systems; 
+using Content.Shared.Stunnable;
+using Content.Server.Chat.Systems;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Player;
-using Robust.Shared.Enums; 
-using System; 
+using Robust.Shared.Enums;
+using System;
 
 namespace Content.Server._F14.SCP;
 
@@ -17,8 +17,8 @@ public sealed class SCP113System : EntitySystem
     [Dependency] private readonly DamageableSystem _damageable = default!;
     [Dependency] private readonly SharedPopupSystem _popup = default!;
     [Dependency] private readonly ChatSystem _chat = default!;
-    [Dependency] private readonly SharedStunSystem _stun = default!; 
-    [Dependency] private readonly SharedHumanoidAppearanceSystem _humanoidAppearance = default!; 
+    [Dependency] private readonly SharedStunSystem _stun = default!;
+    [Dependency] private readonly SharedHumanoidAppearanceSystem _humanoidAppearance = default!;
 
     public override void Initialize()
     {
@@ -34,13 +34,13 @@ public sealed class SCP113System : EntitySystem
             return;
 
         var newSex = humanoid.Sex == Sex.Male ? Sex.Female : Sex.Male;
-        _humanoidAppearance.SetSex(user, newSex, true); 
+        _humanoidAppearance.SetSex(user, newSex, true);
 
         if (newSex == Sex.Female)
-            humanoid.Gender = Gender.Female; 
+            humanoid.Gender = Gender.Female;
         else
-            humanoid.Gender = Gender.Male; 
-        
+            humanoid.Gender = Gender.Male;
+
         var newLayers = new System.Collections.Generic.Dictionary<HumanoidVisualLayers, string>();
 
         foreach (var (layer, info) in humanoid.CustomBaseLayers)
@@ -52,7 +52,7 @@ public sealed class SCP113System : EntitySystem
                 continue;
 
             string id = info.Id.ToString() ?? "";
-            
+
             if (string.IsNullOrEmpty(id))
                 continue;
 
@@ -93,7 +93,7 @@ public sealed class SCP113System : EntitySystem
             }
         }
 
-        Dirty(user, humanoid); 
+        Dirty(user, humanoid);
 
         _stun.TryKnockdown(user, TimeSpan.FromSeconds(4), true);
 
@@ -107,7 +107,7 @@ public sealed class SCP113System : EntitySystem
             _damageable.TryChangeDamage(user, healDamage, true);
         }
         _chat.TryEmoteWithChat(user, "Scream");
-        
+
         _popup.PopupEntity("The stone shocks your body! You fall unconscious as your DNA completely rewrites itself!", user, user, PopupType.LargeCaution);
         _popup.PopupEntity($"{Name(user)} touches {Name(uid)}, screams in agony, and collapses as their body morphs!", user, Filter.PvsExcept(user), true);
     }

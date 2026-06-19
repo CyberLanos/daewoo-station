@@ -21,3 +21,11 @@
         - MobMask
   - type: Appearance
   - type: InteractionOutline
+  - type: Clickable
+  - type: ActivatableUI
+    key: enum.SCP294UiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SCP294UiKey.Key:
+        type: SCP294BoundUserInterface
+  - type: SCP294

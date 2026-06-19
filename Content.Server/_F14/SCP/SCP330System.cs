@@ -1,20 +1,20 @@
 using System;
 using System.Collections.Generic;
-using Content.Server.Body.Systems;      
-using Content.Shared.Body.Components;  
-using Content.Shared.Body.Part;        
-using Content.Shared.Hands.Components;   
-using Content.Shared.Hands.EntitySystems; 
+using Content.Server.Body.Systems;
+using Content.Shared.Body.Components;
+using Content.Shared.Body.Part;
+using Content.Shared.Hands.Components;
+using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Interaction;
-using Content.Shared.Interaction.Events; 
+using Content.Shared.Interaction.Events;
 using Content.Shared.Popups;
-using Content.Shared.Damage; 
-using Content.Shared.Nutrition; 
-using Content.Server.Explosion.EntitySystems; 
+using Content.Shared.Damage;
+using Content.Shared.Nutrition;
+using Content.Server.Explosion.EntitySystems;
 using Content.Shared._F14.SCP;
 using Robust.Shared.GameObjects;
-using Robust.Shared.Containers; 
-using Robust.Shared.Random; 
+using Robust.Shared.Containers;
+using Robust.Shared.Random;
 
 namespace Content.Server._F14.SCP;
 
@@ -24,15 +24,15 @@ public sealed class SCP330System : EntitySystem
     [Dependency] private readonly SharedHandsSystem _hands = default!;
     [Dependency] private readonly BodySystem _body = default!;
     [Dependency] private readonly SharedContainerSystem _container = default!;
-    [Dependency] private readonly BloodstreamSystem _bloodstream = default!; 
-    [Dependency] private readonly DamageableSystem _damageable = default!; 
-    [Dependency] private readonly IRobustRandom _random = default!; 
-    [Dependency] private readonly ExplosionSystem _explosion = default!; 
+    [Dependency] private readonly BloodstreamSystem _bloodstream = default!;
+    [Dependency] private readonly DamageableSystem _damageable = default!;
+    [Dependency] private readonly IRobustRandom _random = default!;
+    [Dependency] private readonly ExplosionSystem _explosion = default!;
 
     public override void Initialize()
     {
         base.Initialize();
-        
+
         SubscribeLocalEvent<SCP330Component, InteractHandEvent>(OnInteractHand);
         SubscribeLocalEvent<SCP330PinkCandyComponent, UseInHandEvent>(OnPinkCandyUsed);
     }
@@ -85,13 +85,13 @@ public sealed class SCP330System : EntitySystem
         if (args.Handled)
             return;
 
-        args.Handled = true; 
+        args.Handled = true;
         var user = args.User;
-        
+
         _popup.PopupEntity("It tastes like... oh no---", user, user, PopupType.LargeCaution);
 
-        _explosion.QueueExplosion(user, "Default", 1000f, 20f, 200f); 
-        
+        _explosion.QueueExplosion(user, "Default", 1000f, 20f, 200f);
+
         QueueDel(uid);
     }
 

@@ -1,9 +1,0 @@
-disease-type-viral = Вірусна
-disease-type-bacterial = Бактеріальна
-disease-type-owncells = Ракова
-disease-type-prion = Пріонна
-disease-type-parasite = Паразитична
-disease-type-debug = Невідома
-disease-spread-aerial = Повітряна
-disease-spread-blood = Кров
-disease-spread-debug = Налагодження
