@@ -156,6 +156,10 @@ public sealed partial class SCP106FlashlightSlowedComponent : Component
 {
     public float SpeedMultiplier = 0.55f;
 }
+[RegisterComponent]
+public sealed partial class SCP106BarrierComponent : Component
+{
+}
 
 public sealed class SCP106FlashlightSlowSystem : EntitySystem
 {
@@ -372,4 +376,37 @@ public sealed class KeylockBuiState : BoundUserInterfaceState
 public enum KeylockUiKey : byte
 {
     Key
+}
+
+
+// SCP-1499 component
+[RegisterComponent]
+public sealed partial class SCP1499Component : Component
+{
+    // saves coordinates
+    [ViewVariables(VVAccess.ReadWrite)]
+    public EntityCoordinates? SavedLocation;
+    
+    // saves UID 
+    [ViewVariables(VVAccess.ReadWrite)]
+    public EntityUid? CurrentUser;
+}
+
+// teleporter
+[RegisterComponent]
+public sealed partial class SCP1499DimensionComponent : Component { }
+
+
+// SCP-458
+[RegisterComponent]
+public sealed partial class SCP458Component : Component
+{
+    //list of pizzas
+    [DataField]
+    public List<string> PizzaPrototypes = new()
+    {
+        "FoodPizzaMargherita",
+        "FoodPizzaMeat",
+        "FoodPizzaMushroom",
+    };
 }

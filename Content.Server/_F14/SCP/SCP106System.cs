@@ -15,7 +15,6 @@ using Robust.Shared.Physics.Components;
 using Robust.Shared.Physics.Systems;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
-using Robust.Shared.Console;
 using Content.Shared.Actions;
 using Content.Shared._Pirate.ZLevels.Core.EntitySystems;
 using Content.Shared.Movement.Components;

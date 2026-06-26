@@ -1,0 +1,65 @@
+# 1. Сам протигаз SCP-1499
+- type: entity
+  parent: ClothingMaskBase 
+  id: ClothingMaskSCP1499
+  name: SCP-1499
+  description: An old Soviet GP-5 gas mask
+  components:
+  - type: Sprite
+    sprite: _F14/objects/SCP/scp1499.rsi
+    state: icon
+  - type: Clothing
+    sprite: _F14/objects/SCP/scp1499.rsi
+    slots:
+    - mask 
+  - type: SCP1499 
+
+- type: entity
+  id: SCP1499DimensionSpawn
+  name: SCP-1499 Dimension Spawn Point
+  components:
+  - type: Transform
+  - type: SCP1499Dimension
+
+- type: entity
+  parent: SimpleMobBase 
+  id: MobSCP1499_1
+  name: SCP-1499-1
+  description: A tall humanoid figure with dark skin and no visible eyes.
+  components:
+  - type: Sprite
+    sprite: _F14/Mobs/scp1499_1.rsi 
+    state: icon
+  - type: Physics
+    bodyType: KinematicController
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeCircle
+          radius: 0.35
+        mask:
+        - MobMask
+        layer:
+        - MobLayer
+  - type: MobState
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 3
+    baseSprintSpeed: 4.5
+  - type: CombatMode 
+  - type: NPCSteering 
+  - type: HTN
+    rootTask:
+      task: SimpleHostileCompound 
+  - type: NpcFactionMember
+    factions:
+    - SimpleHostile 
+    
+  - type: MeleeWeapon
+    soundHit:
+      path: /Audio/Weapons/punch1.ogg 
+    angle: 0
+    animation: WeaponArcFist
+    damage:
+      types:
+        Blunt: 15

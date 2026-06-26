@@ -8,7 +8,7 @@
   color: "#42f54e" 
   metabolisms:
     Medicine:
-      rate: 1.0 
+      rate: 0.1
       effects:
       - !type:HealthChange
         damage:
@@ -24,11 +24,10 @@
         key: Drunk
         component: Drunk
         time: 15.0 
-      - !type:ModifyStatusEffect
-        effectProto: StatusEffectSeeingRainbow
-        type: Add
-        time: 15
-        refresh: false
+      - !type:GenericStatusEffect
+        key: SeeingRainbows
+        component: SeeingRainbows
+        time: 15.0 
 
 - type: entity
   parent: Cigar 
@@ -38,9 +37,26 @@
   components:
   - type: SolutionContainerManager
     solutions:
-      cigar:
+      smokable: 
         maxVol: 60
         reagents:
         - ReagentId: SCP420J
-          Quantity: 60
-  
+          Quantity: 30
+        - ReagentId: MindbreakerToxin
+          Quantity: 20
+        - ReagentId: Happiness
+          Quantity: 5
+        - ReagentId: Psicodine
+          Quantity: 5
+          
+  - type: Smokable
+    roach: CigarSpent 
+    
+  - type: Sprite
+    sprite: _F14/objects/SCP/scp420j.rsi
+    
+  - type: Clothing
+    sprite: _F14/objects/SCP/scp420j.rsi
+    
+  - type: Item
+    sprite: _F14/objects/SCP/scp420j.rsi

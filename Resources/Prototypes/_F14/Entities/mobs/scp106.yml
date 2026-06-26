@@ -67,9 +67,9 @@
   name: "Toggle Submerge"
   description: "Allows SCP-106 to hide under the floor and wall textures."
   components:
-  - type: Action # <-- ОДИН РЯДОК, ЯКИЙ РОБИТЬ ЇЇ КНОПКОЮ
+  - type: Action # 
   - type: InstantAction
-    icon: { sprite: Textures/Interface/VerbIcons/drop.svg.192dpi.png }
+    icon: { sprite: Textures/_F14/Interface/VerbIcons/arrow_up.png }
     event: !type:SCP106ToggleSubmersionEvent
 
 - type: entity
@@ -79,7 +79,7 @@
   components:
   - type: Action
   - type: InstantAction
-    icon: { sprite: Textures/Interface/VerbIcons/up.svg.192dpi.png }
+    icon: { sprite: Textures/_F14/Interface/VerbIcons/arrow_down.png }
     event: !type:SCP106MoveUpEvent
 
 - type: entity
@@ -89,7 +89,7 @@
   components:
   - type: Action
   - type: InstantAction
-    icon: { sprite: Textures/Interface/VerbIcons/down.svg.192dpi.png }
+    icon: { sprite: Textures/_F14/Interface/VerbIcons/arrow_down.png }
     event: !type:SCP106MoveDownEvent
 
 

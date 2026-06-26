@@ -1,6 +1,7 @@
 # ==========================================
-# BASE ACCESS LEVELS (БАЙЗОВІ РІВНІ)
+# BASE ACCESS LEVELS
 # ==========================================
+
 - type: accessLevel
   id: O5
   name: O5 Command
@@ -98,6 +99,7 @@
   id: Mining
   name: Mining
 
+# ---- Chaos Insurgency ----
 - type: accessLevel
   id: CI
   name: Chaos Insurgency
@@ -117,7 +119,10 @@
   id: HighAccess
   name: High Access
 
-# ============================================================
+# ==========================================
+# ACCESS GROUPS
+# ==========================================
+
 - type: accessGroup
   id: O5
   tags:
@@ -149,6 +154,7 @@
   - Command
   - Containment
   - Research
+  - Maintenance
 
 - type: accessGroup
   id: AdminLevel5
@@ -284,6 +290,7 @@
   tags:
   - Security1
 
+# ---- Class-D Groups ----
 - type: accessGroup
   id: ClassD
   tags:
@@ -325,6 +332,7 @@
   - Mining
   - LowSecurity
 
+# ---- Chaos Insurgency Groups ----
 - type: accessGroup
   id: ChaosInsurgency
   tags:

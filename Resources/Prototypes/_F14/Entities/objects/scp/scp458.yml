@@ -1,0 +1,37 @@
+- type: entity
+  parent: BaseItem
+  id: SCP458
+  name: SCP-458
+  description: Normal pizza box with "Little Caesars" logo on it.
+  components:
+  
+  - type: Sprite
+    sprite: _F14/objects/SCP/scp458.rsi
+    layers:
+    - state: box
+      map: [ "base" ] 
+      
+  - type: Storage
+    maxItemSize: Normal
+    grid:
+    - 0,0,2,2
+    
+  - type: UserInterface
+    interfaces:
+      enum.StorageUiKey.Key:
+        type: StorageBoundUserInterface
+        
+  - type: Appearance
+  
+  - type: GenericVisualizer
+    visuals:
+      enum.StorageVisuals.Open:
+        base: 
+          True: { state: open }
+          False: { state: box }
+          
+  - type: Item
+    size: Normal
+    
+  - type: SCP458
+    pizzaPrototype: FoodPizzaMargherita

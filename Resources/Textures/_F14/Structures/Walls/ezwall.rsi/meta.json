@@ -1,0 +1,46 @@
+{
+    "version": 1,
+    "size": {
+        "x": 32,
+        "y": 32
+    },
+    "license": "CC-BY-SA-3.0",
+    "copyright": "https://github.com/tgstation/tgstation/blob/9ddb8cf084e292571d4e9c79745db25befbd82fe/icons/turf/walls/shuttle_wall.dmi",
+    "states": [
+        {
+            "name": "full"
+        },
+        {
+            "name": "EZwall0",
+            "directions": 4
+        },
+        {
+            "name": "EZwall1",
+            "directions": 4
+        },
+        {
+            "name": "EZwall2",
+            "directions": 4
+        },
+        {
+            "name": "EZwall3",
+            "directions": 4
+        },
+        {
+            "name": "EZwall4",
+            "directions": 4
+        },
+        {
+            "name": "EZwall5",
+            "directions": 4
+        },
+        {
+            "name": "EZwall6",
+            "directions": 4
+        },
+        {
+            "name": "EZwall7",
+            "directions": 4
+        }
+    ]
+}

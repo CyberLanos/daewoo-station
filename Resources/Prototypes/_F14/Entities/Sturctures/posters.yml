@@ -1,0 +1,69 @@
+- type: entity
+  parent: PosterBase
+  id: SCPKeterPoster
+  name: "Keter class scp"
+  description: "Poster idnicating that something big and angry is behind these doors"
+  components:
+  - type: Sprite
+    sprite: _F14/Structures/posters.rsi
+    state: scpketer
+
+- type: entity
+  parent: PosterBase
+  id: SCPEuclidPoster
+  name: "Euclid class scp"
+  description: "You feel like you should not go there alone"
+  components:
+  - type: Sprite
+    sprite: _F14/Structures/posters.rsi
+    state: scpeuclid
+
+- type: entity
+  parent: PosterBase
+  id: SCPSafePoster
+  name: "Safe class scp"
+  description: "WHAT CAN POSSIBLY GO WRONG?"
+  components:
+  - type: Sprite
+    sprite: _F14/Structures/posters.rsi
+    state: scpsafe
+
+- type: entity
+  parent: PosterBase
+  id: SCPPoster
+  name: "SCP"
+  description: "Secure, Contain, Protect"
+  components:
+  - type: Sprite
+    sprite: _F14/Structures/posters.rsi
+    state: scp1
+
+- type: entity
+  parent: PosterBase
+  id: SCPPosterTwo
+  name: "SCP"
+  description: "Secure, Contain, Protect"
+  components:
+  - type: Sprite
+    sprite: _F14/Structures/posters.rsi
+    state: scp2
+
+- type: entity
+  parent: PosterBase
+  id: SCPPosterThree
+  name: "Hazard"
+  description: "Yet another boring poster"
+  components:
+  - type: Sprite
+    sprite: _F14/Structures/posters.rsi
+    state: scp3
+
+- type: entity
+  parent: PosterBase
+  id: SCPPosterFour
+  name: "O5 is watching"
+  description: "05 is watching"
+  components:
+  - type: Sprite
+    sprite: _F14/Structures/posters.rsi
+    state: scp4

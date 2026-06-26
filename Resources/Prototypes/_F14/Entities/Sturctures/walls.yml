@@ -1,0 +1,294 @@
+#SCP walls
+
+- type: entity
+  parent: BaseWall
+  id: SCPKeterWall
+  name: Keter containment wall
+  components:
+  - type: Sprite
+    sprite: Structures/Walls/scp_keter.rsi
+  - type: Icon
+    sprite: Structures/Walls/scp_keter.rsi
+    state: full
+  - type: IconSmooth
+    key: walls
+    base: keter           
+  - type: Construction
+    graph: Girder
+    node: reinforcedWall
+  - type: Damageable
+    damageContainer: StructuralInorganic
+    damageModifierSet: StructuralMetallicStrong
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 600
+      behaviors:
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalSlam
+    - trigger:
+        !type:DamageTrigger
+        damage: 400
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalSlam
+      - !type:ChangeConstructionNodeBehavior
+        node: girder
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+  - type: StaticPrice
+    price: 250
+  - type: RadiationBlocker
+    resistance: 10
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.5,-0.5,0.5,0.5"
+        mask:
+        - FullTileMask
+        layer:
+        - WallLayer
+        density: 2000
+  # <Goobstation>
+  - type: RustRequiresPathStage
+    pathStage: 7
+  - type: Penetratable
+    penetrateDamage: 100
+    damagePenalty: 0.25
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        maxVol: 40
+        reagents:
+        - ReagentId: Iron
+          Quantity: 33
+        - ReagentId: Carbon
+          Quantity: 7
+  # </Goobstation>
+
+- type: entity
+  parent: BaseWall
+  id: SCPEuclidWall
+  name: Euclid containment wall
+  components:
+  - type: Sprite
+    sprite: Structures/Walls/scp_euclid.rsi
+  - type: Icon
+    sprite: Structures/Walls/scp_euclid.rsi
+    state: full
+  - type: IconSmooth
+    key: walls
+    base: euclid          
+  - type: Construction
+    graph: Girder
+    node: reinforcedWall
+  - type: Damageable
+    damageContainer: StructuralInorganic
+    damageModifierSet: StructuralMetallicStrong
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 600
+      behaviors:
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalSlam
+    - trigger:
+        !type:DamageTrigger
+        damage: 400
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalSlam
+      - !type:ChangeConstructionNodeBehavior
+        node: girder
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+  - type: StaticPrice
+    price: 250
+  - type: RadiationBlocker
+    resistance: 10
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.5,-0.5,0.5,0.5"
+        mask:
+        - FullTileMask
+        layer:
+        - WallLayer
+        density: 2000
+  # <Goobstation>
+  - type: RustRequiresPathStage
+    pathStage: 7
+  - type: Penetratable
+    penetrateDamage: 100
+    damagePenalty: 0.25
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        maxVol: 40
+        reagents:
+        - ReagentId: Iron
+          Quantity: 33
+        - ReagentId: Carbon
+          Quantity: 7
+  # </Goobstation>
+
+- type: entity
+  parent: BaseWall
+  id: SCP106ChamberWall
+  name: SCP-106 containment wall
+  components:
+  - type: Sprite
+    sprite: _F14/Structures/Walls/106chamber.rsi
+  - type: Icon
+    sprite: _F14/Structures/Walls/106chamber.rsi
+    state: full
+  - type: IconSmooth
+    key: walls
+    base: chamber         
+  - type: Construction
+    graph: Girder
+    node: reinforcedWall
+  - type: AntiSCP106Wall
+  - type: Damageable
+    damageContainer: StructuralInorganic
+    damageModifierSet: StructuralMetallicStrong
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 600
+      behaviors:
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalSlam
+    - trigger:
+        !type:DamageTrigger
+        damage: 400
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalSlam
+      - !type:ChangeConstructionNodeBehavior
+        node: girder
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+  - type: StaticPrice
+    price: 250
+  - type: RadiationBlocker
+    resistance: 20
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.5,-0.5,0.5,0.5"
+        mask:
+        - FullTileMask
+        layer:
+        - WallLayer
+        density: 2000
+  # <Goobstation>
+  - type: RustRequiresPathStage
+    pathStage: 7
+  - type: Penetratable
+    penetrateDamage: 100
+    damagePenalty: 0.25
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        maxVol: 40
+        reagents:
+        - ReagentId: Iron
+          Quantity: 33
+        - ReagentId: Carbon
+          Quantity: 7
+  # </Goobstation>
+
+- type: entity
+  parent: BaseWall
+  id: SCPEZWall
+  name: Entrance zone wall
+  components:
+  - type: Sprite
+    sprite: _F14/Structures/Walls/ezwall.rsi
+  - type: Icon
+    sprite: _F14/Structures/Walls/ezwall.rsi
+    state: full
+  - type: IconSmooth
+    key: walls
+    base: EZwall          
+  - type: Construction
+    graph: Girder
+    node: reinforcedWall
+  - type: Damageable
+    damageContainer: StructuralInorganic
+    damageModifierSet: StructuralMetallicStrong
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 600
+      behaviors:
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalSlam
+    - trigger:
+        !type:DamageTrigger
+        damage: 400
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalSlam
+      - !type:ChangeConstructionNodeBehavior
+        node: girder
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+  - type: StaticPrice
+    price: 250
+  - type: RadiationBlocker
+    resistance: 20
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.5,-0.5,0.5,0.5"
+        mask:
+        - FullTileMask
+        layer:
+        - WallLayer
+        density: 2000
+  # <Goobstation>
+  - type: RustRequiresPathStage
+    pathStage: 7
+  - type: Penetratable
+    penetrateDamage: 100
+    damagePenalty: 0.25
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        maxVol: 40
+        reagents:
+        - ReagentId: Iron
+          Quantity: 33
+        - ReagentId: Carbon
+          Quantity: 7
+  # </Goobstation>

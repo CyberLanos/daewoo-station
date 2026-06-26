@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "size": {
+    "x": 32,
+    "y": 32
+  },
+  "license": "CC-BY-SA-3.0",
+  "copyright": "SCP Foundation",
+  "states": [
+    {
+      "name": "scpketer"
+    },
+    {
+      "name": "scpeuclid"
+    },
+    {
+      "name": "scpsafe"
+    },
+    {
+      "name": "scp1"
+    },
+    {
+      "name": "scp2"
+    },
+    {
+      "name": "scp3"
+    },
+    {
+      "name": "scp4"
+    }
+  ]
+}

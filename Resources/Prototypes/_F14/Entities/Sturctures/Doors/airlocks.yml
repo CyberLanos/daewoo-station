@@ -1,0 +1,528 @@
+# ==========================================
+# 1. ПЛАТИ ЕЛЕКТРОНІКИ (СПРАВЖНІ ЗАМКИ ДВЕРЕЙ)
+# ==========================================
+
+- type: entity
+  id: ElecSCPClassD
+  parent: DoorElectronics
+  name: Class-D door electronics
+  components:
+  - type: AccessReader
+    access: [ [ "ClassD" ], [ "LowSecurity" ], [ "Security1" ] ]
+
+- type: entity
+  id: ElecSCPMaint
+  parent: DoorElectronics
+  name: maintenance door electronics
+  components:
+  - type: AccessReader
+    access: [ [ "Maintenance" ], [ "Security1" ], [ "Admin1" ] ]
+
+- type: entity
+  id: ElecSCPTech
+  parent: DoorElectronics
+  name: tech room door electronics
+  components:
+  - type: AccessReader
+    access: [ [ "Maintenance" ], [ "Security2" ], [ "Admin2" ] ]
+
+- type: entity
+  id: ElecSCPKitchen
+  parent: DoorElectronics
+  name: kitchen door electronics
+  components:
+  - type: AccessReader
+    access: [ [ "Kitchen" ], [ "ClassD" ], [ "Security1" ] ]
+
+- type: entity
+  id: ElecSCPMedical
+  parent: DoorElectronics
+  name: medical bay door electronics
+  components:
+  - type: AccessReader
+    access: [ [ "Medical" ], [ "Security2" ], [ "Science1" ], [ "Admin2" ] ]
+
+- type: entity
+  id: ElecSCPBotany
+  parent: DoorElectronics
+  name: botany door electronics
+  components:
+  - type: AccessReader
+    access: [ [ "Botany" ], [ "Science1" ] ]
+
+- type: entity
+  id: ElecSCPMining
+  parent: DoorElectronics
+  name: mining door electronics
+  components:
+  - type: AccessReader
+    access: [ [ "Mining" ], [ "Security1" ] ]
+
+- type: entity
+  id: ElecSCPSecurity
+  parent: DoorElectronics
+  name: security door electronics
+  components:
+  - type: AccessReader
+    access: [ [ "Security1" ], [ "Admin1" ] ]
+
+- type: entity
+  id: ElecSCPSecurityHigh
+  parent: DoorElectronics
+  name: high security door electronics
+  components:
+  - type: AccessReader
+    access: [ [ "Security3" ], [ "Admin3" ] ]
+
+- type: entity
+  id: ElecSCPLab
+  parent: DoorElectronics
+  name: lab door electronics
+  components:
+  - type: AccessReader
+    access: [ [ "Lab" ], [ "Science1" ], [ "Admin2" ] ]
+
+- type: entity
+  id: ElecSCPResearch
+  parent: DoorElectronics
+  name: research door electronics
+  components:
+  - type: AccessReader
+    access: [ [ "Research" ], [ "Science2" ], [ "Admin3" ] ]
+
+- type: entity
+  id: ElecSCPContainment
+  parent: DoorElectronics
+  name: containment door electronics
+  components:
+  - type: AccessReader
+    access: [ [ "Containment" ], [ "Security3" ], [ "Science3" ], [ "Admin3" ] ]
+
+- type: entity
+  id: ElecSCPCommand
+  parent: DoorElectronics
+  name: command door electronics
+  components:
+  - type: AccessReader
+    access: [ [ "Command" ], [ "Security5" ], [ "Admin5" ] ]
+
+- type: entity
+  id: ElecSCPAdmin
+  parent: DoorElectronics
+  name: admin door electronics
+  components:
+  - type: AccessReader
+    access: [ [ "Admin2" ], [ "Admin3" ], [ "Admin4" ], [ "Admin5" ] ]
+
+- type: entity
+  id: ElecSCPSiteDirector
+  parent: DoorElectronics
+  name: site director door electronics
+  components:
+  - type: AccessReader
+    access: [ [ "Admin5" ] ]
+
+- type: entity
+  id: ElecSCPO5
+  parent: DoorElectronics
+  name: O5 door electronics
+  components:
+  - type: AccessReader
+    access: [ [ "O5" ] ]
+
+- type: entity
+  id: ElecSCP173
+  parent: DoorElectronics
+  name: SCP-173 door electronics
+  components:
+  - type: AccessReader
+    access: [ [ "Security3" ], [ "Science3" ], [ "Admin4" ] ]
+
+- type: entity
+  id: ElecSCP049
+  parent: DoorElectronics
+  name: SCP-049 door electronics
+  components:
+  - type: AccessReader
+    access: [ [ "Science3" ], [ "Security2" ], [ "Admin3" ] ]
+
+- type: entity
+  id: ElecSCP096
+  parent: DoorElectronics
+  name: SCP-096 door electronics
+  components:
+  - type: AccessReader
+    access: [ [ "Security4" ], [ "Science4" ], [ "Admin5" ] ]
+
+- type: entity
+  id: ElecSCP106
+  parent: DoorElectronics
+  name: SCP-106 door electronics
+  components:
+  - type: AccessReader
+    access: [ [ "Security5" ], [ "Science4" ], [ "Admin5" ] ]
+  - type: AntiSCP106Wall
+
+- type: entity
+  id: ElecSCP294
+  parent: DoorElectronics
+  name: SCP-294 door electronics
+  components:
+  - type: AccessReader
+    access: [ [ "Security1" ], [ "Science1" ], [ "Kitchen" ], [ "Admin1" ] ]
+
+- type: entity
+  id: ElecSCP330
+  parent: DoorElectronics
+  name: SCP-330 door electronics
+  components:
+  - type: AccessReader
+    access: [ [ "Security1" ], [ "Science1" ], [ "Lab" ], [ "ClassD" ] ]
+
+- type: entity
+  id: ElecSCP457
+  parent: DoorElectronics
+  name: SCP-457 door electronics
+  components:
+  - type: AccessReader
+    access: [ [ "Security4" ], [ "Science3" ], [ "Admin4" ] ]
+
+- type: entity
+  id: ElecSCP1499
+  parent: DoorElectronics
+  name: SCP-1499 door electronics
+  components:
+  - type: AccessReader
+    access: [ [ "Science2" ], [ "Security2" ], [ "Admin2" ] ]
+
+- type: entity
+  id: ElecSCP113
+  parent: DoorElectronics
+  name: SCP-113 door electronics
+  components:
+  - type: AccessReader
+    access: [ [ "Science3" ], [ "Admin3" ] ]
+
+- type: entity
+  id: ElecSCP999
+  parent: DoorElectronics
+  name: SCP-999 door electronics
+  components:
+  - type: AccessReader
+    access: [ [ "Security1" ], [ "Science1" ], [ "Lab" ], [ "ClassD" ] ]
+
+- type: entity
+  id: ElecSCP458
+  parent: DoorElectronics
+  name: SCP-458 door electronics
+  components:
+  - type: AccessReader
+    access: [ [ "Kitchen" ], [ "ClassD" ], [ "Science1" ], [ "Security1" ] ]
+
+
+# ==========================================
+# 2. STANDARD ZONE DOORS
+# ==========================================
+
+- type: entity
+  id: SCPDoorClassD
+  parent: Airlock
+  name: Class-D Block Door
+  suffix: Locked
+  description: Class-D housing and recreation area door.
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ ElecSCPClassD ]
+
+- type: entity
+  id: SCPDoorMaintenance
+  parent: AirlockMaint
+  name: Maintenance Door
+  suffix: Locked
+  description: Utility and maintenance corridor door.
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ ElecSCPMaint ]
+
+- type: entity
+  id: SCPDoorTech
+  parent: AirlockMaint
+  name: Technical Room Door
+  suffix: Locked
+  description: Technical equipment and engineering room door.
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ ElecSCPTech ]
+
+- type: entity
+  id: SCPDoorKitchen
+  parent: Airlock
+  name: Kitchen Door
+  suffix: Locked
+  description: Kitchen and cafeteria door.
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ ElecSCPKitchen ]
+
+- type: entity
+  id: SCPDoorMedical
+  parent: AirlockMedical
+  name: Medical Bay Door
+  suffix: Locked
+  description: Medical wing and infirmary door.
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ ElecSCPMedical ]
+
+- type: entity
+  id: SCPDoorBotany
+  parent: Airlock
+  name: Botany Door
+  suffix: Locked
+  description: Botany greenhouse and garden area door.
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ ElecSCPBotany ]
+
+- type: entity
+  id: SCPDoorMining
+  parent: AirlockMining
+  name: Mining Sector Door
+  suffix: Locked
+  description: Mining tunnels and extraction zone door.
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ ElecSCPMining ]
+
+- type: entity
+  id: SCPDoorSecurity
+  parent: AirlockSecurity
+  name: Security Checkpoint Door
+  suffix: Locked
+  description: Standard security post and checkpoint door.
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ ElecSCPSecurity ]
+
+- type: entity
+  id: SCPDoorSecurityHigh
+  parent: AirlockSecurity
+  name: High Security Door
+  suffix: Locked
+  description: Reinforced door for high-security restricted zones.
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ ElecSCPSecurityHigh ]
+
+- type: entity
+  id: SCPDoorLab
+  parent: AirlockScience
+  name: Laboratory Door
+  suffix: Locked
+  description: General research laboratory door.
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ ElecSCPLab ]
+
+- type: entity
+  id: SCPDoorResearch
+  parent: AirlockScience
+  name: Research Wing Door
+  suffix: Locked
+  description: Research department door.
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ ElecSCPResearch ]
+
+- type: entity
+  id: SCPDoorContainment
+  parent: AirlockSecurity
+  name: Containment Zone Door
+  suffix: Locked
+  description: Reinforced door separating the containment zone from the main facility.
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ ElecSCPContainment ]
+
+- type: entity
+  id: SCPDoorCommand
+  parent: AirlockCommand
+  name: Command Center Door
+  suffix: Locked
+  description: Command center access. Senior staff only.
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ ElecSCPCommand ]
+
+- type: entity
+  id: SCPDoorAdmin
+  parent: AirlockCommand
+  name: Administrative Wing Door
+  suffix: Locked
+  description: Administrative offices and conference rooms door.
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ ElecSCPAdmin ]
+
+- type: entity
+  id: SCPDoorSiteDirector
+  parent: AirlockCommand
+  name: Site Director Office Door
+  suffix: Locked
+  description: Site Director's office. Admin5 clearance only.
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ ElecSCPSiteDirector ]
+
+- type: entity
+  id: SCPDoorO5
+  parent: AirlockCommand
+  name: O5 Council Chamber Door
+  suffix: Locked
+  description: O5 Council chamber. Unauthorized access results in immediate termination.
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ ElecSCPO5 ]
+
+
+# ==========================================
+# 3. SCP CONTAINMENT CHAMBER DOORS
+# ==========================================
+
+- type: entity
+  id: SCPDoor173
+  parent: AirlockSecurity
+  name: SCP-173 Containment Door
+  suffix: Locked
+  description: SCP-173 containment chamber. 
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ ElecSCP173 ]
+
+- type: entity
+  id: SCPDoor049
+  parent: AirlockSecurity
+  name: SCP-049 Containment Door
+  suffix: Locked
+  description: SCP-049 containment chamber. 
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ ElecSCP049 ]
+
+- type: entity
+  id: SCPDoor096
+  parent: HighSecDoor
+  name: SCP-096 Containment door
+  suffix: Locked
+  description: Heavy bunker door for SCP-096. 
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ ElecSCP096 ]
+
+- type: entity
+  id: SCPDoor106
+  parent: HighSecDoor
+  name: SCP-106 Containment Door
+  suffix: Locked
+  description: Heavy bunker door for SCP-106. 
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ ElecSCP106 ]
+  - type: AntiSCP106Wall
+  
+- type: entity
+  id: SCPDoor294
+  parent: Airlock
+  name: SCP-294 Room Door
+  suffix: Locked
+  description: SCP-294 break room. 
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ ElecSCP294 ]
+
+- type: entity
+  id: SCPDoor330
+  parent: Airlock
+  name: SCP-330 Room Door
+  suffix: Locked
+  description: SCP-330 lounge. 
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ ElecSCP330 ]
+
+- type: entity
+  id: SCPDoor457
+  parent: HighSecDoor
+  name: SCP-457 Containment Door
+  suffix: Locked
+  description: Heavy bunker door for SCP-457. 
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ ElecSCP457 ]
+
+- type: entity
+  id: SCPDoor1499
+  parent: AirlockMaint
+  name: SCP-1499 Storage Door
+  suffix: Locked
+  description: SCP-1499 storage room. 
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ ElecSCP1499 ]
+
+- type: entity
+  id: SCPDoor113
+  parent: AirlockScience
+  name: SCP-113 Lab Door
+  suffix: Locked
+  description: SCP-113 laboratory. 
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ ElecSCP113 ]
+
+- type: entity
+  id: SCPDoor999
+  parent: AirlockScience
+  name: SCP-999 Room Door
+  suffix: Locked
+  description: SCP-999 containment room. 
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ ElecSCP999 ]
+
+- type: entity
+  id: SCPDoor458
+  parent: Airlock
+  name: SCP-458 Room Door
+  suffix: Locked
+  description: SCP-458 break room. 
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ ElecSCP458 ]

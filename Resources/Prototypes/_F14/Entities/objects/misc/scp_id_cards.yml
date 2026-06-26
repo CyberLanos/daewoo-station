@@ -6,11 +6,11 @@
   abstract: true
   components:
   - type: Sprite
-    sprite: Objects/Misc/scp_cards.rsi
+    sprite: _F14/objects/misc/scp_cards.rsi
   - type: Clothing
     slots:
     - idcard
-    sprite: Objects/Misc/scp_cards.rsi
+    sprite: _F14/objects/misc/scp_cards.rsi
   - type: Item
     size: Small
     heldPrefix: default
@@ -44,306 +44,486 @@
         volume: -5
 
 # ==========================================
-# COMMAND & ADMINISTRATION CARDS
+# SECURITY
 # ==========================================
-- type: entity
-  parent: IDBaseKeycard
-  id: IDCardBase
-  name: Level 0 keycard
-  components:
-  - type: Sprite
-    state: base
-  - type: Access
-    groups:
-    - AdminLevel1 # ТУТ БУЛА ПОМИЛКА: у тебе було Admin1, але такої групи немає, є AdminLevel1
 
 - type: entity
   parent: IDBaseKeycard
-  id: IDCardO5
-  name: O5 Command keycard
-  description: A keycard that grants unrestricted access to all facilities.
+  id: IDCardSCPSecurity1
+  name: Security Level 1 ID Card
+  description: Basic security checkpoint access.
   components:
   - type: Sprite
-    state: o5
+    sprite: _F14/objects/misc/scp_cards.rsi
+    layers:
+    - state: securitylvl1
+  - type: IdCard
+    jobTitle: Security Officer I
   - type: Access
-    groups:
-    - O5
-  - type: PresetIdCard
-    job: O5
+    tags:
+    - Security1
 
 - type: entity
   parent: IDBaseKeycard
-  id: IDCardAdmin1
-  name: Level 1 Administration keycard
+  id: IDCardSCPSecurity2
+  name: Security Level 2 ID Card
+  description: Extended patrol and post access.
   components:
   - type: Sprite
-    state: adminlvl1
+    sprite: _F14/objects/misc/scp_cards.rsi
+    layers:
+    - state: securitylvl2
+  - type: IdCard
+    jobTitle: Security Officer II
   - type: Access
-    groups:
-    - AdminLevel1
+    tags:
+    - Security2
+    - Security1
 
 - type: entity
   parent: IDBaseKeycard
-  id: IDCardAdmin2
-  name: Level 2 Administration keycard
+  id: IDCardSCPSecurity3
+  name: Security Level 3 ID Card
+  description: Senior officer clearance. Includes containment perimeter access.
   components:
   - type: Sprite
-    state: adminlvl2
+    sprite: _F14/objects/misc/scp_cards.rsi
+    layers:
+    - state: securitylvl3
+  - type: IdCard
+    jobTitle: Senior Security Officer
   - type: Access
-    groups:
-    - AdminLevel2
+    tags:
+    - Security3
+    - Security2
+    - Security1
+    - Containment
 
 - type: entity
   parent: IDBaseKeycard
-  id: IDCardAdmin3
-  name: Level 3 Administration keycard
+  id: IDCardSCPSecurity4
+  name: Security Level 4 ID Card
+  description: Wide containment zone access.
   components:
   - type: Sprite
-    state: adminlvl3
+    sprite: _F14/objects/misc/scp_cards.rsi
+    layers:
+    - state: securitylvl4
+  - type: IdCard
+    jobTitle: Security Officer IV
   - type: Access
-    groups:
-    - AdminLevel3
+    tags:
+    - Security4
+    - Security3
+    - Security2
+    - Security1
+    - Containment
 
 - type: entity
   parent: IDBaseKeycard
-  id: IDCardAdmin4
-  name: Level 4 Administration keycard
+  id: IDCardSCPSecurity5
+  name: Security Level 5 ID Card
+  description: Full security clearance including Command center access.
   components:
   - type: Sprite
-    state: adminlvl4
+    sprite: _F14/objects/misc/scp_cards.rsi
+    layers:
+    - state: securitylvl5
+  - type: IdCard
+    jobTitle: Security Commander
   - type: Access
-    groups:
-    - AdminLevel4
+    tags:
+    - Security5
+    - Security4
+    - Security3
+    - Security2
+    - Security1
+    - Containment
+    - Command
 
-- type: entity
-  parent: IDBaseKeycard
-  id: IDCardAdmin5
-  name: Level 5 Administration keycard (Site Director)
-  description: A keycard belonging to the Site Director. Grants full administrative access to the facility.
-  components:
-  - type: Sprite
-    state: adminlvl5
-  - type: Access
-    groups:
-    - SiteDirector
-  - type: PresetIdCard
-    job: SiteDirector
-
-# ==========================================
-# SCIENCE CARDS
-# ==========================================
-- type: entity
-  parent: IDBaseKeycard
-  id: IDCardScience1
-  name: Level 1 Science keycard
-  components:
-  - type: Sprite
-    state: sciencelvl1
-  - type: Access
-    groups:
-    - ScienceLevel1
-
-- type: entity
-  parent: IDBaseKeycard
-  id: IDCardScience2
-  name: Level 2 Science keycard
-  components:
-  - type: Sprite
-    state: sciencelvl2
-  - type: Access
-    groups:
-    - ScienceLevel2
-
-- type: entity
-  parent: IDBaseKeycard
-  id: IDCardScience3
-  name: Level 3 Science keycard
-  components:
-  - type: Sprite
-    state: sciencelvl3
-  - type: Access
-    groups:
-    - ScienceLevel3
-
-- type: entity
-  parent: IDBaseKeycard
-  id: IDCardScience4
-  name: Level 4 Science keycard
-  components:
-  - type: Sprite
-    state: sciencelvl4
-  - type: Access
-    groups:
-    - ScienceLevel4
-
-- type: entity
-  parent: IDBaseKeycard
-  id: IDCardScience5
-  name: Level 5 Science keycard (Research Director)
-  description: A keycard belonging to the Research Director. Grants full access to all scientific sectors.
-  components:
-  - type: Sprite
-    state: sciencelvl5
-  - type: Access
-    groups:
-    - ResearchDirector
-  - type: PresetIdCard
-    job: ResearchDirector
 
 # ==========================================
-# SECURITY CARDS
+# SCIENCE
 # ==========================================
-- type: entity
-  parent: IDBaseKeycard
-  id: IDCardSecurity1
-  name: Level 1 Security keycard
-  components:
-  - type: Sprite
-    state: securitylvl1
-  - type: Access
-    groups:
-    - SecurityLevel1
 
 - type: entity
   parent: IDBaseKeycard
-  id: IDCardSecurity2
-  name: Level 2 Security keycard
+  id: IDCardSCPScience1
+  name: Science Level 1 ID Card
+  description: General laboratory access.
   components:
   - type: Sprite
-    state: securitylvl2
+    sprite: _F14/objects/misc/scp_cards.rsi
+    layers:
+    - state: sciencelvl1
+  - type: IdCard
+    jobTitle: Lab Assistant
   - type: Access
-    groups:
-    - SecurityLevel2
+    tags:
+    - Science1
+    - Lab
 
 - type: entity
   parent: IDBaseKeycard
-  id: IDCardSecurity3
-  name: Level 3 Security keycard
+  id: IDCardSCPScience2
+  name: Science Level 2 ID Card
+  description: Extended laboratory access.
   components:
   - type: Sprite
-    state: securitylvl3
+    sprite: _F14/objects/misc/scp_cards.rsi
+    layers:
+    - state: sciencelvl2
+  - type: IdCard
+    jobTitle: Junior Researcher
   - type: Access
-    groups:
-    - SecurityLevel3
+    tags:
+    - Science2
+    - Science1
+    - Research
+    - Lab
 
 - type: entity
   parent: IDBaseKeycard
-  id: IDCardSecurity4
-  name: Level 4 Security keycard
+  id: IDCardSCPScience3
+  name: Science Level 3 ID Card
+  description: Mid-risk laboratory and research access.
   components:
   - type: Sprite
-    state: securitylvl4
+    sprite: _F14/objects/misc/scp_cards.rsi
+    layers:
+    - state: sciencelvl3
+  - type: IdCard
+    jobTitle: Researcher
   - type: Access
-    groups:
-    - SecurityLevel4
+    tags:
+    - Science3
+    - Science2
+    - Science1
+    - Research
+    - Lab
 
 - type: entity
   parent: IDBaseKeycard
-  id: IDCardSecurity5
-  name: Level 5 Security keycard
+  id: IDCardSCPScience4
+  name: Science Level 4 ID Card
+  description: Senior researcher clearance with full research wing access.
   components:
   - type: Sprite
-    state: securitylvl5
+    sprite: _F14/objects/misc/scp_cards.rsi
+    layers:
+    - state: sciencelvl4
+  - type: IdCard
+    jobTitle: Senior Researcher
   - type: Access
-    groups:
-    - SecurityLevel5
+    tags:
+    - Science4
+    - Science3
+    - Science2
+    - Science1
+    - Research
+    - Lab
+
+- type: entity
+  parent: IDBaseKeycard
+  id: IDCardSCPScience5
+  name: Science Level 5 ID Card
+  description: Lead scientist clearance. Unrestricted science wing access.
+  components:
+  - type: Sprite
+    sprite: _F14/objects/misc/scp_cards.rsi
+    layers:
+    - state: sciencelvl5
+  - type: IdCard
+    jobTitle: Lead Researcher
+  - type: Access
+    tags:
+    - Science5
+    - Science4
+    - Science3
+    - Science2
+    - Science1
+    - Research
+    - Lab
+
 
 # ==========================================
-# CLASS-D CARDS
+# ADMINISTRATION
 # ==========================================
+
 - type: entity
   parent: IDBaseKeycard
-  id: IDCardClassD
-  name: Class-D keycard
+  id: IDCardSCPAdmin1
+  name: Administration Level 1 ID Card
+  description: Basic administrative office access.
   components:
   - type: Sprite
-    state: classd
+    sprite: _F14/objects/misc/scp_cards.rsi
+    layers:
+    - state: adminlvl1
+  - type: IdCard
+    jobTitle: Administrator I
   - type: Access
-    groups:
+    tags:
+    - Admin1
+
+- type: entity
+  parent: IDBaseKeycard
+  id: IDCardSCPAdmin2
+  name: Administration Level 2 ID Card
+  description: Extended administrative access.
+  components:
+  - type: Sprite
+    sprite: _F14/objects/misc/scp_cards.rsi
+    layers:
+    - state: adminlvl2
+  - type: IdCard
+    jobTitle: Administrator II
+  - type: Access
+    tags:
+    - Admin2
+    - Admin1
+
+- type: entity
+  parent: IDBaseKeycard
+  id: IDCardSCPAdmin3
+  name: Administration Level 3 ID Card
+  description: Includes containment perimeter and documentation access.
+  components:
+  - type: Sprite
+    sprite: _F14/objects/misc/scp_cards.rsi
+    layers:
+    - state: adminlvl3
+  - type: IdCard
+    jobTitle: Administrator III
+  - type: Access
+    tags:
+    - Admin3
+    - Admin2
+    - Admin1
+    - Containment
+
+- type: entity
+  parent: IDBaseKeycard
+  id: IDCardSCPAdmin4
+  name: Administration Level 4 ID Card
+  description: Deputy Director clearance. Research and containment zone access.
+  components:
+  - type: Sprite
+    sprite: _F14/objects/misc/scp_cards.rsi
+    layers:
+    - state: adminlvl4
+  - type: IdCard
+    jobTitle: Deputy Director
+  - type: Access
+    tags:
+    - Admin4
+    - Admin3
+    - Admin2
+    - Admin1
+    - Containment
+    - Research
+
+- type: entity
+  parent: IDBaseKeycard
+  id: IDCardSCPAdmin5
+  name: Administration Level 5 ID Card
+  description: Site Director clearance. Full administrative access including Command.
+  components:
+  - type: Sprite
+    sprite: _F14/objects/misc/scp_cards.rsi
+    layers:
+    - state: adminlvl5
+  - type: IdCard
+    jobTitle: Site Director
+  - type: Access
+    tags:
+    - Admin5
+    - Admin4
+    - Admin3
+    - Admin2
+    - Admin1
+    - Containment
+    - Research
+    - Command
+
+
+# ==========================================
+# CLASS-D PERSONNEL
+# ==========================================
+
+- type: entity
+  parent: IDBaseKeycard
+  id: IDCardSCPClassD
+  name: Class-D ID Card
+  description: Standard Class-D card. Restricted to D-block areas only.
+  components:
+  - type: Sprite
+    sprite: _F14/objects/misc/scp_cards.rsi
+    layers:
+    - state: classd
+  - type: IdCard
+    jobTitle: Class-D Personnel
+  - type: Access
+    tags:
     - ClassD
+    - LowSecurity
 
 - type: entity
   parent: IDBaseKeycard
-  id: IDCardClassDBotany
-  name: Class-D Botany keycard
+  id: IDCardSCPClassDJanitor
+  name: Class-D Janitor ID Card
+  description: Class-D card with maintenance corridor access.
   components:
   - type: Sprite
-    state: classdbot
+    sprite: _F14/objects/misc/scp_cards.rsi
+    layers:
+    - state: classdjan
+  - type: IdCard
+    jobTitle: Class-D Janitor
   - type: Access
-    groups:
-    - ClassDBotany
+    tags:
+    - ClassD
+    - Maintenance
+    - LowSecurity
 
 - type: entity
   parent: IDBaseKeycard
-  id: IDCardClassDCook
-  name: Class-D Cook keycard
+  id: IDCardSCPClassDMedical
+  name: Class-D Medical ID Card
+  description: Class-D card with medical bay access.
   components:
   - type: Sprite
-    state: classdcook
+    sprite: _F14/objects/misc/scp_cards.rsi
+    layers:
+    - state: classdmed
+  - type: IdCard
+    jobTitle: Class-D Medic
   - type: Access
-    groups:
-    - ClassDCook
+    tags:
+    - ClassD
+    - Medical
+    - LowSecurity
 
 - type: entity
   parent: IDBaseKeycard
-  id: IDCardClassDJanitor
-  name: Class-D Janitor keycard
+  id: IDCardSCPClassDCook
+  name: Class-D Cook ID Card
+  description: Class-D card with kitchen and cafeteria access.
   components:
   - type: Sprite
-    state: classdjan
+    sprite: _F14/objects/misc/scp_cards.rsi
+    layers:
+    - state: classdcook
+  - type: IdCard
+    jobTitle: Class-D Cook
   - type: Access
-    groups:
-    - ClassDJanitor
+    tags:
+    - ClassD
+    - Kitchen
+    - LowSecurity
 
 - type: entity
   parent: IDBaseKeycard
-  id: IDCardClassDMedical
-  name: Class-D Medical keycard
+  id: IDCardSCPClassDBotany
+  name: Class-D Botanist ID Card
+  description: Class-D card with greenhouse access.
   components:
   - type: Sprite
-    state: classdmed
+    sprite: _F14/objects/misc/scp_cards.rsi
+    layers:
+    - state: classdbot
+  - type: IdCard
+    jobTitle: Class-D Botanist
   - type: Access
-    groups:
-    - ClassDMedical
+    tags:
+    - ClassD
+    - Botany
+    - LowSecurity
 
 - type: entity
   parent: IDBaseKeycard
-  id: IDCardClassDMining
-  name: Class-D Mining keycard
+  id: IDCardSCPClassDMining
+  name: Class-D Mining ID Card
+  description: Class-D card with mining tunnel access.
   components:
   - type: Sprite
-    state: classdmine
+    sprite: _F14/objects/misc/scp_cards.rsi
+    layers:
+    - state: classdmine
+  - type: IdCard
+    jobTitle: Class-D Miner
   - type: Access
-    groups:
-    - ClassDMining
+    tags:
+    - ClassD
+    - Mining
+    - LowSecurity
+
 
 # ==========================================
-# CHAOS INSURGENCY CARDS
+# O5 COUNCIL
 # ==========================================
+
 - type: entity
   parent: IDBaseKeycard
-  id: IDCardCI
-  name: Chaos Insurgency keycard
-  description: A keycard belonging to a Chaos Insurgency operative. Designed to bypass Foundation security systems.
+  id: IDCardSCPO5
+  name: O5 Council ID Card
+  description: O5 Council member card. Unrestricted facility-wide access.
   components:
   - type: Sprite
-    state: ci
+    sprite: _F14/objects/misc/scp_cards.rsi
+    layers:
+    - state: o5
+  - type: IdCard
+    jobTitle: O5 Council
   - type: Access
-    groups:
+    tags:
+    - O5
+    - Admin
+    - Science
+    - Security
+    - Command
+    - Unrestricted
+
+
+# ==========================================
+# CHAOS INSURGENCY
+# ==========================================
+
+- type: entity
+  parent: IDBaseKeycard
+  id: IDCardSCPCI
+  name: CI Operative ID Card
+  description: Chaos Insurgency operative card. Limited infiltration access.
+  components:
+  - type: Sprite
+    sprite: _F14/objects/misc/scp_cards.rsi
+    layers:
+    - state: ci
+  - type: IdCard
+    jobTitle: CI Operative
+  - type: Access
+    tags:
+    - CI
     - ChaosInsurgency
-  - type: PresetIdCard
-    job: ChaosInsurgencyOperative
+    - Infiltrator
+    - LimitedAccess
 
 - type: entity
   parent: IDBaseKeycard
-  id: IDCardCILead
-  name: Chaos Insurgency Leader keycard
-  description: A high-level keycard belonging to a Chaos Insurgency cell leader. Grants access to the organization's most secure facilities.
+  id: IDCardSCPCILead
+  name: CI Leader ID Card
+  description: Chaos Insurgency leader card. Extended infiltration access.
   components:
   - type: Sprite
-    state: cilead
+    sprite: _F14/objects/misc/scp_cards.rsi
+    layers:
+    - state: cilead
+  - type: IdCard
+    jobTitle: CI Commander
   - type: Access
-    groups:
-    - ChaosInsurgencyLeader
-  - type: PresetIdCard
-    job: ChaosInsurgencyLeader
+    tags:
+    - CI
+    - ChaosInsurgency
+    - CILeader
+    - Infiltrator
+    - HighAccess

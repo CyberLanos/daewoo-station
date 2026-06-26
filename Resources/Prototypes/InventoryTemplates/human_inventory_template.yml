@@ -114,6 +114,16 @@
       dependsOnComponents:
       - type: AllowSuitStorage
       displayName: Suit Storage
+    - name: id_secondary
+      slotTexture: id
+      fullTextureName: template_small
+      slotFlags: IDCARD
+      slotGroup: SecondHotbar
+      stripTime: 6
+      uiWindowPos: 3,2
+      strippingWindowPos: 2,6
+      dependsOn: jumpsuit
+      displayName: Secondary ID
     - name: id
       slotTexture: id
       fullTextureName: template_small
@@ -145,3 +155,4 @@
       blacklist:
         tags:
         - PetOnly
+    
