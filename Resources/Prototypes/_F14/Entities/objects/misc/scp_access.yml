@@ -24,9 +24,6 @@
   id: Admin
   name: Administration
 - type: accessLevel
-  id: Command
-  name: Command
-- type: accessLevel
   id: Unrestricted
   name: Unrestricted
 
@@ -49,9 +46,6 @@
   id: Science
   name: Science
 - type: accessLevel
-  id: Research
-  name: Research
-- type: accessLevel
   id: Lab
   name: Laboratory
 
@@ -71,9 +65,6 @@
   id: Security1
   name: Security Level 1
 - type: accessLevel
-  id: Security
-  name: Security
-- type: accessLevel
   id: Containment
   name: Containment
 - type: accessLevel
@@ -86,15 +77,6 @@
 - type: accessLevel
   id: Botany
   name: Botany
-- type: accessLevel
-  id: Kitchen
-  name: Kitchen
-- type: accessLevel
-  id: Maintenance
-  name: Maintenance
-- type: accessLevel
-  id: Medical
-  name: Medical
 - type: accessLevel
   id: Mining
   name: Mining

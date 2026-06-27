@@ -1,31 +1,31 @@
-- type: entity
-  id: BaseSCPpen
-  parent: Pen
-  abstract: true
-  components:
-  - type: Tag
-    tags:
-    - Write
-    - Pen
-  - type: MeleeWeapon
-    wideAnimationRotation: -45
-    damage:
-      types:
-        Piercing: 1
-    soundHit:
-      path: /Audio/Weapons/bladeslice.ogg
-  - type: Tool
-    qualities:
-    - Screwing
-    useSound:
-      collection: Screwdriver
-  - type: DamageOtherOnHit
-    damage:
-      types:
-        Piercing: 2 # Goobstation - ow
-  - type: Sprite
-    sprite: _F14/Objects/Misc/Marker.rsi
-    state: pen
-  - type: Item
-    sprite: _F14/Objects/Misc/Marker.rsi
-    heldPrefix: pen
+# # - type: entity
+#   id: BaseSCPpen
+#   parent: Pen
+#   abstract: true
+#   components:
+#   - type: Tag
+#     tags:
+#     - Write
+#     - Pen
+#   - type: MeleeWeapon
+#     wideAnimationRotation: -45
+#     damage:
+#       types:
+#         Piercing: 1
+#     soundHit:
+#       path: /Audio/Weapons/bladeslice.ogg
+#   - type: Tool
+#     qualities:
+#     - Screwing
+#     useSound:
+#       collection: Screwdriver
+#   - type: DamageOtherOnHit
+#     damage:
+#       types:
+#         Piercing: 2 # Goobstation - ow
+#   - type: Sprite
+#     sprite: _F14/Objects/Misc/Marker.rsi
+#     state: pen
+#   - type: Item
+#     sprite: _F14/Objects/Misc/Marker.rsi
+#     heldPrefix: pen
