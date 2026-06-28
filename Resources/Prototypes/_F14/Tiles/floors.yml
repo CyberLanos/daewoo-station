@@ -1,6 +1,6 @@
 - type: tile
   id: FloorGridGrey
-  name: tiles-Floor-Grid-Grey
+  name: Grid gray floor
   sprite: /Textures/_F14/Tiles/FloorGridGrey.png
   variants: 4
   placementVariants:
@@ -19,7 +19,7 @@
 
 - type: tile
   id: FloorWhiteCorner
-  name: tiles-white-corner
+  name: White corner
   sprite: /Textures/_F14/Tiles/white_corner.png
   variants: 4
   placementVariants:
@@ -38,7 +38,7 @@
 
 - type: tile
   id: steel_corner
-  name: tiles-Floor-steel-corner
+  name: Steel floor corner
   sprite: /Textures/_F14/Tiles/steel_corner.png
   variants: 4
   placementVariants:
@@ -57,7 +57,7 @@
 
 - type: tile
   id: Floorpocket_dimension
-  name: tiles-Floor-pocket-dimension
+  name: pocket dimension floor
   sprite: /Textures/_F14/Tiles/pocket_dimension.png
   variants: 1
   placementVariants:
@@ -72,7 +72,7 @@
 
 - type: tile
   id: FloorMonotiledark
-  name: tiles-Floor-Monotile-Dark
+  name: monlith white floor
   sprite: /Textures/_F14/Tiles/monotiledark.png
   variants: 1
   placementVariants:
@@ -91,7 +91,7 @@
 
 - type: tile
   id: Floor-dark-small
-  name: tiles-Floor-dark-small
+  name: Dark small floor
   sprite: /Textures/_F14/Tiles/dark_small.png
   variants: 1
   placementVariants:
@@ -110,7 +110,7 @@
 
 - type: tile
   id: Floor-dark-grid
-  name: tiles-Floor-dark-grid
+  name: Dark grid floor
   sprite: /Textures/_F14/Tiles/dark_grid.png 
   variants: 1
   placementVariants:
@@ -129,7 +129,7 @@
 
 - type: tile
   id: Floor-dark-corner
-  name: tiles-Floor-Dark-Corner
+  name: dark floor corner
   sprite: /Textures/_F14/Tiles/dark_corner.png
   variants: 4
   placementVariants:
@@ -148,8 +148,8 @@
 
 - type: tile
   id: FloorDecayed
-  name: tiles-Floor-decayed
-  sprite: /Textures/_F14/Tiles/floordecayed.png
+  name: decayed floor
+  sprite: /Textures/_F14/Tiles/FloorDecayed.png
   variants: 1
   placementVariants:
   - 1.0
@@ -160,3 +160,142 @@
   isSubfloor: false
   heatCapacity: 10000
   tileRipResistance: 4500
+
+
+
+
+
+
+
+- type: stack
+  id: FloorGridGrey
+  name: grid gray floor tile
+  spawn: FloorGridGrey
+
+- type: stack
+  id: FloorWhiteCorner
+  name: white corner tile
+  spawn: FloorWhiteCorner
+
+- type: stack
+  id: steel_corner
+  name: steel floor corner tile
+  spawn: steel_corner
+
+- type: stack
+  id: FloorMonotiledark
+  name: monlith white floor tile
+  spawn: FloorMonotiledark
+
+- type: stack
+  id: Floor-dark-small
+  name: dark small floor tile
+  spawn: Floor-dark-small
+
+- type: stack
+  id: Floor-dark-grid
+  name: dark grid floor tile
+  spawn: Floor-dark-grid
+
+- type: stack
+  id: Floor-dark-corner
+  name: dark floor corner tile
+  spawn: Floor-dark-corner
+
+- type: entity
+  parent: FloorTileItemBase
+  id: FloorGridGrey
+  name: grid gray floor tile
+  description: A floor tile.
+  components:
+  - type: Sprite
+    texture: /Textures/_F14/Tiles/FloorGridGrey.png
+  - type: FloorTile
+    outputs:
+    - FloorGridGrey
+  - type: Stack
+    stackType: FloorGridGrey
+
+- type: entity
+  parent: FloorTileItemBase
+  id: FloorWhiteCorner
+  name: white corner tile
+  description: A white corner floor tile.
+  components:
+  - type: Sprite
+    texture: /Textures/_F14/Tiles/white_corner.png
+  - type: FloorTile
+    outputs:
+    - FloorWhiteCorner
+  - type: Stack
+    stackType: FloorWhiteCorner
+
+- type: entity
+  parent: FloorTileItemBase
+  id: steel_corner
+  name: steel floor corner tile
+  description: A steel corner floor tile.
+  components:
+  - type: Sprite
+    texture: /Textures/_F14/Tiles/steel_corner.png
+  - type: FloorTile
+    outputs:
+    - steel_corner
+  - type: Stack
+    stackType: steel_corner
+
+- type: entity
+  parent: FloorTileItemBase
+  id: FloorMonotiledark
+  name: monlith white floor tile
+  description: A floor tile.
+  components:
+  - type: Sprite
+    texture: /Textures/_F14/Tiles/monotiledark.png
+  - type: FloorTile
+    outputs:
+    - FloorMonotiledark
+  - type: Stack
+    stackType: FloorMonotiledark
+
+- type: entity
+  parent: FloorTileItemBase
+  id: Floor-dark-small
+  name: dark small floor tile
+  description: A floor tile.
+  components:
+  - type: Sprite
+    texture: /Textures/_F14/Tiles/dark_small.png
+  - type: FloorTile
+    outputs:
+    - Floor-dark-small
+  - type: Stack
+    stackType: Floor-dark-small
+
+- type: entity
+  parent: FloorTileItemBase
+  id: Floor-dark-grid
+  name: dark grid floor tile
+  description: A floor tile.
+  components:
+  - type: Sprite
+    texture: /Textures/_F14/Tiles/dark_grid.png
+  - type: FloorTile
+    outputs:
+    - Floor-dark-grid
+  - type: Stack
+    stackType: Floor-dark-grid
+
+- type: entity
+  parent: FloorTileItemBase
+  id: Floor-dark-corner
+  name: dark floor corner tile
+  description: A floor tile.
+  components:
+  - type: Sprite
+    texture: /Textures/_F14/Tiles/dark_corner.png
+  - type: FloorTile
+    outputs:
+    - Floor-dark-corner
+  - type: Stack
+    stackType: Floor-dark-corner

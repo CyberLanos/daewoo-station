@@ -359,3 +359,44 @@
   #- type: HideLayerClothing    #Goobstation
   #  layers:
   #    Hair: HEAD
+
+
+- type: entity
+  parent: [ClothingHeadHelmetBase, BaseSecurityContraband, ClothingHeadHelmetBaseFoldable] # Goob - ClothingHeadHelmetBaseFoldable
+  id: MTFEpsilon9Helmet
+  name: Epsilon-9 Helmet
+  description: Sturdy helmet made from heat reflecting materials.
+  components:
+  - type: Sprite
+    sprite: _F14/Clothing/Head/Helmets/epsilon_9.rsi
+  - type: Clothing
+    sprite: _F14/Clothing/Head/Helmets/epsilon_9.rsi
+  - type: Armor
+    coverage:
+    - Head
+    traumaDeductions:
+      Dismemberment: 0.3
+      OrganDamage: 0.3
+      BoneDamage: 0.3
+      VeinsDamage: 0
+      NerveDamage: 0
+    modifiers:
+      coefficients:
+        Blunt: 0.4
+        Slash: 0.4
+        Piercing: 0.4
+        Heat: 0.05
+        Radiation: 0.75
+        Caustic: 0.75
+  - type: ExplosionResistance
+    damageCoefficient: 0.75
+  - type: FaceHuggerBlocker # Goobstation
+  #- type: HideLayerClothing    #Goobstation
+  #  layers:
+  #    Hair: HEAD
+  - type: NightVision
+    isEquipment: true 
+  - type: ItemToggle
+    predictable: false
+
+

@@ -51,3 +51,58 @@
   - type: Hailer # Goobstation - Hailer
   - type: IngestionBlocker # Goobstation
     blockSmokeIngestion: true
+
+- type: entity
+  parent: [ClothingMaskGas, BaseSecurityContraband]
+  id: ClothingMaskISD
+  name: ISD gas mask
+  description: Modern gas mask used by ISD agents
+  components:
+  - type: Item
+    size: Tiny
+  - type: Sprite
+    sprite: _F14/Clothing/Mask/ISD.rsi
+  - type: Clothing
+    sprite: _F14/Clothing/Mask/ISD.rsi
+  - type: Armor
+    coverage:
+    - Head
+    modifiers:
+      coefficients:
+        Blunt: 0.8
+        Slash: 0.8
+        Piercing: 0.8
+        Heat: 0.8
+    tags:
+    - WhitelistChameleon
+  - type: Hailer # Goobstation - Hailer
+  - type: IngestionBlocker # Goobstation
+    blockSmokeIngestion: true
+
+
+- type: entity
+  parent: [ClothingMaskGas, BaseSecurityContraband]
+  id: ClothingMaskalpha
+  name: Alpha-1 gas mask
+  description: Modern gas mask used by Alpha-1
+  components:
+  - type: Item
+    size: Tiny
+  - type: Sprite
+    sprite: _F14/Clothing/Mask/alpha.rsi
+  - type: Clothing
+    sprite: _F14/Clothing/Mask/alpha.rsi
+  - type: Armor
+    coverage:
+    - Head
+    modifiers:
+      coefficients:
+        Blunt: 0.8
+        Slash: 0.8
+        Piercing: 0.8
+        Heat: 0.8
+    tags:
+    - WhitelistChameleon
+  - type: Hailer # Goobstation - Hailer
+  - type: IngestionBlocker # Goobstation
+    blockSmokeIngestion: true

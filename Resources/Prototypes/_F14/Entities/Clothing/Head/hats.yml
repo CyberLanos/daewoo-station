@@ -30,3 +30,59 @@
     sprite: _F14/Clothing/Head/Hats/GOClead.rsi
   - type: Clothing
     sprite: _F14/Clothing/Head/Hats/GOClead.rsi
+
+- type: entity
+  parent: ClothingHeadBase
+  id: ClothingHeadHatUIUCap
+  name: UIU cap
+  description: UIU cap, it looks old, can they buy a new one?
+  components:
+  - type: Sprite
+    sprite: _F14/Clothing/Head/Hats/UIU.rsi
+  - type: Clothing
+    sprite: _F14/Clothing/Head/Hats/UIU.rsi
+
+- type: entity
+  parent: ClothingHeadBase
+  id: ClothingHeadHatSCPISD
+  name: ISD Hat
+  description: Black hat with crimson stripe, you're doomed if someone comes to you, wearing this
+  components:
+  - type: Sprite
+    sprite: _F14/Clothing/Head/Hats/ISD.rsi
+  - type: Clothing
+    sprite: _F14/Clothing/Head/Hats/ISD.rsi
+
+- type: entity
+  parent: ClothingHeadBase
+  id: ClothingHeadHatMTFO1
+  name: Omega-1 beret
+  description: You did something bad if people with these came for you
+  components:
+  - type: Sprite
+    sprite: _F14/Clothing/Head/Hats/omega.rsi
+  - type: Clothing
+    sprite: _F14/Clothing/Head/Hats/omega.rsi
+
+- type: entity
+  parent: ClothingHeadBase
+  id: ClothingHeadHatMTFA1
+  name: Alpha-1 beret
+  description: Cool looking red beret
+  components:
+  - type: Sprite
+    sprite: _F14/Clothing/Head/Hats/alpha.rsi
+  - type: Clothing
+    sprite: _F14/Clothing/Head/Hats/alpha.rsi
+
+- type: entity
+  parent: ClothingHeadBase
+  id: ClothingHeadHatMTFE11
+  name: Epsilon-11 beret
+  description: Sick looking orange beret.
+  components:
+  - type: Sprite
+    sprite: _F14/Clothing/Head/Hats/epsilon11.rsi
+  - type: Clothing
+    sprite: _F14/Clothing/Head/Hats/epsilon11.rsi
+
