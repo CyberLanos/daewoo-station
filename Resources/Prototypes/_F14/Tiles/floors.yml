@@ -1,7 +1,7 @@
 - type: tile
   id: floorgridgrey
   name: Grid gray floor
-  sprite: /Textures/_F14/Tiles/floorgridgrey.png
+  sprite: /Textures/_F14/Tiles/FloorGridGrey.png
   variants: 4
   placementVariants:
   - 1.0
@@ -147,9 +147,9 @@
   tileRipResistance: 4500
 
 - type: tile
-  id: FloorDecayed.png
+  id: FloorDecayed
   name: decayed floor
-  sprite: /Textures/_F14/Tiles/FloorDecayed.png
+  sprite: /Textures/_F14/Tiles/floordecayed.png
   variants: 1
   placementVariants:
   - 1.0
@@ -160,11 +160,6 @@
   isSubfloor: false
   heatCapacity: 10000
   tileRipResistance: 4500
-
-
-
-
-
 
 
 - type: stack
@@ -202,6 +197,11 @@
   name: dark floor corner tile
   spawn: Floor-dark-corner
 
+- type: stack
+  id: FloorDecayed
+  name: decayed floor tile
+  spawn: FloorDecayed
+
 - type: entity
   parent: FloorTileItemBase
   id: floorgridgrey
@@ -209,7 +209,7 @@
   description: A floor tile.
   components:
   - type: Sprite
-    texture: /Textures/_F14/Tiles/floorgridgrey.png
+    texture: /Textures/_F14/Tiles/FloorGridGrey.png
   - type: FloorTile
     outputs:
     - floorgridgrey
@@ -300,17 +300,16 @@
   - type: Stack
     stackType: Floor-dark-corner
 
-
 - type: entity
   parent: FloorTileItemBase
-  id: FloorDecayed.png
+  id: FloorDecayed
   name: decayed floor tile
   description: A decayed floor tile.
   components:
   - type: Sprite
-    texture: /Textures/_F14/Tiles/FloorDecayed.png
+    texture: /Textures/_F14/Tiles/floordecayed.png
   - type: FloorTile
     outputs:
-    - FloorDecayed.png
+    - FloorDecayed
   - type: Stack
-    stackType: FloorDecayed.png
+    stackType: FloorDecayed
