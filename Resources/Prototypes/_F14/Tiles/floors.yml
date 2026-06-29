@@ -111,7 +111,7 @@
 - type: tile
   id: Floor-dark-grid
   name: Dark grid floor
-  sprite: /Textures/_F14/Tiles/dark_grid.png 
+  sprite: /Textures/_F14/Tiles/dark_grid.png
   variants: 1
   placementVariants:
   - 1.0
@@ -147,9 +147,9 @@
   tileRipResistance: 4500
 
 - type: tile
-  id: FloorDecayed
+  id: FloorDecayed.png
   name: decayed floor
-  sprite: /Textures/_F14/Tiles/floordecayed
+  sprite: /Textures/_F14/Tiles/FloorDecayed.png
   variants: 1
   placementVariants:
   - 1.0
@@ -303,14 +303,14 @@
 
 - type: entity
   parent: FloorTileItemBase
-  id: FloorDecayed
+  id: FloorDecayed.png
   name: decayed floor tile
   description: A decayed floor tile.
   components:
   - type: Sprite
-    texture: /Textures/_F14/Tiles/floordecayed.png
+    texture: /Textures/_F14/Tiles/FloorDecayed.png.png
   - type: FloorTile
     outputs:
-    - FloorDecayed
+    - FloorDecayed.png
   - type: Stack
-    stackType: FloorDecayed
+    stackType: FloorDecayed.png
