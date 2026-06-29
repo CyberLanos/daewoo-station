@@ -308,7 +308,7 @@
   description: A decayed floor tile.
   components:
   - type: Sprite
-    texture: /Textures/_F14/Tiles/FloorDecayed.png.png
+    texture: /Textures/_F14/Tiles/FloorDecayed.png
   - type: FloorTile
     outputs:
     - FloorDecayed.png
