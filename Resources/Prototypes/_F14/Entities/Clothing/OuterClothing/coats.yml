@@ -1,0 +1,177 @@
+- type: entity
+  parent: [ClothingOuterStorageBase, AllowSuitStorageClothing, ClothingOuterArmorBase]
+  id: ClothingOuterCoatO5
+  name: O5 Coat
+  description: It's looks expensive
+  components:
+  - type: Sprite
+    sprite: _F14/Clothing/OuterClothing/Coates/O5.rsi
+  - type: Clothing
+    sprite: _F14/Clothing/OuterClothing/Coates/O5.rsi
+  - type: StorageFill
+    contents:
+    - id: SmokingPipeFilledTobacco
+    - id: FlippoEngravedLighter
+  - type: ExplosionResistance
+    damageCoefficient: 1 #its a coat. it doesnt do shit
+  - type: Armor # Woundmed
+    coverage:
+    - Chest
+    - Groin
+    - Tail
+    - Arm
+    - Leg
+    modifiers:
+      coefficients:
+        Blunt: 0.65
+        Slash: 0.65
+        Piercing: 0.65
+        Heat: 0.7
+
+- type: entity
+  parent: [ClothingOuterStorageBase, AllowSuitStorageClothing, ClothingOuterArmorBase]
+  id: ClothingOuterCoatCMOSCP
+  name: CMO coat
+  description: Basic coat used by CMO, it looks like it can protect from some caustic damage
+  components:
+  - type: Sprite
+    sprite: _F14/Clothing/OuterClothing/Coates/CMO.rsi
+  - type: Clothing
+    sprite: _F14/Clothing/OuterClothing/Coates/CMO.rsi
+  - type: Armor
+    coverage:
+    - Chest
+    - Groin
+    - Tail
+    - Arm
+    - Leg
+    modifiers:
+      coefficients:
+        Slash: 0.9
+        Heat: 0.9
+        Caustic: 0.4
+
+
+
+- type: entity
+  parent: [ClothingOuterStorageBase, AllowSuitStorageClothing, ClothingOuterArmorBase]
+  id: ClothingOuterCoatSCPDirector
+  name: Director Fur-coat
+  description: An 19th-century fur-coat. Someone who wears this means serious business. It looks like penguin
+  components:
+  - type: Sprite
+    sprite: _F14/Clothing/OuterClothing/Coates/director.rsi
+  - type: Clothing
+    sprite: _F14/Clothing/OuterClothing/Coates/director.rsi
+  - type: ExplosionResistance
+    damageCoefficient: 1 #its a coat. it doesnt do shit
+  - type: Armor # Woundmed
+    coverage:
+    - Chest
+    - Groin
+    - Tail
+    - Arm
+    - Leg
+    modifiers:
+      coefficients:
+        Blunt: 0.80
+        Slash: 0.80
+        Piercing: 0.75
+        Heat: 0.9
+
+
+- type: entity
+  parent: [ClothingOuterStorageBase, AllowSuitStorageClothing, ClothingOuterArmorBase]
+  id: ClothingOuterCoatSCPSci
+  name: Scientist labcoat
+  description: Just boring white labcoat from synthetic materials.
+  components:
+  - type: Sprite
+    sprite: _F14/Clothing/OuterClothing/Coates/scilab.rsi
+  - type: Clothing
+    sprite: _F14/Clothing/OuterClothing/Coates/scilab.rsi
+
+- type: entity
+  parent: [ClothingOuterStorageBase, AllowSuitStorageClothing, ClothingOuterArmorBase]
+  id: ClothingOuterCoatSCPAssistant
+  name: assistant labcoat
+  description: Just boring white labcoat from synthetic materials.
+  components:
+  - type: Sprite
+    sprite: _F14/Clothing/OuterClothing/Coates/assistant.rsi
+  - type: Clothing
+    sprite: _F14/Clothing/OuterClothing/Coates/assistant.rsi
+
+- type: entity
+  parent: [ClothingOuterStorageBase, AllowSuitStorageClothing, ClothingOuterArmorBase]
+  id: ClothingOuterCoatRDLab
+  name: research director coat
+  description: An 18th-century multi-purpose trenchcoat. Someone who wears this means serious business.
+  components:
+  - type: Sprite
+    sprite: _F14/Clothing/OuterClothing/Coates/rdlab.rsi
+  - type: Clothing
+    sprite: _F14/Clothing/OuterClothing/Coates/rdlab.rsi
+
+- type: entity
+  parent: [ClothingOuterStorageBase, AllowSuitStorageClothing, ClothingOuterArmorBase]
+  id: ClothingOuterCoatSCPUIU
+  name: UIU coat
+  description: Blue coat, there's FBI badge on it.
+  components:
+  - type: Sprite
+    sprite: _F14/Clothing/OuterClothing/Coates/UIU.rsi
+  - type: Clothing
+    sprite: _F14/Clothing/OuterClothing/Coates/UIU.rsi
+  - type: Armor # Woundmed
+    coverage:
+    - Chest
+    - Groin
+    - Arm
+    - Leg
+    modifiers:
+      coefficients:
+        Blunt: 0.65
+        Slash: 0.65
+        Piercing: 0.65
+        Heat: 0.7
+
+- type: entity
+  parent: [ClothingOuterStorageBase, AllowSuitStorageClothing, ClothingOuterArmorBase]
+  id: ClothingOuterCoatSCPISD
+  name: ISD coat
+  description: Buetifull looking coat, but you're doomed if someone comes to you wearing this.
+  components:
+  - type: Sprite
+    sprite: _F14/Clothing/OuterClothing/Coates/ISD.rsi
+  - type: Clothing
+    sprite: _F14/Clothing/OuterClothing/Coates/ISD.rsi
+  - type: StorageFill
+    contents:
+    - id: SmokingPipeFilledTobacco
+    - id: FlippoEngravedLighter
+  - type: ExplosionResistance
+    damageCoefficient: 1 #its a coat. it doesnt do shit
+  - type: Armor # Woundmed
+    coverage:
+    - Chest
+    - Groin
+    - Arm
+    - Leg
+    modifiers:
+      coefficients:
+        Blunt: 0.65
+        Slash: 0.65
+        Piercing: 0.65
+        Heat: 0.7
+
+- type: entity
+  parent: [ClothingOuterStorageBase, AllowSuitStorageClothing, ClothingOuterArmorBase]
+  id: ClothingOuterCoatSCPITD
+  name: ITD coat
+  description: Interdal tribunal department. Something wen't horibly wrong if ITD is here.
+  components:
+  - type: Sprite
+    sprite: _F14/Clothing/OuterClothing/Coates/ITD.rsi
+  - type: Clothing
+    sprite: _F14/Clothing/OuterClothing/Coates/ITD.rsi

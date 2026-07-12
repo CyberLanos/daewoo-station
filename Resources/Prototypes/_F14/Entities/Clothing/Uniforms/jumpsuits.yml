@@ -348,3 +348,46 @@
     clothingVisuals:
       innerclothing:
       - state: equipped-INNERCLOTHING
+
+- type: entity
+  parent: ClothingUniformBase
+  id: ClothingUniformJumpsuitUIU
+  name: UIU jumpsuit
+  description: UIU suit, wearing this makes you want to start spying on people.
+  components:
+  - type: Sprite
+    sprite: _F14/Clothing/Uniforms/Jumpsuit/UIU.rsi 
+  - type: Clothing
+    sprite: _F14/Clothing/Uniforms/Jumpsuit/UIU.rsi
+    clothingVisuals:
+      innerclothing:
+      - state: equipped-INNERCLOTHING
+
+- type: entity
+  parent: ClothingUniformBase
+  id: ClothingUniformJumpsuiOffice
+  name: Office clothes
+  description: something isn't right... but what and how?
+  components:
+  - type: Sprite
+    sprite: _F14/Clothing/Uniforms/Jumpsuit/Office.rsi
+  - type: Clothing
+    sprite: _F14/Clothing/Uniforms/Jumpsuit/Office.rsi
+    clothingVisuals:
+      innerclothing:
+      - state: equipped-INNERCLOTHING
+
+- type: entity
+  parent: ClothingUniformBase
+  id: ClothingUniformJumpsuitISD
+  name: ISD suit
+  description: Elite suit, yet you need to learn how to clean of blood from it.
+  components:
+  - type: Sprite
+    sprite: _F14/Clothing/Uniforms/Jumpsuit/ISD.rsi 
+  - type: Clothing
+    sprite: _F14/Clothing/Uniforms/Jumpsuit/ISD.rsi
+    clothingVisuals:
+      innerclothing:
+      - state: equipped-INNERCLOTHING
+    

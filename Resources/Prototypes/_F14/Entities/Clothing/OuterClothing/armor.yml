@@ -545,3 +545,82 @@
   - type: ClothingSpeedModifier
     walkModifier: 0.85
     sprintModifier: 0.85
+
+
+  
+- type: entity
+  parent: [ ClothingOuterBaseLarge, BaseMajorContraband, AllowSuitStorageClothing ]
+  id: MTFEpsilon11Armour
+  name: Epsilon-11 armour
+  description: Legendary NTF armor, it proved it self in the hardest of battles.
+  components:
+  - type: Sprite
+    sprite: _F14/Clothing/OuterClothing/Armor/epsilon11.rsi
+  - type: Clothing
+    sprite: _F14/Clothing/OuterClothing/Armor/epsilon11.rsi
+  - type: Armor
+    coverage:
+    - Chest
+    - Groin
+    - Arm
+    - Leg
+    traumaDeductions:
+      Dismemberment: 0.33
+      OrganDamage: 0.33
+      BoneDamage: 0.33
+      VeinsDamage: 0
+      NerveDamage: 0
+    modifiers:
+      coefficients:
+        Blunt: 0.4
+        Slash: 0.3
+        Piercing: 0.4
+        Heat: 0.4
+  - type: GroupExamine
+  - type: ModifyDelayedKnockdown
+    delayDelta: 2.5
+    knockdownTimeDelta: -2.5
+  - type: StaminaResistance
+    damageCoefficient: 0.6
+  - type: ClothingSpeedModifier
+    walkModifier: 0.90
+    sprintModifier: 0.85
+
+- type: entity
+  parent: [ ClothingOuterBaseLarge, BaseMajorContraband, AllowSuitStorageClothing ]
+  id: MTFEpsilon9Armour
+  name: Epsilon-9 armour
+  description: Compleatly sealed suit, made of non-flamable and heat reflective materials.
+  components:
+  - type: Sprite
+    sprite: _F14/Clothing/OuterClothing/Armor/epsilon_9.rsi
+  - type: Clothing
+    sprite: _F14/Clothing/OuterClothing/Armor/epsilon_9.rsi
+  - type: Armor
+    coverage:
+    - Chest
+    - Groin
+    - Arm
+    - Leg
+    - Hand
+    traumaDeductions:
+      Dismemberment: 0.33
+      OrganDamage: 0.33
+      BoneDamage: 0.33
+      VeinsDamage: 0
+      NerveDamage: 0
+    modifiers:
+      coefficients:
+        Blunt: 0.6
+        Slash: 0.6
+        Piercing: 0.7
+        Heat: 0.15
+  - type: GroupExamine
+  - type: ModifyDelayedKnockdown
+    delayDelta: 2.5
+    knockdownTimeDelta: -2.5
+  - type: StaminaResistance
+    damageCoefficient: 0.6
+  - type: ClothingSpeedModifier
+    walkModifier: 0.90
+    sprintModifier: 0.90

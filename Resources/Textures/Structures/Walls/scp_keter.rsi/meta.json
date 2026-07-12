@@ -41,6 +41,10 @@
         {
             "name": "keter7",
             "directions": 4
+        },
+        {
+            "name": "wall_girder"
         }
+
     ]
 }
