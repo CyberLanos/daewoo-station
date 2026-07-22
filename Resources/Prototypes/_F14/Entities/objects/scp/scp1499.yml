@@ -1,4 +1,4 @@
-# 1. Сам протигаз SCP-1499
+# SCP-1499
 - type: entity
   parent: ClothingMaskBase 
   id: ClothingMaskSCP1499
@@ -13,7 +13,9 @@
     slots:
     - mask 
   - type: SCP1499 
-
+  - type: HideLayerClothing
+    slots:
+    - Hair
 - type: entity
   id: SCP1499DimensionSpawn
   name: SCP-1499 Dimension Spawn Point
@@ -46,14 +48,10 @@
   - type: MovementSpeedModifier
     baseWalkSpeed: 3
     baseSprintSpeed: 4.5
-  - type: CombatMode 
-  - type: NPCSteering 
   - type: HTN
     rootTask:
-      task: SimpleHostileCompound 
-  - type: NpcFactionMember
-    factions:
-    - SimpleHostile 
+      task: SimpleHostileCompound
+  - type: NPCRetaliation
     
   - type: MeleeWeapon
     soundHit:

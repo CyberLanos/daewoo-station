@@ -39,8 +39,12 @@
   components:
   - type: Sprite
     sprite: _F14/Clothing/Uniforms/Jumpsuit/d_class1.rsi
+    state: icon 
   - type: Clothing
     sprite: _F14/Clothing/Uniforms/Jumpsuit/d_class1.rsi
+    clothingVisuals: 
+      innerclothing:
+      - state: equipped-INNERCLOTHING
 
 - type: entity
   parent: ClothingUniformBase

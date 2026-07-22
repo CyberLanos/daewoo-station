@@ -1,0 +1,819 @@
+# ==========================================
+# SCP STARTING GEAR — Foundation-14
+# ==========================================
+
+# ==========================================
+# CLASS-D
+# ==========================================
+
+- type: startingGear
+  id: SCPClassDGear
+  equipment:
+    id: IDCardSCPClassD
+    jumpsuit: Dclass1Jumpsuit
+    shoes: ClothingShoesColorBlack
+    ears: ClothingHeadsetGrey
+
+# ==========================================
+# ADMINISTRATION / COMMAND
+# ==========================================
+
+- type: startingGear
+  id: SCPSiteDirectorGear
+  equipment:
+    id: IDCardSCPAdmin5
+    jumpsuit: ClothingUniformJumpsuitCaptain
+    outerClothing: ClothingOuterCoatSCPDirector
+    shoes: ClothingShoesBootsLaceup
+    gloves: ClothingHandsGlovesCaptain
+    ears: ClothingHeadsetCommand
+    back: ClothingBackpackCaptain
+  pocket1: FlashlightSeclite
+
+- type: startingGear
+  id: SCPSiteManagerGear
+  equipment:
+    id: IDCardSCPAdmin4
+    jumpsuit: ClothingUniformJumpsuitHoP
+    outerClothing: ClothingOuterCoatSCPDirector
+    shoes: ClothingShoesBootsLaceup
+    ears: ClothingHeadsetCommand
+    back: ClothingBackpack
+  pocket1: FlashlightSeclite
+
+- type: startingGear
+  id: SCPCommunicationsOfficerGear
+  equipment:
+    id: IDCardSCPAdmin2
+    jumpsuit: ClothingUniformJumpsuiOffice
+    shoes: ClothingShoesBootsLaceup
+    ears: ClothingHeadsetCommand
+    back: ClothingBackpack
+  pocket1: FlashlightSeclite
+
+- type: startingGear
+  id: SCPISDDetectiveGear
+  implants:
+  - MindShieldImplant
+  equipment:
+    id: IDCardSCPSecurity3
+    jumpsuit: ClothingUniformJumpsuitISD
+    outerClothing: ClothingOuterCoatSCPISD
+    head: ClothingHeadHatSCPISD
+    mask: ClothingMaskNeckGaiter
+    shoes: ClothingShoesBootsLaceup
+    gloves: ClothingHandsGlovesForensic
+    ears: ClothingHeadsetSecurity
+    back: ClothingBackpackSecurity
+  pocket1: FlashlightSeclite
+  pocket2: Handcuffs
+
+- type: startingGear
+  id: SCPEthicsGear
+  equipment:
+    id: IDCardSCPAdmin4
+    jumpsuit: Servicejumpsuit1
+    shoes: ClothingShoesBootsLaceup
+    ears: ClothingHeadsetCommand
+    back: ClothingBackpack
+  pocket1: FlashlightSeclite
+
+- type: startingGear
+  id: SCPGOCGear
+  equipment:
+    id: IDCardSCPAdmin3
+    jumpsuit: ClothingUniformJumpsuitCivilGOC
+    outerClothing: gocjacket
+    head: ClothingHeadHatGOCBeret
+    shoes: ClothingShoesBootsCombat
+    gloves: ClothingHandsGlovesLeather
+    ears: ClothingHeadsetCommand
+    back: ClothingBackpack
+  pocket1: FlashlightSeclite
+
+- type: startingGear
+  id: SCPCommsTechGear
+  equipment:
+    id: IDCardSCPAdmin1
+    jumpsuit: EngineerJumpsuit
+    shoes: ClothingShoesBootsWork
+    ears: ClothingHeadsetEngineering
+    back: ClothingBackpackEngineering
+  pocket1: Multitool
+  pocket2: Screwdriver
+
+# ==========================================
+# ENGINEERING
+# ==========================================
+
+- type: startingGear
+  id: SCPEngDirectorGear
+  equipment:
+    id: IDCardSCPAdmin3
+    jumpsuit: ClothingUniformJumpsuitChiefEngineer
+    shoes: ClothingShoesBootsWork
+    ears: ClothingHeadsetCE
+    back: ClothingBackpackEngineering
+    belt: ClothingBeltChiefEngineer
+  pocket1: FlashlightSeclite
+  pocket2: Wrench
+
+- type: startingGear
+  id: SCPAsstEngDirectorGear
+  equipment:
+    id: IDCardSCPAdmin2
+    jumpsuit: EngineerJumpsuit
+    shoes: ClothingShoesBootsWork
+    ears: ClothingHeadsetEngineering
+    back: ClothingBackpackEngineering
+    belt: ClothingBeltUtility
+  pocket1: FlashlightSeclite
+  pocket2: Wrench
+
+- type: startingGear
+  id: SCPContainmentEngGear
+  equipment:
+    id: IDCardSCPAdmin2       
+    jumpsuit: EngineerJumpsuit
+    shoes: ClothingShoesBootsWork
+    ears: ClothingHeadsetEngineering
+    back: ClothingBackpackEngineering
+    belt: ClothingBeltUtility
+  pocket1: Wrench
+  pocket2: Screwdriver
+
+- type: startingGear
+  id: SCPSeniorEngGear
+  equipment:
+    id: IDCardSCPAdmin2
+    jumpsuit: EngineerJumpsuit
+    shoes: ClothingShoesBootsWork
+    ears: ClothingHeadsetEngineering
+    back: ClothingBackpackEngineering
+    belt: ClothingBeltUtility
+  pocket1: Wrench
+  pocket2: Screwdriver
+
+- type: startingGear
+  id: SCPEngGear
+  equipment:
+    id: IDCardSCPAdmin1
+    jumpsuit: EngineerJumpsuit
+    shoes: ClothingShoesBootsWork
+    ears: ClothingHeadsetEngineering
+    back: ClothingBackpackEngineering
+    belt: ClothingBeltUtility
+  pocket1: Wrench
+  pocket2: Screwdriver
+
+- type: startingGear
+  id: SCPJuniorEngGear
+  equipment:
+    id: IDCardSCPAdmin1
+    jumpsuit: EngineerJumpsuit
+    shoes: ClothingShoesBootsWork
+    ears: ClothingHeadsetEngineering
+    back: ClothingBackpackEngineering
+  pocket1: Wrench
+  pocket2: Screwdriver
+
+# ==========================================
+# MEDICAL
+# ==========================================
+
+- type: startingGear
+  id: SCPMedDirectorGear
+  equipment:
+    id: IDCardSCPScience3
+    jumpsuit: ClothingUniformJumpsuitCMO
+    outerClothing: ClothingOuterCoatCMOSCP
+    shoes: ClothingShoesBootsWork
+    gloves: ClothingHandsGlovesLatex
+    ears: ClothingHeadsetCMO
+    back: ClothingBackpackMedical
+    belt: ClothingBeltMedical
+  pocket1: Defibrillator
+  pocket2: MedkitAdvanced
+
+- type: startingGear
+  id: SCPAsstMedDirectorGear
+  equipment:
+    id: IDCardSCPScience2
+    jumpsuit: ClothingUniformJumpsuitCMO
+    outerClothing: ClothingOuterCoatCMOSCP
+    shoes: ClothingShoesBootsWork
+    gloves: ClothingHandsGlovesLatex
+    ears: ClothingHeadsetMedical
+    back: ClothingBackpackMedical
+    belt: ClothingBeltMedical
+  pocket1: Defibrillator
+  pocket2: MedkitAdvanced
+
+- type: startingGear
+  id: SCPSurgeonGear
+  equipment:
+    id: IDCardSCPScience2
+    jumpsuit: ClothingUniformJumpsuitMedicalDoctor
+    outerClothing: ClothingOuterCoatCMOSCP
+    shoes: ClothingShoesBootsWinterMed
+    gloves: ClothingHandsGlovesLatex
+    ears: ClothingHeadsetMedical
+    back: ClothingBackpackMedical
+    belt: ClothingBeltMedical
+  pocket1: MedkitAdvanced
+  pocket2: Defibrillator
+
+- type: startingGear
+  id: SCPChemistGear
+  equipment:
+    id: IDCardSCPScience1
+    jumpsuit: ClothingUniformJumpsuitChemistry
+    shoes: ClothingShoesBootsWork
+    gloves: ClothingHandsGlovesLatex
+    ears: ClothingHeadsetMedical
+    back: ClothingBackpackChemistry
+    belt: ClothingBeltMedical
+  pocket1: MedkitBrute
+  pocket2: MedkitBurn
+
+- type: startingGear
+  id: SCPPsychiatristGear
+  equipment:
+    id: IDCardSCPScience1
+    jumpsuit: ClothingUniformJumpsuitMedicalDoctor
+    shoes: ClothingShoesBootsWork
+    gloves: ClothingHandsGlovesLatex
+    ears: ClothingHeadsetMedical
+    back: ClothingBackpackMedical
+  pocket1: MedkitBrute
+
+- type: startingGear
+  id: SCPMedDoctorGear
+  equipment:
+    id: IDCardSCPScience1
+    jumpsuit: ClothingUniformJumpsuitMedicalDoctor
+    shoes: ClothingShoesBootsWinterMed
+    gloves: ClothingHandsGlovesLatex
+    ears: ClothingHeadsetMedical
+    back: ClothingBackpackMedical
+    belt: ClothingBeltMedical
+  pocket1: Brutepack
+  pocket2: MedkitBrute
+
+- type: startingGear
+  id: SCPEMTGear
+  equipment:
+    id: IDCardSCPScience1
+    jumpsuit: ClothingUniformJumpsuitParamedic
+    shoes: ClothingShoesBootsWinterMed
+    gloves: ClothingHandsGlovesLatex
+    ears: ClothingHeadsetMedical
+    back: ClothingBackpackMedical
+    belt: ClothingBeltMedicalEMT
+  pocket1: Brutepack
+  pocket2: EmergencyMedipen
+
+- type: startingGear
+  id: SCPMedInternGear
+  equipment:
+    id: IDCardSCPScience1
+    jumpsuit: ClothingUniformJumpsuitMedicalDoctor
+    shoes: ClothingShoesBootsWork
+    gloves: ClothingHandsGlovesLatex
+    ears: ClothingHeadsetMedical
+    back: ClothingBackpackMedical
+  pocket1: Brutepack
+
+# ==========================================
+# LOGISTICS
+# ==========================================
+
+- type: startingGear
+  id: SCPLogOfficerGear
+  equipment:
+    id: IDCardSCPAdmin1
+    jumpsuit: ClothingUniformJumpsuiOffice
+    shoes: ClothingShoesBootsLaceup
+    ears: ClothingHeadsetCommand
+    back: ClothingBackpack
+  pocket1: FlashlightSeclite
+
+- type: startingGear
+  id: SCPLogSpecialistGear
+  equipment:
+    id: IDCardSCPAdmin1
+    jumpsuit: Servicejumpsuit1
+    shoes: ClothingShoesBootsWork
+    ears: ClothingHeadsetGrey
+    back: ClothingBackpackCargo
+  pocket1: FlashlightSeclite
+
+- type: startingGear
+  id: SCPOfficeWorkerGear
+  equipment:
+    id: IDCardSCPAdmin1
+    jumpsuit: ClothingUniformJumpsuiOffice
+    shoes: ClothingShoesColorBlack
+    ears: ClothingHeadsetGrey
+    back: ClothingBackpack
+
+# - type: startingGear
+#   id: SCPJanitorGear
+#   equipment:
+#     id: IDCardSCPClassDJanitor
+#     jumpsuit: ClothingUniformJumpsuitJanitor
+#     shoes: ClothingShoesGaloshes
+#     gloves: ClothingHandsGlovesJanitor
+#     ears: ClothingHeadsetGrey
+#     back: ClothingBackpack
+#     belt: ClothingBeltJanitor
+
+# - type: startingGear
+#   id: SCPChefGear
+#   equipment:
+#     id: IDCardSCPClassDCook
+#     jumpsuit: ClothingUniformJumpsuitChef
+#     shoes: ClothingShoesChef
+#     ears: ClothingHeadsetGrey
+#     back: ClothingBackpack
+#     belt: ClothingBeltChef
+
+- type: startingGear
+  id: SCPBartenderGear
+  equipment:
+    id: IDCardSCPClassDCook
+    jumpsuit: ClothingUniformJumpsuitBartender
+    shoes: ClothingShoesBootsLaceup
+    ears: ClothingHeadsetGrey
+    back: ClothingBackpack
+
+- type: startingGear
+  id: SCPChaplainGear
+  equipment:
+    id: IDCardSCPAdmin1
+    jumpsuit: ClothingUniformJumpsuitChaplain
+    shoes: ClothingShoesColorBlack
+    ears: ClothingHeadsetGrey
+    back: ClothingBackpack
+
+# ==========================================
+# SCIENCE / RESEARCH
+# ==========================================
+
+- type: startingGear
+  id: SCPRDGear
+  equipment:
+    id: IDCardSCPScience5
+    jumpsuit: ClothingUniformJumpsuitResearchDirector
+    outerClothing: ClothingOuterCoatRDLab
+    shoes: ClothingShoesBootsWinterSci
+    gloves: ClothingHandsGlovesLatex
+    ears: ClothingHeadsetRD
+    back: ClothingBackpackScience
+  pocket1: FlashlightSeclite
+
+- type: startingGear
+  id: SCPSeniorResearcherGear
+  equipment:
+    id: IDCardSCPScience4
+    jumpsuit: ClothingUniformJumpsuitScientist
+    outerClothing: ClothingOuterCoatSCPSci
+    shoes: ClothingShoesBootsWinterSci
+    gloves: ClothingHandsGlovesLatex
+    ears: ClothingHeadsetScience
+    back: ClothingBackpackScience
+  pocket1: FlashlightSeclite
+
+- type: startingGear
+  id: SCPSeniorRoboticsGear
+  equipment:
+    id: IDCardSCPScience3
+    jumpsuit: ClothingUniformJumpsuitScientist
+    outerClothing: ClothingOuterCoatSCPSci
+    shoes: ClothingShoesBootsWork
+    gloves: ClothingHandsGlovesLatex
+    ears: ClothingHeadsetRobotics
+    back: ClothingBackpackEngineering
+    belt: ClothingBeltUtility
+  pocket1: Multitool
+  pocket2: Screwdriver
+
+- type: startingGear
+  id: SCPResearcherGear
+  equipment:
+    id: IDCardSCPScience2
+    jumpsuit: ClothingUniformJumpsuitScientist
+    outerClothing: ClothingOuterCoatSCPSci
+    shoes: ClothingShoesBootsWinterSci
+    gloves: ClothingHandsGlovesLatex
+    ears: ClothingHeadsetScience
+    back: ClothingBackpackScience
+  pocket1: FlashlightSeclite
+
+- type: startingGear
+  id: SCPRoboticsGear
+  equipment:
+    id: IDCardSCPScience1
+    jumpsuit: ClothingUniformJumpsuitScientist
+    outerClothing: ClothingOuterCoatSCPAssistant
+    shoes: ClothingShoesBootsWork
+    ears: ClothingHeadsetRobotics
+    back: ClothingBackpackEngineering
+    belt: ClothingBeltUtility
+  pocket1: Multitool
+  pocket2: Screwdriver
+
+- type: startingGear
+  id: SCPResearcherAssociateGear
+  equipment:
+    id: IDCardSCPScience1
+    jumpsuit: ClothingUniformJumpsuitScientist
+    outerClothing: ClothingOuterCoatSCPAssistant
+    shoes: ClothingShoesBootsWinterSci
+    gloves: ClothingHandsGlovesLatex
+    ears: ClothingHeadsetScience
+    back: ClothingBackpackScience
+
+- type: startingGear
+  id: SCPJuniorRoboticsGear
+  equipment:
+    id: IDCardSCPScience1
+    jumpsuit: ClothingUniformJumpsuitScientist
+    shoes: ClothingShoesBootsWork
+    ears: ClothingHeadsetRobotics
+    back: ClothingBackpackEngineering
+  pocket1: Multitool
+
+# ==========================================
+# SECURITY
+# ==========================================
+
+- type: startingGear
+  id: SCPGuardCommanderGear
+  equipment:
+    id: IDCardSCPSecurity5
+    jumpsuit: ClothingUniformJumpsuitGuardCommander
+    outerClothing: HeavyGuardArmour
+    head: GuardHelmet
+    shoes: ClothingShoesBootsCombat
+    gloves: ClothingHandsGlovesCombat
+    ears: ClothingHeadsetSecurity
+    back: ClothingBackpackSecurity
+    belt: ClothingBeltSecurity
+  pocket1: WeaponDisabler
+  pocket2: Handcuffs
+
+- type: startingGear
+  id: SCPLCZJuniorLtGear
+  equipment:
+    id: IDCardSCPSecurity4
+    jumpsuit: LCZGuardCommanderJumpsuit
+    outerClothing: SergantGuardArmour
+    head: GuardHelmet
+    shoes: ClothingShoesBootsCombat
+    gloves: ClothingHandsGlovesCombat
+    ears: ClothingHeadsetSecurity
+    back: ClothingBackpackSecurity
+    belt: ClothingBeltSecurity
+  pocket1: WeaponDisabler
+  pocket2: Handcuffs
+
+- type: startingGear
+  id: SCPHCZSeniorLtGear
+  equipment:
+    id: IDCardSCPSecurity4
+    jumpsuit: ClothingUniformJumpsuitHCZCommander
+    outerClothing: SergantGuardArmour
+    head: HeavyMTFHelmet
+    shoes: ClothingShoesBootsCombat
+    gloves: ClothingHandsGlovesCombat
+    ears: ClothingHeadsetSecurity
+    back: ClothingBackpackSecurity
+    belt: ClothingBeltSecurity
+  pocket1: WeaponDisabler
+  pocket2: Handcuffs
+
+- type: startingGear
+  id: SCPEZSupervisorGear
+  equipment:
+    id: IDCardSCPSecurity3
+    jumpsuit: ClothingUniformJumpsuitEZSupervisor
+    outerClothing: ClothingOuterVestGuard
+    head: GuardHelmet
+    shoes: ClothingShoesBootsCombat
+    gloves: ClothingHandsGlovesCombat
+    ears: ClothingHeadsetSecurity
+    back: ClothingBackpackSecurity
+    belt: ClothingBeltSecurity
+  pocket1: WeaponDisabler
+  pocket2: Handcuffs
+
+- type: startingGear
+  id: SCPRAISAGear
+  equipment:
+    id: IDCardSCPSecurity3
+    jumpsuit: ClothingUniformJumpsuiOffice
+    shoes: ClothingShoesBootsLaceup
+    gloves: ClothingHandsGlovesLeather
+    ears: ClothingHeadsetSecurity
+    back: ClothingBackpack
+  pocket1: FlashlightSeclite
+  pocket2: Handcuffs
+
+- type: startingGear
+  id: SCPLCZSergeantGear
+  equipment:
+    id: IDCardSCPSecurity3
+    jumpsuit: LCZGuardSergeantJumpsuit
+    outerClothing: SergantGuardArmour
+    head: GuardHelmet
+    shoes: ClothingShoesBootsCombat
+    gloves: ClothingHandsGlovesCombat
+    ears: ClothingHeadsetSecurity
+    back: ClothingBackpackSecurity
+    belt: ClothingBeltSecurity
+  pocket1: WeaponDisabler
+  pocket2: Handcuffs
+
+- type: startingGear
+  id: SCPHCZSergeantGear
+  equipment:
+    id: IDCardSCPSecurity3
+    jumpsuit: ClothingUniformJumpsuitHCZSergeant
+    outerClothing: SergantGuardArmour
+    head: HeavyMTFHelmet
+    shoes: ClothingShoesBootsCombat
+    gloves: ClothingHandsGlovesCombat
+    ears: ClothingHeadsetSecurity
+    back: ClothingBackpackSecurity
+    belt: ClothingBeltSecurity
+  pocket1: WeaponDisabler
+  pocket2: Handcuffs
+
+- type: startingGear
+  id: SCPEZSeniorAgentGear
+  equipment:
+    id: IDCardSCPSecurity2
+    jumpsuit: ClothingUniformJumpsuitEZSergeant
+    outerClothing: ClothingOuterVestGuard
+    head: GuardHelmet
+    shoes: ClothingShoesBootsCombat
+    gloves: ClothingHandsGlovesCombat
+    ears: ClothingHeadsetSecurity
+    back: ClothingBackpackSecurity
+    belt: ClothingBeltSecurity
+  pocket1: Stunbaton
+  pocket2: Handcuffs
+
+- type: startingGear
+  id: SCPLCZGuardGear
+  equipment:
+    id: IDCardSCPSecurity2
+    jumpsuit: LCZGuardJumpsuit
+    outerClothing: GuardArmour
+    head: GuardHelmet
+    shoes: ClothingShoesBootsCombat
+    gloves: ClothingHandsGlovesCombat
+    ears: ClothingHeadsetSecurity
+    back: ClothingBackpackSecurity
+    belt: ClothingBeltSecurity
+  pocket1: Stunbaton
+  pocket2: Handcuffs
+
+- type: startingGear
+  id: SCPHCZGuardGear
+  equipment:
+    id: IDCardSCPSecurity2
+    jumpsuit: ClothingUniformJumpsuitHCZGuard
+    outerClothing: HeavyGuardArmour
+    head: HeavyMTFHelmet
+    shoes: ClothingShoesBootsCombat
+    gloves: ClothingHandsGlovesCombat
+    ears: ClothingHeadsetSecurity
+    back: ClothingBackpackSecurity
+    belt: ClothingBeltSecurity
+  pocket1: Stunbaton
+  pocket2: Handcuffs
+
+- type: startingGear
+  id: SCPEZAgentGear
+  equipment:
+    id: IDCardSCPSecurity1
+    jumpsuit: ClothingUniformJumpsuitEZGuard
+    outerClothing: ClothingOuterVestGuard
+    head: GuardHelmet
+    shoes: ClothingShoesBootsCombat
+    ears: ClothingHeadsetSecurity
+    back: ClothingBackpackSecurity
+    belt: ClothingBeltSecurity
+  pocket1: Stunbaton
+  pocket2: Handcuffs
+
+- type: startingGear
+  id: SCPLCZCadetGear
+  equipment:
+    id: IDCardSCPSecurity1
+    jumpsuit: WhiteLcz
+    outerClothing: ClothingOuterVestCadet
+    head: GuardHelmet
+    shoes: ClothingShoesBootsCombat
+    ears: ClothingHeadsetSecurity
+    back: ClothingBackpackSecurity
+    belt: ClothingBeltSecurity
+  pocket1: Flash
+  pocket2: Handcuffs
+
+- type: startingGear
+  id: SCPHCZPrivateGear
+  equipment:
+    id: IDCardSCPSecurity1
+    jumpsuit: ClothingUniformJumpsuitHCZGuard
+    outerClothing: ClothingOuterVestCadet
+    head: GuardHelmet
+    shoes: ClothingShoesBootsCombat
+    ears: ClothingHeadsetSecurity
+    back: ClothingBackpackSecurity
+    belt: ClothingBeltSecurity
+  pocket1: Flash
+  pocket2: Handcuffs
+
+- type: startingGear
+  id: SCPEZProbGear
+  equipment:
+    id: IDCardSCPSecurity1
+    jumpsuit: ClothingUniformJumpsuitEZGuard
+    outerClothing: ClothingOuterVestCadet
+    head: GuardHelmet
+    shoes: ClothingShoesBootsCombat
+    ears: ClothingHeadsetSecurity
+    back: ClothingBackpackSecurity
+    belt: ClothingBeltSecurity
+  pocket1: Flash
+  pocket2: Handcuffs
+
+# ==========================================
+# SPECIAL
+# ==========================================
+
+- type: startingGear
+  id: SCPAICGear
+  equipment:
+    id: IDCardSCPO5
+    jumpsuit: Servicejumpsuit1
+    outerClothing: ClothingOuterCoatO5
+    shoes: ClothingShoesBootsLaceup
+    gloves: ClothingHandsGlovesLeather
+    ears: ClothingHeadsetCommand
+    back: ClothingBackpack
+
+- type: startingGear
+  id: SCPRobotGear
+  equipment:
+    id: IDCardSCPSecurity5
+    jumpsuit: Servicejumpsuit2
+    shoes: ClothingShoesBootsCombat
+    gloves: ClothingHandsGlovesCombat
+    ears: ClothingHeadsetSecurity
+    back: ClothingBackpackSecurity
+
+# ==========================================
+# O5 COUNCIL
+# ==========================================
+
+- type: startingGear
+  id: SCPO5Gear
+  implants:
+  - MindShieldImplant
+  equipment:
+    id: IDCardSCPO5
+    jumpsuit: Servicejumpsuit1
+    outerClothing: ClothingOuterCoatO5
+    shoes: ClothingShoesBootsLaceup
+    gloves: ClothingHandsGlovesLeather
+    ears: ClothingHeadsetCommand
+    back: ClothingBackpack
+  pocket1: FlashlightSeclite
+  pocket2: AmnesticClassA
+
+# ==========================================
+# MOBILE TASK FORCES
+# ==========================================
+
+- type: startingGear
+  id: SCPMTFE11CommanderGear
+  implants:
+  - MindShieldImplant
+  equipment:
+    id: IDCardSCPSecurity5
+    jumpsuit: ClothingUniformJumpsuitMTFEpsilon11
+    outerClothing: MTFEpsilon11Armour
+    head: ClothingHeadHatMTFE11
+    shoes: ClothingShoesBootsCombat
+    gloves: ClothingHandsGlovesCombat
+    ears: ClothingHeadsetSecurity
+    back: ClothingBackpackSecurity
+    belt: ClothingBeltMilitaryWebbing
+  pocket1: WeaponDisabler
+  pocket2: Handcuffs
+
+- type: startingGear
+  id: SCPMTFE11LtGear
+  implants:
+  - MindShieldImplant
+  equipment:
+    id: IDCardSCPSecurity4
+    jumpsuit: ClothingUniformJumpsuitMTFEpsilon11
+    outerClothing: MTFEpsilon11Armour
+    head: ClothingHeadHatMTFE11
+    shoes: ClothingShoesBootsCombat
+    gloves: ClothingHandsGlovesCombat
+    ears: ClothingHeadsetSecurity
+    back: ClothingBackpackSecurity
+    belt: ClothingBeltMilitaryWebbing
+  pocket1: WeaponDisabler
+  pocket2: Handcuffs
+
+- type: startingGear
+  id: SCPMTFE11SgtGear
+  implants:
+  - MindShieldImplant
+  equipment:
+    id: IDCardSCPSecurity4
+    jumpsuit: ClothingUniformJumpsuitMTFEpsilon11
+    outerClothing: MTFEpsilon11Armour
+    head: ClothingHeadHatMTFE11
+    shoes: ClothingShoesBootsCombat
+    gloves: ClothingHandsGlovesCombat
+    ears: ClothingHeadsetSecurity
+    back: ClothingBackpackSecurity
+    belt: ClothingBeltMilitaryWebbing
+  pocket1: WeaponDisabler
+  pocket2: Handcuffs
+
+- type: startingGear
+  id: SCPMTFE11AgentGear
+  implants:
+  - MindShieldImplant
+  equipment:
+    id: IDCardSCPSecurity3
+    jumpsuit: ClothingUniformJumpsuitMTFEpsilon11
+    outerClothing: MTFEpsilon11Armour
+    head: ClothingHeadHatMTFE11
+    shoes: ClothingShoesBootsCombat
+    gloves: ClothingHandsGlovesCombat
+    ears: ClothingHeadsetSecurity
+    back: ClothingBackpackSecurity
+    belt: ClothingBeltMilitaryWebbing
+  pocket1: WeaponDisabler
+  pocket2: Handcuffs
+
+- type: startingGear
+  id: SCPMTFNU7CommanderGear
+  implants:
+  - MindShieldImplant
+  equipment:
+    id: IDCardSCPSecurity5
+    jumpsuit: ClothingUniformJumpsuitMTFNu7
+    outerClothing: MTFHeavyArmour
+    head: HeavyMTFHelmet
+    shoes: ClothingShoesBootsCombat
+    gloves: ClothingHandsGlovesCombat
+    ears: ClothingHeadsetSecurity
+    back: ClothingBackpackSecurity
+    belt: ClothingBeltMilitaryWebbing
+  pocket1: WeaponDisabler
+  pocket2: Handcuffs
+
+- type: startingGear
+  id: SCPMTFNU7LtGear
+  implants:
+  - MindShieldImplant
+  equipment:
+    id: IDCardSCPSecurity4
+    jumpsuit: ClothingUniformJumpsuitMTFNu7
+    outerClothing: MTFHeavyArmour
+    head: HeavyMTFHelmet
+    shoes: ClothingShoesBootsCombat
+    gloves: ClothingHandsGlovesCombat
+    ears: ClothingHeadsetSecurity
+    back: ClothingBackpackSecurity
+    belt: ClothingBeltMilitaryWebbing
+  pocket1: WeaponDisabler
+  pocket2: Handcuffs
+
+- type: startingGear
+  id: SCPMTFNU7AgentGear
+  implants:
+  - MindShieldImplant
+  equipment:
+    id: IDCardSCPSecurity3
+    jumpsuit: ClothingUniformJumpsuitMTFNu7
+    outerClothing: MTFHeavyArmour
+    head: HeavyMTFHelmet
+    shoes: ClothingShoesBootsCombat
+    gloves: ClothingHandsGlovesCombat
+    ears: ClothingHeadsetSecurity
+    back: ClothingBackpackSecurity
+    belt: ClothingBeltMilitaryWebbing
+  pocket1: WeaponDisabler
+  pocket2: Handcuffs

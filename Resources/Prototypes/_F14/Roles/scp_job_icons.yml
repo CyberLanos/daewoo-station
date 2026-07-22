@@ -1,0 +1,267 @@
+# ==========================================
+# SCP JOB ICONS PROTOTYPES
+# ==========================================
+
+- type: jobIcon
+  id: huddclass
+  icon:
+    sprite: _F14/Roles/job_icons.rsi
+    state: huddclass
+
+- type: jobIcon
+  id: hudsitedirector
+  icon:
+    sprite: _F14/Roles/job_icons.rsi
+    state: hudsitedirector
+
+- type: jobIcon
+  id: hudhumanresources
+  icon:
+    sprite: _F14/Roles/job_icons.rsi
+    state: hudhumanresources
+
+- type: jobIcon
+  id: hudcommsofficer
+  icon:
+    sprite: _F14/Roles/job_icons.rsi
+    state: hudcommsofficer
+
+- type: jobIcon
+  id: ISD
+  icon:
+    sprite: _F14/Roles/job_icons.rsi
+    state: ISD
+
+- type: jobIcon
+  id: hudecl
+  icon:
+    sprite: _F14/Roles/job_icons.rsi
+    state: hudecl
+
+- type: jobIcon
+  id: hudgoi
+  icon:
+    sprite: _F14/Roles/job_icons.rsi
+    state: hudgoi
+
+- type: jobIcon
+  id: hudcommsprogrammer
+  icon:
+    sprite: _F14/Roles/job_icons.rsi
+    state: hudcommsprogrammer
+
+- type: jobIcon
+  id: hudchiefengineer
+  icon:
+    sprite: _F14/Roles/job_icons.rsi
+    state: hudchiefengineer
+
+- type: jobIcon
+  id: hudassistantengineer
+  icon:
+    sprite: _F14/Roles/job_icons.rsi
+    state: hudassistantengineer
+
+- type: jobIcon
+  id: hudcontainmentengineer
+  icon:
+    sprite: _F14/Roles/job_icons.rsi
+    state: hudcontainmentengineer
+
+- type: jobIcon
+  id: hudseniorengineer
+  icon:
+    sprite: _F14/Roles/job_icons.rsi
+    state: hudseniorengineer
+
+- type: jobIcon
+  id: hudengineer
+  icon:
+    sprite: _F14/Roles/job_icons.rsi
+    state: hudengineer
+
+- type: jobIcon
+  id: hudengineertrainee
+  icon:
+    sprite: _F14/Roles/job_icons.rsi
+    state: hudengineertrainee
+
+- type: jobIcon
+  id: hudchiefmedicalofficer
+  icon:
+    sprite: _F14/Roles/job_icons.rsi
+    state: hudchiefmedicalofficer
+
+- type: jobIcon
+  id: hudassistantmedicalofficer
+  icon:
+    sprite: _F14/Roles/job_icons.rsi
+    state: hudassistantmedicalofficer
+
+- type: jobIcon
+  id: hudsurgeon
+  icon:
+    sprite: _F14/Roles/job_icons.rsi
+    state: hudsurgeon
+
+- type: jobIcon
+  id: hudpharmacist
+  icon:
+    sprite: _F14/Roles/job_icons.rsi
+    state: hudpharmacist
+
+- type: jobIcon
+  id: hudcounselor
+  icon:
+    sprite: _F14/Roles/job_icons.rsi
+    state: hudcounselor
+
+- type: jobIcon
+  id: hudphysician
+  icon:
+    sprite: _F14/Roles/job_icons.rsi
+    state: hudphysician
+
+- type: jobIcon
+  id: hudemt
+  icon:
+    sprite: _F14/Roles/job_icons.rsi
+    state: hudemt
+
+- type: jobIcon
+  id: hudtraineemedicaltechnician
+  icon:
+    sprite: _F14/Roles/job_icons.rsi
+    state: hudtraineemedicaltechnician
+
+- type: jobIcon
+  id: huddeckchief
+  icon:
+    sprite: _F14/Roles/job_icons.rsi
+    state: huddeckchief
+
+- type: jobIcon
+  id: hudsupplyassistant
+  icon:
+    sprite: _F14/Roles/job_icons.rsi
+    state: hudsupplyassistant
+
+- type: jobIcon
+  id: hudchiefscienceofficer
+  icon:
+    sprite: _F14/Roles/job_icons.rsi
+    state: hudchiefscienceofficer
+
+- type: jobIcon
+  id: hudseniorresearcher
+  icon:
+    sprite: _F14/Roles/job_icons.rsi
+    state: hudseniorresearcher
+
+- type: jobIcon
+  id: hudroboticist
+  icon:
+    sprite: _F14/Roles/job_icons.rsi
+    state: hudroboticist
+
+- type: jobIcon
+  id: hudscientist
+  icon:
+    sprite: _F14/Roles/job_icons.rsi
+    state: hudscientist
+
+- type: jobIcon
+  id: hudresearchassistant
+  icon:
+    sprite: _F14/Roles/job_icons.rsi
+    state: hudresearchassistant
+
+- type: jobIcon
+  id: hudassistantscienceofficer
+  icon:
+    sprite: _F14/Roles/job_icons.rsi
+    state: hudassistantscienceofficer
+
+- type: jobIcon
+  id: hudguardcommander
+  icon:
+    sprite: _F14/Roles/job_icons.rsi
+    state: hudguardcommander
+
+- type: jobIcon
+  id: hudlczcommander
+  icon:
+    sprite: _F14/Roles/job_icons.rsi
+    state: hudlczcommander
+
+- type: jobIcon
+  id: hudhczcommander
+  icon:
+    sprite: _F14/Roles/job_icons.rsi
+    state: hudhczcommander
+
+- type: jobIcon
+  id: hudezcommander
+  icon:
+    sprite: _F14/Roles/job_icons.rsi
+    state: hudezcommander
+
+- type: jobIcon
+  id: hudraisa
+  icon:
+    sprite: _F14/Roles/job_icons.rsi
+    state: hudraisa
+
+- type: jobIcon
+  id: hudlczsarge
+  icon:
+    sprite: _F14/Roles/job_icons.rsi
+    state: hudlczsarge
+
+- type: jobIcon
+  id: hudhczsarge
+  icon:
+    sprite: _F14/Roles/job_icons.rsi
+    state: hudhczsarge
+
+- type: jobIcon
+  id: hudezsenior
+  icon:
+    sprite: _F14/Roles/job_icons.rsi
+    state: hudezsenior
+
+- type: jobIcon
+  id: hudlczguard
+  icon:
+    sprite: _F14/Roles/job_icons.rsi
+    state: hudlczguard
+
+- type: jobIcon
+  id: hudhczguard
+  icon:
+    sprite: _F14/Roles/job_icons.rsi
+    state: hudhczguard
+
+- type: jobIcon
+  id: hudezguard
+  icon:
+    sprite: _F14/Roles/job_icons.rsi
+    state: hudezguard
+
+- type: jobIcon
+  id: hudittech
+  icon:
+    sprite: _F14/Roles/job_icons.rsi
+    state: hudittech
+
+- type: jobIcon
+  id: hud05rep
+  icon:
+    sprite: _F14/Roles/job_icons.rsi
+    state: hud05rep
+
+- type: jobIcon
+  id: MTF
+  icon:
+    sprite: _F14/Roles/job_icons.rsi
+    state: MTF

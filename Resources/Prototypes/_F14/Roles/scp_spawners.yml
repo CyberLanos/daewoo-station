@@ -1,0 +1,787 @@
+# ==========================================
+# SCP JOB SPAWN POINTS
+# ==========================================
+
+# ==========================================
+# CLASS-D
+# ==========================================
+- type: entity
+  id: SpawnPointSCPClassD
+  parent: MarkerBase
+  name: Class D spawn point
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: full
+  - type: SpawnPoint
+    job_id: SCPClassD
+
+# ==========================================
+# ADMINISTRATION / COMMAND
+# ==========================================
+- type: entity
+  id: SpawnPointSCPSiteDirector
+  parent: MarkerBase
+  name: Site Director spawn point
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: full
+  - type: SpawnPoint
+    job_id: SCPSiteDirector
+
+- type: entity
+  id: SpawnPointSCPSiteManager
+  parent: MarkerBase
+  name: Site Manager spawn point
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: full
+  - type: SpawnPoint
+    job_id: SCPSiteManager
+
+- type: entity
+  id: SpawnPointSCPCommunicationsOfficer
+  parent: MarkerBase
+  name: Communications Officer spawn point
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: full
+  - type: SpawnPoint
+    job_id: SCPCommunicationsOfficer
+
+- type: entity
+  id: SpawnPointSCPISDDetective
+  parent: MarkerBase
+  name: ISD Detective spawn point
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: full
+  - type: SpawnPoint
+    job_id: SCPISDDetective
+
+- type: entity
+  id: SpawnPointSCPEthicsCommittee
+  parent: MarkerBase
+  name: Ethics Committee Liaison spawn point
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: full
+  - type: SpawnPoint
+    job_id: SCPEthicsCommittee
+
+- type: entity
+  id: SpawnPointSCPGOCRepresentative
+  parent: MarkerBase
+  name: GOC Representative spawn point
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: full
+  - type: SpawnPoint
+    job_id: SCPGOCRepresentative
+
+- type: entity
+  id: SpawnPointSCPCommsTechnician
+  parent: MarkerBase
+  name: Communications Technician spawn point
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: full
+  - type: SpawnPoint
+    job_id: SCPCommsTechnician
+
+# ==========================================
+# ENGINEERING
+# ==========================================
+- type: entity
+  id: SpawnPointSCPEngineeringDirector
+  parent: MarkerBase
+  name: Engineering Director spawn point
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: full
+  - type: SpawnPoint
+    job_id: SCPEngineeringDirector
+
+- type: entity
+  id: SpawnPointSCPAsstEngDirector
+  parent: MarkerBase
+  name: Assistant Engineering Director spawn point
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: full
+  - type: SpawnPoint
+    job_id: SCPAsstEngDirector
+
+- type: entity
+  id: SpawnPointSCPContainmentEngineer
+  parent: MarkerBase
+  name: Containment Engineer spawn point
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: full
+  - type: SpawnPoint
+    job_id: SCPContainmentEngineer
+
+- type: entity
+  id: SpawnPointSCPSeniorEngineer
+  parent: MarkerBase
+  name: Senior Engineer spawn point
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: full
+  - type: SpawnPoint
+    job_id: SCPSeniorEngineer
+
+- type: entity
+  id: SpawnPointSCPEngineer
+  parent: MarkerBase
+  name: Engineer spawn point
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: full
+  - type: SpawnPoint
+    job_id: SCPEngineer
+
+- type: entity
+  id: SpawnPointSCPJuniorEngineer
+  parent: MarkerBase
+  name: Junior Engineer spawn point
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: full
+  - type: SpawnPoint
+    job_id: SCPJuniorEngineer
+
+# ==========================================
+# MEDICAL
+# ==========================================
+- type: entity
+  id: SpawnPointSCPMedicalDirector
+  parent: MarkerBase
+  name: Medical Director spawn point
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: full
+  - type: SpawnPoint
+    job_id: SCPMedicalDirector
+
+- type: entity
+  id: SpawnPointSCPAsstMedDirector
+  parent: MarkerBase
+  name: Assistant Medical Director spawn point
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: full
+  - type: SpawnPoint
+    job_id: SCPAsstMedDirector
+
+- type: entity
+  id: SpawnPointSCPSurgeon
+  parent: MarkerBase
+  name: Surgeon spawn point
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: full
+  - type: SpawnPoint
+    job_id: SCPSurgeon
+
+- type: entity
+  id: SpawnPointSCPChemist
+  parent: MarkerBase
+  name: Chemist spawn point
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: full
+  - type: SpawnPoint
+    job_id: SCPChemist
+
+- type: entity
+  id: SpawnPointSCPPsychiatrist
+  parent: MarkerBase
+  name: Psychiatrist spawn point
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: full
+  - type: SpawnPoint
+    job_id: SCPPsychiatrist
+
+- type: entity
+  id: SpawnPointSCPMedicalDoctor
+  parent: MarkerBase
+  name: Medical Doctor spawn point
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: full
+  - type: SpawnPoint
+    job_id: SCPMedicalDoctor
+
+- type: entity
+  id: SpawnPointSCPEMT
+  parent: MarkerBase
+  name: Emergency Medical Technician spawn point
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: full
+  - type: SpawnPoint
+    job_id: SCPEMT
+
+- type: entity
+  id: SpawnPointSCPMedicalIntern
+  parent: MarkerBase
+  name: Medical Intern spawn point
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: full
+  - type: SpawnPoint
+    job_id: SCPMedicalIntern
+
+# ==========================================
+# LOGISTICS
+# ==========================================
+- type: entity
+  id: SpawnPointSCPLogisticsOfficer
+  parent: MarkerBase
+  name: Logistics Officer spawn point
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: full
+  - type: SpawnPoint
+    job_id: SCPLogisticsOfficer
+
+- type: entity
+  id: SpawnPointSCPLogisticsSpecialist
+  parent: MarkerBase
+  name: Logistics Specialist spawn point
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: full
+  - type: SpawnPoint
+    job_id: SCPLogisticsSpecialist
+
+- type: entity
+  id: SpawnPointSCPOfficeWorker
+  parent: MarkerBase
+  name: Office Worker spawn point
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: full
+  - type: SpawnPoint
+    job_id: SCPOfficeWorker
+
+- type: entity
+  id: SpawnPointSCPBartender
+  parent: MarkerBase
+  name: Bartender spawn point
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: full
+  - type: SpawnPoint
+    job_id: SCPBartender
+
+- type: entity
+  id: SpawnPointSCPChaplain
+  parent: MarkerBase
+  name: Chaplain spawn point
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: full
+  - type: SpawnPoint
+    job_id: SCPChaplain
+
+# ==========================================
+# SCIENCE / RESEARCH
+# ==========================================
+- type: entity
+  id: SpawnPointSCPResearchDirector
+  parent: MarkerBase
+  name: Research Director spawn point
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: full
+  - type: SpawnPoint
+    job_id: SCPResearchDirector
+
+- type: entity
+  id: SpawnPointSCPSeniorResearcher
+  parent: MarkerBase
+  name: Senior Researcher spawn point
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: full
+  - type: SpawnPoint
+    job_id: SCPSeniorResearcher
+
+- type: entity
+  id: SpawnPointSCPSeniorRobotics
+  parent: MarkerBase
+  name: Senior Robotics Technician spawn point
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: full
+  - type: SpawnPoint
+    job_id: SCPSeniorRobotics
+
+- type: entity
+  id: SpawnPointSCPResearcher
+  parent: MarkerBase
+  name: Researcher spawn point
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: full
+  - type: SpawnPoint
+    job_id: SCPResearcher
+
+- type: entity
+  id: SpawnPointSCPRoboticsTechnician
+  parent: MarkerBase
+  name: Robotics Technician spawn point
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: full
+  - type: SpawnPoint
+    job_id: SCPRoboticsTechnician
+
+- type: entity
+  id: SpawnPointSCPResearcherAssociate
+  parent: MarkerBase
+  name: Researcher Associate spawn point
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: full
+  - type: SpawnPoint
+    job_id: SCPResearcherAssociate
+
+- type: entity
+  id: SpawnPointSCPJuniorRobotics
+  parent: MarkerBase
+  name: Junior Robotics Technician spawn point
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: full
+  - type: SpawnPoint
+    job_id: SCPJuniorRobotics
+
+# ==========================================
+# SECURITY
+# ==========================================
+- type: entity
+  id: SpawnPointSCPGuardCommander
+  parent: MarkerBase
+  name: Guard Commander spawn point
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: full
+  - type: SpawnPoint
+    job_id: SCPGuardCommander
+
+- type: entity
+  id: SpawnPointSCPLCZJuniorLt
+  parent: MarkerBase
+  name: LCZ Zone Junior Lieutenant spawn point
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: full
+  - type: SpawnPoint
+    job_id: SCPLCZJuniorLt
+
+- type: entity
+  id: SpawnPointSCPHCZSeniorLt
+  parent: MarkerBase
+  name: HCZ Zone Senior Lieutenant spawn point
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: full
+  - type: SpawnPoint
+    job_id: SCPHCZSeniorLt
+
+- type: entity
+  id: SpawnPointSCPEZSupervisor
+  parent: MarkerBase
+  name: EZ Zone Supervisor spawn point
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: full
+  - type: SpawnPoint
+    job_id: SCPEZSupervisor
+
+- type: entity
+  id: SpawnPointSCPRAISAAgent
+  parent: MarkerBase
+  name: RAISA Agent spawn point
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: full
+  - type: SpawnPoint
+    job_id: SCPRAISAAgent
+
+- type: entity
+  id: SpawnPointSCPLCZSergeant
+  parent: MarkerBase
+  name: LCZ Sergeant spawn point
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: full
+  - type: SpawnPoint
+    job_id: SCPLCZSergeant
+
+- type: entity
+  id: SpawnPointSCPHCZSergeant
+  parent: MarkerBase
+  name: HCZ Sergeant spawn point
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: full
+  - type: SpawnPoint
+    job_id: SCPHCZSergeant
+
+- type: entity
+  id: SpawnPointSCPEZSeniorAgent
+  parent: MarkerBase
+  name: EZ Senior Agent spawn point
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: full
+  - type: SpawnPoint
+    job_id: SCPEZSeniorAgent
+
+- type: entity
+  id: SpawnPointSCPLCZGuard
+  parent: MarkerBase
+  name: LCZ Guard spawn point
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: full
+  - type: SpawnPoint
+    job_id: SCPLCZGuard
+
+- type: entity
+  id: SpawnPointSCPHCZGuard
+  parent: MarkerBase
+  name: HCZ Guard spawn point
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: full
+  - type: SpawnPoint
+    job_id: SCPHCZGuard
+
+- type: entity
+  id: SpawnPointSCPEZAgent
+  parent: MarkerBase
+  name: EZ Agent spawn point
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: full
+  - type: SpawnPoint
+    job_id: SCPEZAgent
+
+- type: entity
+  id: SpawnPointSCPLCZCadet
+  parent: MarkerBase
+  name: LCZ Cadet spawn point
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: full
+  - type: SpawnPoint
+    job_id: SCPLCZCadet
+
+- type: entity
+  id: SpawnPointSCPHCZPrivate
+  parent: MarkerBase
+  name: HCZ Private spawn point
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: full
+  - type: SpawnPoint
+    job_id: SCPHCZPrivate
+
+- type: entity
+  id: SpawnPointSCPEZProbAgent
+  parent: MarkerBase
+  name: EZ Probationary Agent spawn point
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: full
+  - type: SpawnPoint
+    job_id: SCPEZProbAgent
+
+# ==========================================
+# SPECIAL
+# ==========================================
+- type: entity
+  id: SpawnPointSCPAIC
+  parent: MarkerBase
+  name: AIC spawn point
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: full
+  - type: SpawnPoint
+    job_id: SCPAIC
+
+- type: entity
+  id: SpawnPointSCPRobot
+  parent: MarkerBase
+  name: Robot spawn point
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: full
+  - type: SpawnPoint
+    job_id: SCPRobot
+
+# ==========================================
+# O5 COUNCIL
+# ==========================================
+- type: entity
+  id: SpawnPointSCPO5Council
+  parent: MarkerBase
+  name: O5 Council Member spawn point
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: full
+  - type: SpawnPoint
+    job_id: SCPO5Council
+
+# ==========================================
+# MOBILE TASK FORCES
+# ==========================================
+- type: entity
+  id: SpawnPointSCPMTFE11Commander
+  parent: MarkerBase
+  name: MTF E-11 Commander spawn point
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: full
+  - type: SpawnPoint
+    job_id: SCPMTFE11Commander
+
+- type: entity
+  id: SpawnPointSCPMTFE11Lieutenant
+  parent: MarkerBase
+  name: MTF E-11 Lieutenant spawn point
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: full
+  - type: SpawnPoint
+    job_id: SCPMTFE11Lieutenant
+
+- type: entity
+  id: SpawnPointSCPMTFE11Sergeant
+  parent: MarkerBase
+  name: MTF E-11 Sergeant spawn point
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: full
+  - type: SpawnPoint
+    job_id: SCPMTFE11Sergeant
+
+- type: entity
+  id: SpawnPointSCPMTFE11Agent
+  parent: MarkerBase
+  name: MTF E-11 Agent spawn point
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: full
+  - type: SpawnPoint
+    job_id: SCPMTFE11Agent
+
+- type: entity
+  id: SpawnPointSCPMTFNU7Commander
+  parent: MarkerBase
+  name: MTF Nu-7 Commander spawn point
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: full
+  - type: SpawnPoint
+    job_id: SCPMTFNU7Commander
+
+- type: entity
+  id: SpawnPointSCPMTFNU7Lieutenant
+  parent: MarkerBase
+  name: MTF Nu-7 Lieutenant spawn point
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: full
+  - type: SpawnPoint
+    job_id: SCPMTFNU7Lieutenant
+
+- type: entity
+  id: SpawnPointSCPMTFNU7Agent
+  parent: MarkerBase
+  name: MTF Nu-7 Agent spawn point
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: full
+  - type: SpawnPoint
+    job_id: SCPMTFNU7Agent

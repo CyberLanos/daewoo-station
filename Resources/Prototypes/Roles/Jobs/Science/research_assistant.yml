@@ -50,6 +50,8 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 - type: job
+  hidden: true
+  setPreference: false
   id: ResearchAssistant
   name: job-name-research-assistant
   description: job-description-research-assistant

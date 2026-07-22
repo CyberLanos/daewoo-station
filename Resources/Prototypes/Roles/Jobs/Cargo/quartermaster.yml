@@ -125,6 +125,8 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 - type: job
+  hidden: true
+  setPreference: false
   id: Quartermaster
   name: job-name-qm
   description: job-description-qm

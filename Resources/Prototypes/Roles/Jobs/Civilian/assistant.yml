@@ -76,7 +76,9 @@
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-- type: job # goob edit
+- type: job
+  hidden: true
+  setPreference: false # goob edit
   id: Passenger
   name: job-name-passenger
   description: job-description-passenger

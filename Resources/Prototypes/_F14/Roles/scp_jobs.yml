@@ -1,0 +1,1075 @@
+# ==========================================
+# SCP JOBS — Foundation-14
+# ==========================================
+
+# ==========================================
+# CLASS-D
+# ==========================================
+
+- type: job
+  id: SCPClassD
+  name: "Class D"
+  description: "Disposable test subject recruited from death-row inmates. Follow all orders from scientific and security staff."
+  playTimeTracker: JobSCPClassD
+  icon: "huddclass"
+  supervisors: "Research staff and security"
+  weight: 20
+  maxPlayers: -1
+  hidden: false
+  setPreference: true
+  startingGear: SCPClassDGear
+  departments:
+  - SCPClassD
+  accessGroups:
+  - ClassD
+
+
+# ==========================================
+# ADMINISTRATION / COMMAND
+# ==========================================
+
+- type: job
+  id: SCPSiteDirector
+  name: "Site Director"
+  description: "Supreme commander of the Foundation site. All departments report to you."
+  playTimeTracker: JobSCPSiteDirector
+  icon: "hudsitedirector"
+  supervisors: "O5 Council"
+  weight: 1
+  maxPlayers: 1
+  hidden: false
+  setPreference: true
+  startingGear: SCPSiteDirectorGear
+  departments:
+  - SCPCommand
+  accessGroups:
+  - SiteDirector
+
+- type: job
+  id: SCPSiteManager
+  name: "Site Manager"
+  description: "Deputy to the Site Director. Manages daily administrative operations."
+  playTimeTracker: JobSCPSiteManager
+  icon: "hudhumanresources"
+  supervisors: "Site Director"
+  weight: 1
+  maxPlayers: 1
+  hidden: false
+  setPreference: true
+  startingGear: SCPSiteManagerGear
+  departments:
+  - SCPCommand
+  accessGroups:
+  - AdminLevel5
+
+- type: job
+  id: SCPCommunicationsOfficer
+  name: "Communications Officer"
+  description: "Manages internal communications and external Foundation contacts."
+  playTimeTracker: JobSCPCommunicationsOfficer
+  icon: "hudcommsofficer"
+  supervisors: "Site Director"
+  weight: 2
+  maxPlayers: 2
+  hidden: false
+  setPreference: true
+  startingGear: SCPCommunicationsOfficerGear
+  departments:
+  - SCPCommand
+  accessGroups:
+  - AdminLevel2
+
+- type: job
+  id: SCPISDDetective
+  name: "ISD Detective"
+  description: "Internal Security Department detective. Investigates protocol violations, sabotage, and unauthorized activity within the site. Authorized to interrogate any personnel."
+  playTimeTracker: JobSCPISDDetective
+  icon: "ISD"
+  supervisors: "Site Director"
+  weight: 2
+  maxPlayers: 2
+  hidden: false
+  setPreference: true
+  startingGear: SCPISDDetectiveGear
+  departments:
+  - SCPCommand
+  accessGroups:
+  - SecurityLevel3
+  - AdminLevel2
+  access:
+  - Research
+
+- type: job
+  id: SCPEthicsCommittee
+  name: "Ethics Committee Liaison"
+  description: "Foundation Ethics Committee representative. Oversees personnel compliance with Foundation ethical guidelines. Has authority to override administrative decisions."
+  playTimeTracker: JobSCPEthicsCommittee
+  icon: "hudecl"
+  supervisors: "O5 Council"
+  weight: 1
+  maxPlayers: 1
+  hidden: false
+  setPreference: true
+  startingGear: SCPEthicsGear
+  departments:
+  - SCPCommand
+  accessGroups:
+  - AdminLevel4
+
+- type: job
+  id: SCPGOCRepresentative
+  name: "GOC Representative"
+  description: "Global Occult Coalition liaison. Monitors joint operations and represents Coalition interests at the site."
+  playTimeTracker: JobSCPGOCRepresentative
+  icon: "hudgoi"
+  supervisors: "Site Director"
+  weight: 1
+  maxPlayers: 1
+  hidden: false
+  setPreference: true
+  startingGear: SCPGOCGear
+  departments:
+  - SCPCommand
+  accessGroups:
+  - AdminLevel3
+  - SecurityLevel3
+  access:
+  - Research
+
+- type: job
+  id: SCPCommsTechnician
+  name: "Communications Technician"
+  description: "Maintains and operates the site's communications infrastructure."
+  playTimeTracker: JobSCPCommsTechnician
+  icon: "hudcommsprogrammer"
+  supervisors: "Communications Officer"
+  weight: 5
+  maxPlayers: -1
+  hidden: false
+  setPreference: true
+  startingGear: SCPCommsTechGear
+  departments:
+  - SCPCommand
+  accessGroups:
+  - AdminLevel1
+  - TechLevel1
+
+
+# ==========================================
+# ENGINEERING
+# ==========================================
+
+- type: job
+  id: SCPEngineeringDirector
+  name: "Engineering Director"
+  description: "Head of Engineering. Oversees all technical systems and containment infrastructure."
+  playTimeTracker: JobSCPEngineeringDirector
+  icon: "hudchiefengineer"
+  supervisors: "Site Director"
+  weight: 1
+  maxPlayers: 1
+  hidden: false
+  setPreference: true
+  startingGear: SCPEngDirectorGear
+  departments:
+  - SCPEngineering
+  accessGroups:
+  - AdminLevel3
+  - TechLevel3
+  access:
+  - Containment
+
+- type: job
+  id: SCPAsstEngDirector
+  name: "Assistant Engineering Director"
+  description: "Deputy head of Engineering. Assumes command in the director's absence."
+  playTimeTracker: JobSCPAsstEngDirector
+  icon: "hudassistantengineer"
+  supervisors: "Engineering Director"
+  weight: 1
+  maxPlayers: 1
+  hidden: false
+  setPreference: true
+  startingGear: SCPAsstEngDirectorGear
+  departments:
+  - SCPEngineering
+  accessGroups:
+  - AdminLevel2
+  - TechLevel3
+
+- type: job
+  id: SCPContainmentEngineer
+  name: "Containment Engineer"
+  description: "Specialist in SCP containment systems. Designs, maintains and repairs containment hardware."
+  playTimeTracker: JobSCPContainmentEngineer
+  icon: "hudcontainmentengineer"
+  supervisors: "Engineering Director"
+  weight: 3
+  maxPlayers: -1
+  hidden: false
+  setPreference: true
+  startingGear: SCPContainmentEngGear
+  departments:
+  - SCPEngineering
+  accessGroups:
+  - TechLevel2
+  access:
+  - Containment
+
+- type: job
+  id: SCPSeniorEngineer
+  name: "Senior Engineer"
+  description: "Experienced engineer responsible for complex technical systems."
+  playTimeTracker: JobSCPSeniorEngineer
+  icon: "hudseniorengineer"
+  supervisors: "Engineering Director"
+  weight: 3
+  maxPlayers: -1
+  hidden: false
+  setPreference: true
+  startingGear: SCPSeniorEngGear
+  departments:
+  - SCPEngineering
+  accessGroups:
+  - TechLevel3
+
+- type: job
+  id: SCPEngineer
+  name: "Engineer"
+  description: "Foundation engineer handling maintenance and repairs."
+  playTimeTracker: JobSCPEngineer
+  icon: "hudengineer"
+  supervisors: "Senior Engineer"
+  weight: 5
+  maxPlayers: -1
+  hidden: false
+  setPreference: true
+  startingGear: SCPEngGear
+  departments:
+  - SCPEngineering
+  accessGroups:
+  - TechLevel2
+
+- type: job
+  id: SCPJuniorEngineer
+  name: "Junior Engineer"
+  description: "Entry-level engineer. Assists senior staff with routine tasks."
+  playTimeTracker: JobSCPJuniorEngineer
+  icon: "hudengineertrainee"
+  supervisors: "Senior Engineer"
+  weight: 7
+  maxPlayers: -1
+  hidden: false
+  setPreference: true
+  startingGear: SCPJuniorEngGear
+  departments:
+  - SCPEngineering
+  accessGroups:
+  - TechLevel1
+
+
+# ==========================================
+# MEDICAL
+# ==========================================
+
+- type: job
+  id: SCPMedicalDirector
+  name: "Medical Director"
+  description: "Head of Medical. Oversees all healthcare, psychological support and biological SCP research."
+  playTimeTracker: JobSCPMedicalDirector
+  icon: "hudchiefmedicalofficer"
+  supervisors: "Site Director"
+  weight: 1
+  maxPlayers: 1
+  hidden: false
+  setPreference: true
+  startingGear: SCPMedDirectorGear
+  departments:
+  - SCPMedical
+  accessGroups:
+  - AdminLevel3
+  - ScienceLevel3
+  access:
+  - Medical
+
+- type: job
+  id: SCPAsstMedDirector
+  name: "Assistant Medical Director"
+  description: "Deputy head of Medical. Manages day-to-day medical operations."
+  playTimeTracker: JobSCPAsstMedDirector
+  icon: "hudassistantmedicalofficer"
+  supervisors: "Medical Director"
+  weight: 1
+  maxPlayers: 1
+  hidden: false
+  setPreference: true
+  startingGear: SCPAsstMedDirectorGear
+  departments:
+  - SCPMedical
+  accessGroups:
+  - AdminLevel2
+  - ScienceLevel2
+  access:
+  - Medical
+
+- type: job
+  id: SCPSurgeon
+  name: "Surgeon"
+  description: "Specialist surgeon. Performs complex procedures on Foundation personnel and SCP-related injuries."
+  playTimeTracker: JobSCPSurgeon
+  icon: "hudsurgeon"
+  supervisors: "Medical Director"
+  weight: 2
+  maxPlayers: -1
+  hidden: false
+  setPreference: true
+  startingGear: SCPSurgeonGear
+  departments:
+  - SCPMedical
+  accessGroups:
+  - ScienceLevel2
+  access:
+  - Medical
+
+- type: job
+  id: SCPChemist
+  name: "Chemist"
+  description: "Medical chemist. Synthesizes pharmaceuticals and compounds for medical and research use."
+  playTimeTracker: JobSCPChemist
+  icon: "hudpharmacist"
+  supervisors: "Medical Director"
+  weight: 3
+  maxPlayers: -1
+  hidden: false
+  setPreference: true
+  startingGear: SCPChemistGear
+  departments:
+  - SCPMedical
+  accessGroups:
+  - ScienceLevel1
+  access:
+  - Medical
+  - Lab
+
+- type: job
+  id: SCPPsychiatrist
+  name: "Psychiatrist"
+  description: "Foundation psychiatrist. Maintains the mental health of personnel exposed to anomalous phenomena."
+  playTimeTracker: JobSCPPsychiatrist
+  icon: "hudcounselor"
+  supervisors: "Medical Director"
+  weight: 3
+  maxPlayers: -1
+  hidden: false
+  setPreference: true
+  startingGear: SCPPsychiatristGear
+  departments:
+  - SCPMedical
+  access:
+  - Medical
+
+- type: job
+  id: SCPMedicalDoctor
+  name: "Medical Doctor"
+  description: "General practitioner. Handles routine medical care for Foundation staff."
+  playTimeTracker: JobSCPMedicalDoctor
+  icon: "hudphysician"
+  supervisors: "Medical Director"
+  weight: 5
+  maxPlayers: -1
+  hidden: false
+  setPreference: true
+  startingGear: SCPMedDoctorGear
+  departments:
+  - SCPMedical
+  access:
+  - Medical
+
+- type: job
+  id: SCPEMT
+  name: "Emergency Medical Technician"
+  description: "Emergency responder. Provides rapid medical assistance during SCP incidents and breaches."
+  playTimeTracker: JobSCPEMT
+  icon: "hudemt"
+  supervisors: "Medical Director"
+  weight: 5
+  maxPlayers: -1
+  hidden: false
+  setPreference: true
+  startingGear: SCPEMTGear
+  departments:
+  - SCPMedical
+  access:
+  - Medical
+
+- type: job
+  id: SCPMedicalIntern
+  name: "Medical Intern"
+  description: "Entry-level medical trainee. Assists doctors under supervision."
+  playTimeTracker: JobSCPMedicalIntern
+  icon: "hudtraineemedicaltechnician"
+  supervisors: "Medical Doctor"
+  weight: 7
+  maxPlayers: -1
+  hidden: false
+  setPreference: true
+  startingGear: SCPMedInternGear
+  departments:
+  - SCPMedical
+  access:
+  - Medical
+
+
+# ==========================================
+# LOGISTICS
+# ==========================================
+
+- type: job
+  id: SCPLogisticsOfficer
+  name: "Logistics Officer"
+  description: "Manages supply chains and resource distribution across the site."
+  playTimeTracker: JobSCPLogisticsOfficer
+  icon: "huddeckchief"
+  supervisors: "Site Manager"
+  weight: 2
+  maxPlayers: 2
+  hidden: false
+  setPreference: true
+  startingGear: SCPLogOfficerGear
+  departments:
+  - SCPLogistics
+  accessGroups:
+  - AdminLevel1
+  access:
+  - Maintenance
+
+- type: job
+  id: SCPLogisticsSpecialist
+  name: "Logistics Specialist"
+  description: "Handles inventory management and delivery of supplies."
+  playTimeTracker: JobSCPLogisticsSpecialist
+  icon: "hudsupplyassistant"
+  supervisors: "Logistics Officer"
+  weight: 5
+  maxPlayers: -1
+  hidden: false
+  setPreference: true
+  startingGear: SCPLogSpecialistGear
+  departments:
+  - SCPLogistics
+  access:
+  - Maintenance
+
+- type: job
+  id: SCPOfficeWorker
+  name: "Office Worker"
+  description: "Administrative support staff. Handles paperwork and routine coordination."
+  playTimeTracker: JobSCPOfficeWorker
+  icon: "hudhumanresources"
+  supervisors: "Site Manager"
+  weight: 7
+  maxPlayers: -1
+  hidden: false
+  setPreference: true
+  startingGear: SCPOfficeWorkerGear
+  departments:
+  - SCPLogistics
+
+- type: job
+  id: SCPBartender
+  name: "Bartender"
+  description: "Operates the facility lounge. Provides morale through beverages and a place to socialize."
+  playTimeTracker: JobSCPBartender
+  icon: "JobIconBartender"
+  supervisors: "Logistics Officer"
+  weight: 3
+  maxPlayers: 2
+  hidden: false
+  setPreference: true
+  startingGear: SCPBartenderGear
+  departments:
+  - SCPLogistics
+  access:
+  - Kitchen
+
+- type: job
+  id: SCPChaplain
+  name: "Chaplain"
+  description: "Spiritual advisor and counselor. Provides psychological and spiritual support to Foundation personnel."
+  playTimeTracker: JobSCPChaplain
+  icon: "JobIconChaplain"
+  supervisors: "Site Manager"
+  weight: 2
+  maxPlayers: 1
+  hidden: false
+  setPreference: true
+  startingGear: SCPChaplainGear
+  departments:
+  - SCPLogistics
+
+
+# ==========================================
+# SCIENCE / RESEARCH
+# ==========================================
+
+- type: job
+  id: SCPResearchDirector
+  name: "Research Director"
+  description: "Head of the Research Department. Oversees all scientific study of SCP objects and anomalous phenomena."
+  playTimeTracker: JobSCPResearchDirector
+  icon: "hudchiefscienceofficer"
+  supervisors: "Site Director"
+  weight: 1
+  maxPlayers: 1
+  hidden: false
+  setPreference: true
+  startingGear: SCPRDGear
+  departments:
+  - SCPScience
+  accessGroups:
+  - ResearchDirector
+
+- type: job
+  id: SCPSeniorResearcher
+  name: "Senior Researcher"
+  description: "Experienced scientist leading research teams on high-clearance SCP objects."
+  playTimeTracker: JobSCPSeniorResearcher
+  icon: "hudseniorresearcher"
+  supervisors: "Research Director"
+  weight: 2
+  maxPlayers: -1
+  hidden: false
+  setPreference: true
+  startingGear: SCPSeniorResearcherGear
+  departments:
+  - SCPScience
+  accessGroups:
+  - ScienceLevel4
+
+- type: job
+  id: SCPSeniorRobotics
+  name: "Senior Robotics Technician"
+  description: "Lead robotics engineer. Designs and maintains automated systems and robotic entities."
+  playTimeTracker: JobSCPSeniorRobotics
+  icon: "hudroboticist"
+  supervisors: "Research Director"
+  weight: 2
+  maxPlayers: -1
+  hidden: false
+  setPreference: true
+  startingGear: SCPSeniorRoboticsGear
+  departments:
+  - SCPScience
+  accessGroups:
+  - ScienceLevel3
+  - TechLevel2
+
+- type: job
+  id: SCPResearcher
+  name: "Researcher"
+  description: "Foundation scientist. Conducts research and experiments with SCP objects."
+  playTimeTracker: JobSCPResearcher
+  icon: "hudscientist"
+  supervisors: "Senior Researcher"
+  weight: 5
+  maxPlayers: -1
+  hidden: false
+  setPreference: true
+  startingGear: SCPResearcherGear
+  departments:
+  - SCPScience
+  accessGroups:
+  - ScienceLevel2
+
+- type: job
+  id: SCPRoboticsTechnician
+  name: "Robotics Technician"
+  description: "Robotics and electronics specialist. Maintains automated containment systems."
+  playTimeTracker: JobSCPRoboticsTechnician
+  icon: "hudroboticist"
+  supervisors: "Senior Robotics Technician"
+  weight: 5
+  maxPlayers: -1
+  hidden: false
+  setPreference: true
+  startingGear: SCPRoboticsGear
+  departments:
+  - SCPScience
+  accessGroups:
+  - TechLevel1
+  - ScienceLevel1
+
+- type: job
+  id: SCPResearcherAssociate
+  name: "Researcher Associate"
+  description: "Junior researcher. Assists senior scientists and conducts basic experiments."
+  playTimeTracker: JobSCPResearcherAssociate
+  icon: "hudresearchassistant"
+  supervisors: "Researcher"
+  weight: 7
+  maxPlayers: -1
+  hidden: false
+  setPreference: true
+  startingGear: SCPResearcherAssociateGear
+  departments:
+  - SCPScience
+  accessGroups:
+  - ScienceLevel1
+
+- type: job
+  id: SCPJuniorRobotics
+  name: "Junior Robotics Technician"
+  description: "Entry-level robotics assistant. Performs routine maintenance under supervision."
+  playTimeTracker: JobSCPJuniorRobotics
+  icon: "hudassistantscienceofficer"
+  supervisors: "Robotics Technician"
+  weight: 7
+  maxPlayers: -1
+  hidden: false
+  setPreference: true
+  startingGear: SCPJuniorRoboticsGear
+  departments:
+  - SCPScience
+  accessGroups:
+  - TechLevel1
+
+
+# ==========================================
+# SECURITY
+# ==========================================
+
+- type: job
+  id: SCPGuardCommander
+  name: "Guard Commander"
+  description: "Commander of all site security forces. Coordinates breach response and personnel protection."
+  playTimeTracker: JobSCPGuardCommander
+  icon: "hudguardcommander"
+  supervisors: "Site Director"
+  weight: 1
+  maxPlayers: 1
+  hidden: false
+  setPreference: true
+  startingGear: SCPGuardCommanderGear
+  departments:
+  - SCPSecurity
+  accessGroups:
+  - SecurityLevel5
+
+- type: job
+  id: SCPLCZJuniorLt
+  name: "LCZ Zone Junior Lieutenant"
+  description: "Junior officer commanding Light Containment Zone security forces."
+  playTimeTracker: JobSCPLCZJuniorLt
+  icon: "hudlczcommander"
+  supervisors: "Guard Commander"
+  weight: 1
+  maxPlayers: 1
+  hidden: false
+  setPreference: true
+  startingGear: SCPLCZJuniorLtGear
+  departments:
+  - SCPSecurity
+  accessGroups:
+  - SecurityLevel4
+
+- type: job
+  id: SCPHCZSeniorLt
+  name: "HCZ Zone Senior Lieutenant"
+  description: "Senior officer commanding Heavy Containment Zone security forces."
+  playTimeTracker: JobSCPHCZSeniorLt
+  icon: "hudhczcommander"
+  supervisors: "Guard Commander"
+  weight: 1
+  maxPlayers: 1
+  hidden: false
+  setPreference: true
+  startingGear: SCPHCZSeniorLtGear
+  departments:
+  - SCPSecurity
+  accessGroups:
+  - SecurityLevel4
+
+- type: job
+  id: SCPEZSupervisor
+  name: "EZ Zone Supervisor"
+  description: "Supervisor overseeing all Entrance Zone security operations."
+  playTimeTracker: JobSCPEZSupervisor
+  icon: "hudezcommander"
+  supervisors: "Guard Commander"
+  weight: 1
+  maxPlayers: 1
+  hidden: false
+  setPreference: true
+  startingGear: SCPEZSupervisorGear
+  departments:
+  - SCPSecurity
+  accessGroups:
+  - SecurityLevel3
+
+- type: job
+  id: SCPRAISAAgent
+  name: "RAISA Agent"
+  description: "Records and Information Security Administration agent. Manages classified documents and information security."
+  playTimeTracker: JobSCPRAISAAgent
+  icon: "hudraisa"
+  supervisors: "Site Director"
+  weight: 2
+  maxPlayers: 2
+  hidden: false
+  setPreference: true
+  startingGear: SCPRAISAGear
+  departments:
+  - SCPSecurity
+  accessGroups:
+  - SecurityLevel3
+  access:
+  - Research
+  - Admin2
+
+- type: job
+  id: SCPLCZSergeant
+  name: "LCZ Sergeant"
+  description: "NCO commanding an LCZ security team."
+  playTimeTracker: JobSCPLCZSergeant
+  icon: "hudlczsarge"
+  supervisors: "LCZ Zone Junior Lieutenant"
+  weight: 3
+  maxPlayers: -1
+  hidden: false
+  setPreference: true
+  startingGear: SCPLCZSergeantGear
+  departments:
+  - SCPSecurity
+  accessGroups:
+  - SecurityLevel3
+
+- type: job
+  id: SCPHCZSergeant
+  name: "HCZ Sergeant"
+  description: "NCO commanding an HCZ security team."
+  playTimeTracker: JobSCPHCZSergeant
+  icon: "hudhczsarge"
+  supervisors: "HCZ Zone Senior Lieutenant"
+  weight: 3
+  maxPlayers: -1
+  hidden: false
+  setPreference: true
+  startingGear: SCPHCZSergeantGear
+  departments:
+  - SCPSecurity
+  accessGroups:
+  - SecurityLevel3
+
+- type: job
+  id: SCPEZSeniorAgent
+  name: "EZ Senior Agent"
+  description: "Experienced Entrance Zone security agent."
+  playTimeTracker: JobSCPEZSeniorAgent
+  icon: "hudezsenior"
+  supervisors: "EZ Zone Supervisor"
+  weight: 3
+  maxPlayers: -1
+  hidden: false
+  setPreference: true
+  startingGear: SCPEZSeniorAgentGear
+  departments:
+  - SCPSecurity
+  accessGroups:
+  - SecurityLevel2
+
+- type: job
+  id: SCPLCZGuard
+  name: "LCZ Guard"
+  description: "Security guard patrolling the Light Containment Zone."
+  playTimeTracker: JobSCPLCZGuard
+  icon: "hudlczguard"
+  supervisors: "LCZ Sergeant"
+  weight: 7
+  maxPlayers: -1
+  hidden: false
+  setPreference: true
+  startingGear: SCPLCZGuardGear
+  departments:
+  - SCPSecurity
+  accessGroups:
+  - SecurityLevel2
+
+- type: job
+  id: SCPHCZGuard
+  name: "HCZ Guard"
+  description: "Security guard patrolling the Heavy Containment Zone."
+  playTimeTracker: JobSCPHCZGuard
+  icon: "hudhczguard"
+  supervisors: "HCZ Sergeant"
+  weight: 5
+  maxPlayers: -1
+  hidden: false
+  setPreference: true
+  startingGear: SCPHCZGuardGear
+  departments:
+  - SCPSecurity
+  accessGroups:
+  - SecurityLevel2
+
+- type: job
+  id: SCPEZAgent
+  name: "EZ Agent"
+  description: "Security agent operating in the Entrance Zone."
+  playTimeTracker: JobSCPEZAgent
+  icon: "hudezguard"
+  supervisors: "EZ Senior Agent"
+  weight: 7
+  maxPlayers: -1
+  hidden: false
+  setPreference: true
+  startingGear: SCPEZAgentGear
+  departments:
+  - SCPSecurity
+  accessGroups:
+  - SecurityLevel1
+
+- type: job
+  id: SCPLCZCadet
+  name: "LCZ Cadet"
+  description: "Security cadet in training. Assists LCZ guards and learns containment protocols."
+  playTimeTracker: JobSCPLCZCadet
+  icon: "hudlczguard"
+  supervisors: "LCZ Guard"
+  weight: 10
+  maxPlayers: -1
+  hidden: false
+  setPreference: true
+  startingGear: SCPLCZCadetGear
+  departments:
+  - SCPSecurity
+  accessGroups:
+  - SecurityLevel1
+
+- type: job
+  id: SCPHCZPrivate
+  name: "HCZ Private"
+  description: "Junior security private assigned to the Heavy Containment Zone."
+  playTimeTracker: JobSCPHCZPrivate
+  icon: "hudhczguard"
+  supervisors: "HCZ Guard"
+  weight: 10
+  maxPlayers: -1
+  hidden: false
+  setPreference: true
+  startingGear: SCPHCZPrivateGear
+  departments:
+  - SCPSecurity
+  accessGroups:
+  - SecurityLevel1
+
+- type: job
+  id: SCPEZProbAgent
+  name: "EZ Probationary Agent"
+  description: "Probationary security agent on-the-job training in the Entrance Zone."
+  playTimeTracker: JobSCPEZProbAgent
+  icon: "hudezguard"
+  supervisors: "EZ Senior Agent"
+  weight: 10
+  maxPlayers: -1
+  hidden: false
+  setPreference: true
+  startingGear: SCPEZProbGear
+  departments:
+  - SCPSecurity
+  accessGroups:
+  - SecurityLevel1
+
+
+# ==========================================
+# SPECIAL
+# ==========================================
+
+- type: job
+  id: SCPAIC
+  name: "AIC"
+  description: "Artificially Intelligent Conscript. An AI-based entity bound to serve the Foundation under strict ethical constraints."
+  playTimeTracker: JobSCPAIC
+  icon: "hudittech"
+  supervisors: "Site Director"
+  weight: 1
+  maxPlayers: 1
+  hidden: false
+  setPreference: true
+  startingGear: SCPAICGear
+  departments:
+  - SCPSpecial
+  accessGroups:
+  - O5
+
+- type: job
+  id: SCPRobot
+  name: "Robot"
+  description: "Autonomous robotic unit in service of the Foundation. Performs tasks too dangerous for humans."
+  playTimeTracker: JobSCPRobot
+  icon: "hudroboticist"
+  supervisors: "Research Director"
+  weight: 2
+  maxPlayers: -1
+  hidden: false
+  setPreference: true
+  startingGear: SCPRobotGear
+  departments:
+  - SCPSpecial
+  accessGroups:
+  - SecurityLevel5
+  - ScienceLevel5
+
+
+# ==========================================
+# O5 COUNCIL — HIDDEN, СПАВН ТІЛЬКИ АДМІНАМИ
+# ==========================================
+
+- type: job
+  id: SCPO5Council
+  name: "O5 Council Member"
+  description: "Member of the O5 Council. The highest authority within the Foundation. Identity is strictly classified."
+  playTimeTracker: JobSCPO5Council
+  icon: "hud05rep"
+  supervisors: "The Foundation"
+  weight: 0
+  maxPlayers: 5
+  hidden: true
+  setPreference: false
+  startingGear: SCPO5Gear
+  departments:
+  - SCPSpecial
+  accessGroups:
+  - O5
+
+
+# ==========================================
+# MOBILE TASK FORCE — HIDDEN, СПАВН ТІЛЬКИ АДМІНАМИ
+# ==========================================
+
+- type: job
+  id: SCPMTFE11Commander
+  name: "MTF E-11 Commander"
+  description: "Commander of MTF Epsilon-11 'Nine-Tailed Fox'. Leads site breach response operations."
+  playTimeTracker: JobSCPMTFE11Commander
+  icon: "MTF"
+  supervisors: "O5 Council"
+  weight: 0
+  maxPlayers: 1
+  hidden: true
+  setPreference: false
+  startingGear: SCPMTFE11CommanderGear
+  departments:
+  - SCPSpecial
+  accessGroups:
+  - SecurityLevel5
+  access:
+  - Command
+  - Containment
+
+- type: job
+  id: SCPMTFE11Lieutenant
+  name: "MTF E-11 Lieutenant"
+  description: "Epsilon-11 officer. Commands a squad during breach response."
+  playTimeTracker: JobSCPMTFE11Lieutenant
+  icon: "MTF"
+  supervisors: "MTF E-11 Commander"
+  weight: 0
+  maxPlayers: 2
+  hidden: true
+  setPreference: false
+  startingGear: SCPMTFE11LtGear
+  departments:
+  - SCPSpecial
+  accessGroups:
+  - SecurityLevel4
+  access:
+  - Containment
+
+- type: job
+  id: SCPMTFE11Sergeant
+  name: "MTF E-11 Sergeant"
+  description: "Epsilon-11 NCO. Leads a fireteam during containment breach response."
+  playTimeTracker: JobSCPMTFE11Sergeant
+  icon: "MTF"
+  supervisors: "MTF E-11 Lieutenant"
+  weight: 0
+  maxPlayers: -1
+  hidden: true
+  setPreference: false
+  startingGear: SCPMTFE11SgtGear
+  departments:
+  - SCPSpecial
+  accessGroups:
+  - SecurityLevel4
+
+- type: job
+  id: SCPMTFE11Agent
+  name: "MTF E-11 Agent"
+  description: "Epsilon-11 operative. Responds to SCP containment breaches and re-contains escaped objects."
+  playTimeTracker: JobSCPMTFE11Agent
+  icon: "MTF"
+  supervisors: "MTF E-11 Sergeant"
+  weight: 0
+  maxPlayers: -1
+  hidden: true
+  setPreference: false
+  startingGear: SCPMTFE11AgentGear
+  departments:
+  - SCPSpecial
+  accessGroups:
+  - SecurityLevel3
+  access:
+  - Containment
+
+- type: job
+  id: SCPMTFNU7Commander
+  name: "MTF Nu-7 Commander"
+  description: "Commander of MTF Nu-7 'Hammer Down'. Leads operations against external threats and the Chaos Insurgency."
+  playTimeTracker: JobSCPMTFNU7Commander
+  icon: "MTF"
+  supervisors: "O5 Council"
+  weight: 0
+  maxPlayers: 1
+  hidden: true
+  setPreference: false
+  startingGear: SCPMTFNU7CommanderGear
+  departments:
+  - SCPSpecial
+  accessGroups:
+  - SecurityLevel5
+  access:
+  - Command
+
+- type: job
+  id: SCPMTFNU7Lieutenant
+  name: "MTF Nu-7 Lieutenant"
+  description: "Nu-7 officer. Commands a squad during external operations."
+  playTimeTracker: JobSCPMTFNU7Lieutenant
+  icon: "MTF"
+  supervisors: "MTF Nu-7 Commander"
+  weight: 0
+  maxPlayers: 2
+  hidden: true
+  setPreference: false
+  startingGear: SCPMTFNU7LtGear
+  departments:
+  - SCPSpecial
+  accessGroups:
+  - SecurityLevel4
+
+- type: job
+  id: SCPMTFNU7Agent
+  name: "MTF Nu-7 Agent"
+  description: "Nu-7 combat operative. Engages Chaos Insurgency and other external threats."
+  playTimeTracker: JobSCPMTFNU7Agent
+  icon: "MTF"
+  supervisors: "MTF Nu-7 Lieutenant"
+  weight: 0
+  maxPlayers: -1
+  hidden: true
+  setPreference: false
+  startingGear: SCPMTFNU7AgentGear
+  departments:
+  - SCPSpecial
+  accessGroups:
+  - SecurityLevel3

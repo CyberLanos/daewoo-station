@@ -1,0 +1,109 @@
+# ==========================================
+# SCP DEPARTMENTS
+# ==========================================
+
+- type: department
+  id: SCPClassD
+  name: "Class-D Personnel"
+  description: "Disposable personnel for testing and hazardous tasks."
+  color: "#CC5200"
+  roles:
+  - SCPClassD
+
+- type: department
+  id: SCPCommand
+  name: "Administration"
+  description: "The leadership and administrative body of the site."
+  color: "#B8971F"
+  roles:
+  - SCPSiteDirector
+  - SCPSiteManager
+  - SCPCommunicationsOfficer
+  - SCPISDDetective
+  - SCPEthicsCommittee
+  - SCPGOCRepresentative
+  - SCPCommsTechnician
+
+- type: department
+  id: SCPEngineering
+  name: "Engineering"
+  description: "Responsible for facility maintenance and containment infrastructure."
+  color: "#D4A017"
+  roles:
+  - SCPEngineeringDirector
+  - SCPAsstEngDirector
+  - SCPContainmentEngineer
+  - SCPSeniorEngineer
+  - SCPEngineer
+  - SCPJuniorEngineer
+
+- type: department
+  id: SCPMedical
+  name: "Medical"
+  description: "Responsible for personnel health and biological anomaly research."
+  color: "#008B6B"
+  roles:
+  - SCPMedicalDirector
+  - SCPAsstMedDirector
+  - SCPSurgeon
+  - SCPChemist
+  - SCPPsychiatrist
+  - SCPMedicalDoctor
+  - SCPEMT
+  - SCPMedicalIntern
+
+- type: department
+  id: SCPLogistics
+  name: "Logistics"
+  description: "Handles supplies, cleaning, and general facility services."
+  color: "#9E8644"
+  roles:
+  - SCPLogisticsOfficer
+  - SCPLogisticsSpecialist
+  - SCPOfficeWorker
+  - SCPBartender
+  - SCPChaplain
+
+- type: department
+  id: SCPScience
+  name: "Research"
+  description: "Dedicated to the study, research, and understanding of anomalies."
+  color: "#AA44AA"
+  roles:
+  - SCPResearchDirector
+  - SCPSeniorResearcher
+  - SCPSeniorRobotics
+  - SCPResearcher
+  - SCPRoboticsTechnician
+  - SCPResearcherAssociate
+  - SCPJuniorRobotics
+
+- type: department
+  id: SCPSecurity
+  name: "Security"
+  description: "Responsible for facility security, personnel safety, and containment."
+  color: "#AA1515"
+  roles:
+  - SCPGuardCommander
+  - SCPLCZJuniorLt
+  - SCPHCZSeniorLt
+  - SCPEZSupervisor
+  - SCPRAISAAgent
+  - SCPLCZSergeant
+  - SCPHCZSergeant
+  - SCPEZSeniorAgent
+  - SCPLCZGuard
+  - SCPHCZGuard
+  - SCPEZAgent
+  - SCPLCZCadet
+  - SCPHCZPrivate
+  - SCPEZProbAgent
+
+- type: department
+  id: SCPSpecial
+  name: "Special"
+  description: "Specialized forces, anomalous entities, and classified personnel."
+  color: "#336633"
+  roles:
+  - SCPAIC
+  - SCPRobot
