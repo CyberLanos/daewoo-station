@@ -1,0 +1,143 @@
+- type: entity
+  id: SCPBaseWindow
+  abstract: true
+  parent: BaseStructure 
+  name: base window
+  description: Abstract parent for SCP facility windows.
+  components:
+  - type: Transform
+    anchored: true
+  - type: Physics
+    bodyType: Static
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.5,-0.5,0.5,0.5"
+        density: 150
+        mask:
+        - FullTileLayer
+        layer:
+        - Opaque
+        - WallLayer
+  - type: Sprite
+    noRot: true
+  - type: Damageable
+    damageContainer: Inorganic
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 100
+      behaviors:
+      - !type:DoActsBehavior
+        acts: ["Breakage"]
+
+- type: entity
+  id: SCPEZWindow
+  parent: SCPBaseWindow
+  name: entrance zone window
+  description: An armored glass panel embedded into Entrance Zone wall frame.
+  components:
+  - type: Sprite
+    noRot: true  
+    sprite: _F14/Structures/Windows/ezwindow.rsi
+    state: ezwindow0
+  - type: Icon 
+    sprite: _F14/Structures/Windows/ezwindow.rsi
+    state: ezwindow0
+  - type: IconSmooth
+    mode: CardinalFlags
+    key: windows
+    additionalKeys:
+    - walls
+    - doors
+    base: ezwindow
+  - type: Repairable
+    fuelCost: 10
+    doAfterDelay: 3
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 100
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: WindowShatter
+      - !type:SpawnEntitiesBehavior
+        spawn:
+          ShardGlassReinforced:
+            min: 1
+            max: 2
+      - !type:SpawnEntitiesBehavior
+        offset: 0  
+        spawn:
+          SCPEZWindowFrame:
+            min: 1
+            max: 1
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+
+- type: entity
+  id: SCPEZWindowFrame
+  parent: BaseStructure
+  name: entrance zone window frame
+  description: An empty Entrance Zone wall frame. Personnel can crawl through.
+  placement:
+    mode: SnapgridCenter
+    snap:
+    - Wall
+  components:
+  - type: Transform
+    anchored: true
+  - type: Sprite
+    noRot: true  
+    drawdepth: Walls
+    sprite: _F14/Structures/Windows/ezwindow.rsi
+    state: ezwindow_frame0
+  - type: Icon
+    sprite: _F14/Structures/Windows/ezwindow.rsi
+    state: ezwindow_frame0
+  - type: IconSmooth
+    mode: CardinalFlags
+    key: windows
+    additionalKeys:
+    - walls
+    - doors
+    base: ezwindow_frame
+  - type: PlacementReplacement
+    key: walls
+  - type: Physics
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.49,-0.49,0.49,0.49"
+        density: 200
+        mask:
+        - MachineMask
+        layer:
+        - MidImpassable
+        - BulletImpassable
+  - type: Damageable
+    damageContainer: StructuralInorganic
+    damageModifierSet: StructuralMetallic
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 400
+      behaviors:
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+      - !type:SpawnEntitiesBehavior
+        spawn:
+          SheetSteel1:
+            min: 1
+            max: 2
+  - type: Climbable
+  - type: StaticPrice
+    price: 25

@@ -1,0 +1,107 @@
+- type: entity
+  id: SCPLCZWindow
+  parent: SCPBaseWindow
+  name: light containment zone window
+  description: A standard reinforced window used in the Light Containment Zone.
+  components:
+  - type: Sprite
+    noRot: true  
+    sprite: _F14/Structures/Windows/lczwindow.rsi
+    state: lczwindow0
+  - type: Icon
+    sprite: _F14/Structures/Windows/lczwindow.rsi
+    state: lczwindow0
+  - type: IconSmooth
+    mode: CardinalFlags
+    key: windows
+    additionalKeys:
+    - walls
+    - doors
+    base: lczwindow
+  - type: Repairable
+    fuelCost: 10
+    doAfterDelay: 3
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 150 # Легше розбити, ніж в EZ
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: WindowShatter
+      - !type:SpawnEntitiesBehavior
+        spawn:
+          ShardGlassReinforced:
+            min: 1
+            max: 2
+      - !type:SpawnEntitiesBehavior
+        offset: 0
+        spawn:
+          SCPLCZWindowFrame:
+            min: 1
+            max: 1
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+
+- type: entity
+  id: SCPLCZWindowFrame
+  parent: BaseStructure
+  name: light containment zone window frame
+  description: An empty LCZ wall frame. Personnel can crawl through.
+  placement:
+    mode: SnapgridCenter
+    snap:
+    - Wall
+  components:
+  - type: Transform
+    anchored: true
+  - type: Sprite
+    noRot: true  
+    drawdepth: Walls
+    sprite: _F14/Structures/Windows/lczwindow.rsi
+    state: lczwindow_frame0
+  - type: Icon
+    sprite: _F14/Structures/Windows/lczwindow.rsi
+    state: lczwindow_frame0
+  - type: IconSmooth
+    mode: CardinalFlags
+    key: windows
+    additionalKeys:
+    - walls
+    - doors
+    base: lczwindow_frame
+  - type: PlacementReplacement
+    key: walls
+  - type: Physics
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.49,-0.49,0.49,0.49"
+        density: 200
+        mask:
+        - MachineMask
+        layer:
+        - MidImpassable
+        - BulletImpassable
+  - type: Damageable
+    damageContainer: StructuralInorganic
+    damageModifierSet: StructuralMetallic
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 300
+      behaviors:
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+      - !type:SpawnEntitiesBehavior
+        spawn:
+          SheetSteel1:
+            min: 1
+            max: 2
+  - type: Climbable
+  - type: StaticPrice
+    price: 25

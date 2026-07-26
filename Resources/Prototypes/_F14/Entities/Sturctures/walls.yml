@@ -232,7 +232,231 @@
     state: full
   - type: IconSmooth
     key: walls
+    additionalKeys:       
+    - windows
+    - doors
     base: EZwall          
+  - type: Construction
+    graph: Girder
+    node: reinforcedWall
+  - type: Damageable
+    damageContainer: StructuralInorganic
+    damageModifierSet: StructuralMetallicStrong
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 600
+      behaviors:
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalSlam
+    - trigger:
+        !type:DamageTrigger
+        damage: 400
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalSlam
+      - !type:ChangeConstructionNodeBehavior
+        node: girder
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+  - type: StaticPrice
+    price: 250
+  - type: RadiationBlocker
+    resistance: 20
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.5,-0.5,0.5,0.5"
+        mask:
+        - FullTileMask
+        layer:
+        - WallLayer
+        density: 2000
+  # <Goobstation>
+  - type: RustRequiresPathStage
+    pathStage: 7
+  - type: Penetratable
+    penetrateDamage: 100
+    damagePenalty: 0.25
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        maxVol: 40
+        reagents:
+        - ReagentId: Iron
+          Quantity: 33
+        - ReagentId: Carbon
+          Quantity: 7
+  # </Goobstation>
+
+- type: entity
+  parent: BaseWall
+  id: SCPLCZWall
+  name: Light containment zone wall
+  components:
+  - type: Sprite
+    sprite: _F14/Structures/Walls/lcz.rsi
+  - type: Icon
+    sprite: _F14/Structures/Walls/lcz.rsi
+    state: full
+  - type: IconSmooth
+    key: walls
+    base: LCZwall          
+  - type: Construction
+    graph: Girder
+    node: reinforcedWall
+  - type: Damageable
+    damageContainer: StructuralInorganic
+    damageModifierSet: StructuralMetallicStrong
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 600
+      behaviors:
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalSlam
+    - trigger:
+        !type:DamageTrigger
+        damage: 400
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalSlam
+      - !type:ChangeConstructionNodeBehavior
+        node: girder
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+  - type: StaticPrice
+    price: 250
+  - type: RadiationBlocker
+    resistance: 20
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.5,-0.5,0.5,0.5"
+        mask:
+        - FullTileMask
+        layer:
+        - WallLayer
+        density: 2000
+  # <Goobstation>
+  - type: RustRequiresPathStage
+    pathStage: 7
+  - type: Penetratable
+    penetrateDamage: 100
+    damagePenalty: 0.25
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        maxVol: 40
+        reagents:
+        - ReagentId: Iron
+          Quantity: 33
+        - ReagentId: Carbon
+          Quantity: 7
+  # </Goobstation>
+
+
+- type: entity
+  parent: BaseWall
+  id: SCPHCZWall
+  name: Heavy containment zone wall
+  components:
+  - type: Sprite
+    sprite: _F14/Structures/Walls/HCZ.rsi
+  - type: Icon
+    sprite: _F14/Structures/Walls/HCZ.rsi
+    state: full
+  - type: IconSmooth
+    key: walls
+    base: HCZwall          
+  - type: Construction
+    graph: Girder
+    node: reinforcedWall
+  - type: Damageable
+    damageContainer: StructuralInorganic
+    damageModifierSet: StructuralMetallicStrong
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 600
+      behaviors:
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalSlam
+    - trigger:
+        !type:DamageTrigger
+        damage: 400
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalSlam
+      - !type:ChangeConstructionNodeBehavior
+        node: girder
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+  - type: StaticPrice
+    price: 250
+  - type: RadiationBlocker
+    resistance: 20
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.5,-0.5,0.5,0.5"
+        mask:
+        - FullTileMask
+        layer:
+        - WallLayer
+        density: 2000
+  # <Goobstation>
+  - type: RustRequiresPathStage
+    pathStage: 7
+  - type: Penetratable
+    penetrateDamage: 100
+    damagePenalty: 0.25
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        maxVol: 40
+        reagents:
+        - ReagentId: Iron
+          Quantity: 33
+        - ReagentId: Carbon
+          Quantity: 7
+  # </Goobstation>
+
+
+- type: entity
+  parent: BaseWall
+  id: SCPMedicalWall
+  name: Medical wall
+  components:
+  - type: Sprite
+    sprite: _F14/Structures/Walls/medical.rsi
+  - type: Icon
+    sprite: _F14/Structures/Walls/medical.rsi
+    state: full
+  - type: IconSmooth
+    key: walls
+    base: medicalwall         
   - type: Construction
     graph: Girder
     node: reinforcedWall

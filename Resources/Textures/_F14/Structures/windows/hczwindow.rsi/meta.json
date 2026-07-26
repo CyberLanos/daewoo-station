@@ -1,0 +1,15 @@
+{
+    "version": 1,
+    "size": { "x": 32, "y": 32 },
+    "license": "CC-BY-SA-3.0",
+    "states": [
+        { "name": "hczwindow0" }, { "name": "hczwindow1" }, { "name": "hczwindow2" }, { "name": "hczwindow3" },
+        { "name": "hczwindow4" }, { "name": "hczwindow5" }, { "name": "hczwindow6" }, { "name": "hczwindow7" },
+        { "name": "hczwindow8" }, { "name": "hczwindow9" }, { "name": "hczwindow10" }, { "name": "hczwindow11" },
+        { "name": "hczwindow12" }, { "name": "hczwindow13" }, { "name": "hczwindow14" }, { "name": "hczwindow15" },
+        { "name": "hczwindow_frame0" }, { "name": "hczwindow_frame1" }, { "name": "hczwindow_frame2" }, { "name": "hczwindow_frame3" },
+        { "name": "hczwindow_frame4" }, { "name": "hczwindow_frame5" }, { "name": "hczwindow_frame6" }, { "name": "hczwindow_frame7" },
+        { "name": "hczwindow_frame8" }, { "name": "hczwindow_frame9" }, { "name": "hczwindow_frame10" }, { "name": "hczwindow_frame11" },
+        { "name": "hczwindow_frame12" }, { "name": "hczwindow_frame13" }, { "name": "hczwindow_frame14" }, { "name": "hczwindow_frame15" }
+    ]
+}
