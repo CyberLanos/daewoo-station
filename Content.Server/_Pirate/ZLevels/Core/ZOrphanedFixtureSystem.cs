@@ -34,6 +34,7 @@ public sealed class ZOrphanedFixtureSystem : EntitySystem
     public override void Initialize()
     {
         base.Initialize();
+        if (true) return; // ZDIAG bisect
         SubscribeLocalEvent<TransformComponent, MapInitEvent>(OnMapInit);
     }
 
