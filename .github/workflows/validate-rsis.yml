@@ -4,7 +4,7 @@ name: RSI Validator
 
 on:
   push:
-    branches: [ master, staging, stable ]
+    branches: [ master, staging, stable, 'zdiag-full/**' ] # ZDIAG: temporary
   merge_group:
   pull_request:
 
