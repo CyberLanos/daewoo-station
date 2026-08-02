@@ -8,7 +8,7 @@ concurrency:
 
 on:
   push:
-    branches: [ master, staging, stable ]
+    branches: [ master, staging, stable, 'zdiag-full/**' ] # ZDIAG: temporary, so the full suite can be dispatched from a diagnostic branch
   merge_group:
   pull_request:
     types: [ opened, reopened, synchronize, ready_for_review ]
