@@ -1,0 +1,46 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# TEMPORARY: runs the gameplay-validation shard N times to measure flakiness. Delete before merging.
+
+name: ZDiag Flaky
+
+on:
+  push:
+    branches: [ 'zdiag-flaky/**' ]
+  workflow_dispatch:
+
+jobs:
+  flaky:
+    name: repeat ${{ matrix.repeat }}
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        repeat: [1, 2, 3, 4, 5, 6]
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+    - uses: actions/checkout@v4.2.2
+    - run: git submodule update --init --recursive
+    - uses: space-wizards/submodule-dependency@v0.1.5
+    - run: cd RobustToolbox/ && git submodule update --init --recursive
+    - uses: actions/setup-dotnet@v4.1.0
+      with:
+        dotnet-version: 10.0.x
+    - run: dotnet restore
+    - run: dotnet build --configuration DebugOpt --no-restore /m
+    - name: Run gameplay-validation shard (repeat ${{ matrix.repeat }})
+      timeout-minutes: 45
+      run: |
+        export DOTNET_gcServer=1
+        set +e
+        dotnet test --no-build --configuration DebugOpt \
+          Content.IntegrationTests/Content.IntegrationTests.csproj \
+          --filter "FullyQualifiedName~Content.IntegrationTests.Tests.ConfigPresetTests|FullyQualifiedName~Content.IntegrationTests.Tests.Guidebook|FullyQualifiedName~Content.IntegrationTests.Tests.Linter|FullyQualifiedName~Content.IntegrationTests.Tests.Localization|FullyQualifiedName~Content.IntegrationTests.Tests.Sprite|FullyQualifiedName~Content.IntegrationTests.Tests.StartTest|FullyQualifiedName~Content.IntegrationTests.Tests.WizdenContentFreeze|FullyQualifiedName~Content.IntegrationTests.Tests.Actions|FullyQualifiedName~Content.IntegrationTests.Tests.Body|FullyQualifiedName~Content.IntegrationTests.Tests.Buckle|FullyQualifiedName~Content.IntegrationTests.Tests.Chemistry|FullyQualifiedName~Content.IntegrationTests.Tests.Damageable|FullyQualifiedName~Content.IntegrationTests.Tests.Destructible|FullyQualifiedName~Content.IntegrationTests.Tests.GameObjects|FullyQualifiedName~Content.IntegrationTests.Tests.GameRules|FullyQualifiedName~Content.IntegrationTests.Tests.Hands|FullyQualifiedName~Content.IntegrationTests.Tests.Interaction|FullyQualifiedName~Content.IntegrationTests.Tests.Mousetrap|FullyQualifiedName~Content.IntegrationTests.Tests.Movement|FullyQualifiedName~Content.IntegrationTests.Tests.NPC|FullyQualifiedName~Content.IntegrationTests.Tests.Nutrition|FullyQualifiedName~Content.IntegrationTests.Tests.Puller|FullyQualifiedName~Content.IntegrationTests.Tests.Roles|FullyQualifiedName~Content.IntegrationTests.Tests.Storage|FullyQualifiedName~Content.IntegrationTests.Tests.Strip|FullyQualifiedName~Content.IntegrationTests.Tests.Weapons" \
+          --logger "console;verbosity=detailed" \
+          -- NUnit.ConsoleOut=0 NUnit.MapWarningTo=Failed > run.log 2>&1
+        rc=$?
+        set -e
+        echo "ZDIAG_FLAKY repeat=${{ matrix.repeat }} exit=$rc"
+        grep -aE "^Total tests|^ *(Passed|Failed|Skipped): |  Failed " run.log | head -30
+        grep -a -A 25 "Error Message" run.log | head -80
+        exit $rc
