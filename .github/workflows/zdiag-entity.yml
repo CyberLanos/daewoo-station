@@ -1,0 +1,68 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# TEMPORARY diagnostic workflow: times each EntityTest case separately so the
+# slow one can be identified. Delete before merging anything.
+
+name: ZDiag EntityTest
+
+on:
+  push:
+    branches: [ 'zdiag/**' ]
+  workflow_dispatch:
+
+jobs:
+  zdiag:
+    name: zdiag ${{ matrix.test }}
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        test:
+          - SpawnAndDeleteAllEntitiesOnDifferentMaps
+          - SpawnAndDeleteAllEntitiesInTheSameSpot
+          - SpawnAndDeleteEntityCountTest
+          - AllComponentsOneToOneDeleteTest
+
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4.2.2
+
+    - name: Setup Submodule
+      run: git submodule update --init --recursive
+
+    - name: Pull engine updates
+      uses: space-wizards/submodule-dependency@v0.1.5
+
+    - name: Update Engine Submodules
+      run: |
+        cd RobustToolbox/
+        git submodule update --init --recursive
+
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v4.1.0
+      with:
+        dotnet-version: 10.0.x
+
+    - name: Install dependencies
+      run: dotnet restore
+
+    - name: Build Project
+      run: dotnet build --configuration DebugOpt --no-restore /m
+
+    - name: Run ${{ matrix.test }}
+      timeout-minutes: 100
+      run: |
+        export DOTNET_gcServer=1
+        start=$(date +%s)
+        set +e
+        dotnet test --no-build --configuration DebugOpt \
+          Content.IntegrationTests/Content.IntegrationTests.csproj \
+          --filter "FullyQualifiedName~Content.IntegrationTests.Tests.EntityTest.${{ matrix.test }}" \
+          --logger "console;verbosity=detailed" \
+          -- NUnit.ConsoleOut=0 NUnit.MapWarningTo=Failed
+        rc=$?
+        set -e
+        echo "ZDIAG_RESULT test=${{ matrix.test }} exit=$rc elapsed_s=$(( $(date +%s) - start ))"
+        exit $rc
