@@ -1,0 +1,50 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# TEMPORARY: per-test EntityTest runs for fast isolation. Delete before merging.
+
+name: ZDiag One
+
+on:
+  push:
+    branches: [ 'zdiag1/**' ]
+  workflow_dispatch:
+
+jobs:
+  zdiag:
+    name: one ${{ matrix.test }}
+    strategy:
+      fail-fast: false
+      matrix:
+        test:
+          - SpawnAndDeleteAllEntitiesInTheSameSpot
+          - SpawnAndDeleteEntityCountTest
+          - SpawnAndDeleteAllEntitiesOnDifferentMaps
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+    - uses: actions/checkout@v4.2.2
+    - run: git submodule update --init --recursive
+    - uses: space-wizards/submodule-dependency@v0.1.5
+    - run: cd RobustToolbox/ && git submodule update --init --recursive
+    - uses: actions/setup-dotnet@v4.1.0
+      with:
+        dotnet-version: 10.0.x
+    - run: dotnet restore
+    - run: dotnet build --configuration DebugOpt --no-restore /m
+    - name: Run ${{ matrix.test }}
+      timeout-minutes: 100
+      run: |
+        export DOTNET_gcServer=1
+        (while true; do echo "MEMSAMPLE t=$(date +%s) $(free -m | awk '/^Mem:/{printf "used=%s avail=%s", $3, $7}')"; sleep 15; done) &
+        S=$!
+        start=$(date +%s)
+        set +e
+        dotnet test --no-build --configuration DebugOpt \
+          Content.IntegrationTests/Content.IntegrationTests.csproj \
+          --filter "FullyQualifiedName~Content.IntegrationTests.Tests.EntityTest.${{ matrix.test }}" \
+          --logger "console;verbosity=detailed" \
+          -- NUnit.ConsoleOut=0 NUnit.MapWarningTo=Failed
+        rc=$?
+        set -e
+        kill $S 2>/dev/null || true
+        echo "ZDIAG_RESULT test=${{ matrix.test }} exit=$rc elapsed_s=$(( $(date +%s) - start ))"
+        exit $rc
