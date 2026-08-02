@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-# TEMPORARY diagnostic workflow: times each EntityTest case separately so the
-# slow one can be identified. Delete before merging anything.
+# TEMPORARY diagnostic workflow: runs the whole EntityTest fixture exactly like the real
+# "Entity integration tests" CI shard, while sampling system memory. Delete before merging.
 
 name: ZDiag EntityTest
 
@@ -11,17 +11,7 @@ on:
 
 jobs:
   zdiag:
-    name: zdiag ${{ matrix.test }}
-    strategy:
-      fail-fast: false
-      max-parallel: 6
-      matrix:
-        test:
-          - SpawnAndDeleteAllEntitiesOnDifferentMaps
-          - SpawnAndDeleteAllEntitiesInTheSameSpot
-          - SpawnAndDeleteEntityCountTest
-          - AllComponentsOneToOneDeleteTest
-
+    name: zdiag full EntityTest
     runs-on: ubuntu-latest
     timeout-minutes: 120
 
@@ -51,18 +41,32 @@ jobs:
     - name: Build Project
       run: dotnet build --configuration DebugOpt --no-restore /m
 
-    - name: Run ${{ matrix.test }}
+    - name: Machine info
+      run: |
+        nproc
+        free -m
+        swapon --show || true
+
+    - name: Run full EntityTest
       timeout-minutes: 100
       run: |
         export DOTNET_gcServer=1
+        (
+          while true; do
+            echo "MEMSAMPLE t=$(date +%s) $(free -m | awk '/^Mem:/{printf "used=%s avail=%s", $3, $7}') $(free -m | awk '/^Swap:/{printf " swap_used=%s", $3}')"
+            sleep 15
+          done
+        ) &
+        SAMPLER=$!
         start=$(date +%s)
         set +e
         dotnet test --no-build --configuration DebugOpt \
           Content.IntegrationTests/Content.IntegrationTests.csproj \
-          --filter "FullyQualifiedName~Content.IntegrationTests.Tests.EntityTest.${{ matrix.test }}" \
+          --filter "FullyQualifiedName~Content.IntegrationTests.Tests.EntityTest" \
           --logger "console;verbosity=detailed" \
           -- NUnit.ConsoleOut=0 NUnit.MapWarningTo=Failed
         rc=$?
         set -e
-        echo "ZDIAG_RESULT test=${{ matrix.test }} exit=$rc elapsed_s=$(( $(date +%s) - start ))"
+        kill $SAMPLER 2>/dev/null || true
+        echo "ZDIAG_RESULT full exit=$rc elapsed_s=$(( $(date +%s) - start ))"
         exit $rc
