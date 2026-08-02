@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-# TEMPORARY diagnostic workflow for the instrumented ZDiagEntityTest fixture.
+# TEMPORARY diagnostic workflow. Delete before merging.
 
 name: ZDiag Instrumented
 
@@ -15,46 +15,49 @@ jobs:
       fail-fast: false
       matrix:
         test:
-          - ZDiagSpawnDeleteEntityCountProfile
           - ZDiagSameSpotProfile
-
     runs-on: ubuntu-latest
     timeout-minutes: 120
-
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4.2.2
-
-    - name: Setup Submodule
-      run: git submodule update --init --recursive
-
-    - name: Pull engine updates
-      uses: space-wizards/submodule-dependency@v0.1.5
-
-    - name: Update Engine Submodules
-      run: |
-        cd RobustToolbox/
-        git submodule update --init --recursive
-
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v4.1.0
+    - uses: actions/checkout@v4.2.2
+    - run: git submodule update --init --recursive
+    - uses: space-wizards/submodule-dependency@v0.1.5
+    - run: cd RobustToolbox/ && git submodule update --init --recursive
+    - uses: actions/setup-dotnet@v4.1.0
       with:
         dotnet-version: 10.0.x
-
-    - name: Install dependencies
-      run: dotnet restore
-
-    - name: Build Project
-      run: dotnet build --configuration DebugOpt --no-restore /m
-
+    - run: dotnet restore
+    - run: dotnet build --configuration DebugOpt --no-restore /m
     - name: Run ${{ matrix.test }}
-      timeout-minutes: 100
+      timeout-minutes: 60
       run: |
         export DOTNET_gcServer=1
+        (while true; do echo "MEMSAMPLE t=$(date +%s) $(free -m | awk '/^Mem:/{printf "used=%s avail=%s", $3, $7}')" >> mem.log; sleep 10; done) &
+        S=$!
         set +e
-        dotnet test --no-build --configuration DebugOpt \
+        timeout 55m dotnet test --no-build --configuration DebugOpt \
           Content.IntegrationTests/Content.IntegrationTests.csproj \
           --filter "FullyQualifiedName~ZDiagEntityTest.${{ matrix.test }}" \
-          --logger "console;verbosity=detailed" \
-          -- NUnit.ConsoleOut=0
-        echo "ZDIAG_EXIT=$?"
+          --logger "console;verbosity=detailed" > run.log 2>&1
+        rc=$?
+        set -e
+        kill $S 2>/dev/null || true
+        echo "=================== ZDIAG progress lines"
+        grep -a "ZDIAG" run.log | tail -100 || true
+        echo "=================== memory"
+        cat mem.log || true
+        echo "=================== error-ish lines"
+        grep -aiE "\[ERRO\]|\[WARN\] .*assert|exception|Assert|Failed !|System\..*Exception" run.log | tail -120 || true
+        echo "=================== tail"
+        tail -c 40000 run.log || true
+        echo "ZDIAG_EXIT=$rc log_lines=$(wc -l < run.log)"
+    - name: Upload log
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: run-log-${{ matrix.test }}-${{ github.ref_name }}
+        path: |
+          run.log
+          mem.log
+        retention-days: 5
+        compression-level: 9
