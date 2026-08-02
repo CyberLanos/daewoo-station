@@ -36,6 +36,8 @@ public sealed partial class CEZLevelsSystem
 
     private void InitItems()
     {
+        if (Content.Shared._Pirate.ZLevels.Core.EntitySystems.CESharedZLevelsSystem.ZDiagDisableHooks) return; // ZDIAG bisect
+
         SubscribeLocalEvent<ItemComponent, StopThrowEvent>(OnItemStopThrow);
         SubscribeLocalEvent<ItemComponent, DroppedEvent>(OnItemDropped);
         SubscribeLocalEvent<ItemComponent, MoveEvent>(OnItemMoved);
@@ -160,6 +162,8 @@ public sealed partial class CEZLevelsSystem
     // Per-item vertical physics tick, mirroring CMU's ProcessZPhysics.
     private void UpdateItems(float frameTime)
     {
+        if (Content.Shared._Pirate.ZLevels.Core.EntitySystems.CESharedZLevelsSystem.ZDiagDisableHooks) return; // ZDIAG bisect
+
         var query = EntityQueryEnumerator<CEZItemPhysicsComponent, ItemComponent, TransformComponent>();
         while (query.MoveNext(out var uid, out var zItem, out _, out var xform))
         {

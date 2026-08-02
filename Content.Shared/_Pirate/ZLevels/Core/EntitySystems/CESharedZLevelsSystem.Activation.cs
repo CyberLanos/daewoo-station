@@ -67,6 +67,8 @@ public abstract partial class CESharedZLevelsSystem
 
     private void InitializeActivation()
     {
+        if (ZDiagDisableHooks) return; // ZDIAG bisect
+
         SubscribeLocalEvent<CEZPhysicsComponent, MapInitEvent>(OnMapInit);
         SubscribeLocalEvent<CEZPhysicsComponent, AnchorStateChangedEvent>(OnAnchorStateChange);
         SubscribeLocalEvent<CEZPhysicsComponent, PhysicsBodyTypeChangedEvent>(OnPhysicsBodyTypeChange);
@@ -82,6 +84,8 @@ public abstract partial class CESharedZLevelsSystem
 
     private void ShutdownActivation()
     {
+        if (ZDiagDisableHooks) return; // ZDIAG bisect
+
         EntityManager.ComponentAdded -= OnComponentAddedForActivation;
         EntityManager.ComponentRemoved -= OnComponentRemovedForActivation;
     }

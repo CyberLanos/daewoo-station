@@ -69,6 +69,8 @@ public abstract partial class CESharedZLevelsSystem
     {
         _highgroundQuery = GetEntityQuery<CEZLevelHighGroundComponent>();
 
+        if (ZDiagDisableHooks) return; // ZDIAG bisect
+
         SubscribeLocalEvent<CEZPhysicsComponent, CEGetZVelocityEvent>(OnGetVelocity);
         SubscribeLocalEvent<CEZPhysicsComponent, CEZLevelMapMoveEvent>(OnZLevelMapMove);
         SubscribeLocalEvent<CEZGravityInfluencedComponent, IsWeightlessEvent>(OnZGravityInfluenced);
@@ -1009,9 +1011,13 @@ public abstract partial class CESharedZLevelsSystem
         args.VelocityDelta -= ZGravityForce * ent.Comp.GravityMultiplier;
     }
 
+    public const bool ZDiagDisableHooks = true; // ZDIAG bisect
+
     public override void Update(float frameTime)
     {
         base.Update(frameTime);
+
+        if (ZDiagDisableHooks) return; // ZDIAG bisect
 
         _accumulatedTime += TimeSpan.FromSeconds(frameTime);
 
