@@ -47,11 +47,24 @@ public sealed class ZDiagSameSpot
             var total = entityMan.EntityCount;
             var awake = 0;
             var contacts = 0;
+            var dynamic = 0;
+            var canCollide = 0;
+            var awakeTop = new Dictionary<string, int>();
+            var metaQuery = entityMan.GetEntityQuery<MetaDataComponent>();
             var q = entityMan.AllEntityQueryEnumerator<PhysicsComponent>();
-            while (q.MoveNext(out _, out var body))
+            while (q.MoveNext(out var bodyUid, out var body))
             {
+                if (body.CanCollide)
+                    canCollide++;
+                if (body.BodyType == Robust.Shared.Physics.BodyType.Dynamic)
+                    dynamic++;
                 if (body.Awake)
+                {
                     awake++;
+                    var pid = metaQuery.CompOrNull(bodyUid)?.EntityPrototype?.ID ?? "<null>";
+                    awakeTop.TryGetValue(pid, out var awc);
+                    awakeTop[pid] = awc + 1;
+                }
                 contacts += body.ContactCount;
             }
 
@@ -66,6 +79,22 @@ public sealed class ZDiagSameSpot
 
             var topStr = string.Join(", ",
                 top.OrderByDescending(kv => kv.Value).Take(8).Select(kv => $"{kv.Key}={kv.Value}"));
+
+            var audioFiles = new Dictionary<string, int>();
+            var aq = entityMan.AllEntityQueryEnumerator<Robust.Shared.Audio.Components.AudioComponent>();
+            while (aq.MoveNext(out _, out var audio))
+            {
+                var f = audio.FileName ?? "<null>";
+                audioFiles.TryGetValue(f, out var ac);
+                audioFiles[f] = ac + 1;
+            }
+
+            TestContext.Progress.WriteLine(
+                $"ZDIAG {tag} audio: " +
+                string.Join(", ", audioFiles.OrderByDescending(kv => kv.Value).Take(8).Select(kv => $"{kv.Key}={kv.Value}")));
+            TestContext.Progress.WriteLine(
+                $"ZDIAG {tag} dynamic={dynamic} canCollide={canCollide} awakeTop: " +
+                string.Join(", ", awakeTop.OrderByDescending(kv => kv.Value).Take(12).Select(kv => $"{kv.Key}={kv.Value}")));
 
             TestContext.Progress.WriteLine(
                 $"ZDIAG {tag} ms={ms} ents={total} awakeBodies={awake} contactRefs={contacts} " +
@@ -82,7 +111,7 @@ public sealed class ZDiagSameSpot
         });
         await server.WaitPost(() => Report("after-spawn", sw.ElapsedMilliseconds));
 
-        for (var tick = 0; tick < 15; tick++)
+        for (var tick = 0; tick < 1; tick++)
         {
             sw.Restart();
             await server.WaitRunTicks(1);
