@@ -431,7 +431,7 @@ public abstract partial class CESharedZLevelsSystem : EntitySystem
         return false;
     }
 
-    protected bool HasTraversalContext(TransformComponent xform) // Pirate: multiz
+    protected bool HasTraversalContext(TransformComponent xform) // Pirate: multiz - also used by server-side z systems
     {
         if (xform.MapUid is { } mapUid &&
             (_zMapQuery.HasComp(mapUid) || _ftlMapQuery.HasComp(mapUid)))
