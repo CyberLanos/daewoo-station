@@ -128,6 +128,19 @@ public abstract partial class CESharedZLevelsSystem
 
     private void CacheMovement(Entity<CEZPhysicsComponent> ent)
     {
+        // Pirate: multiz - ComputeHasSupportBelow does grid/tile lookups that can never resolve
+        // without a z-network. Skip the whole probe instead of paying for it per MoveEvent.
+        if (!HasTraversalContext(Transform(ent)))
+        {
+            ent.Comp.CurrentGroundHeight = 0f;
+            ent.Comp.CurrentStickyGround = false;
+            ent.Comp.CurrentGroundFromBelowLevel = false;
+            ent.Comp.CurrentHasSupportBelow = false;
+            ent.Comp.CurrentSupportGridUid = EntityUid.Invalid;
+            ent.Comp.CurrentHighGroundBelow = false;
+            return;
+        }
+
         var oldGroundHeight = ent.Comp.CurrentGroundHeight;
         var oldSticky = ent.Comp.CurrentStickyGround;
         var oldFromBelow = ent.Comp.CurrentGroundFromBelowLevel;
@@ -502,6 +515,15 @@ public abstract partial class CESharedZLevelsSystem
 
     private void OnMoveEvent(Entity<CEZPhysicsComponent> ent, ref MoveEvent args)
     {
+        // Pirate: multiz - a single-level map has no z-network, so nothing here can ever produce a
+        // result. Bailing before the cache probes keeps multiz completely inert off a z-network,
+        // which matters when tens of thousands of entities move in one tick.
+        if (!HasTraversalContext(args.Component))
+        {
+            SleepBody(ent);
+            return;
+        }
+
         if (IsAutomaticZPhysicsExcluded(ent))
         {
             SleepBody(ent);

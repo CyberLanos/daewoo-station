@@ -30,6 +30,13 @@ public abstract partial class CESharedZLevelsSystem
     private readonly List<EntityUid> _activeBodies = new();
 
     /// <summary>
+    /// Mirror of <see cref="_activeBodies"/> for O(1) membership tests. The list is kept for stable
+    /// reverse iteration in the physics loop; without this set, Wake/Sleep were linear scans, which
+    /// turns into O(n^2) when thousands of bodies activate in the same tick. // Pirate: multiz
+    /// </summary>
+    private readonly HashSet<EntityUid> _activeBodySet = new();
+
+    /// <summary>
     /// Entities whose movement cache will be refreshed at the start of the next physics update.
     /// Used to deduplicate cache work when many entities are invalidated at once (e.g. tile
     /// changes hitting an AABB full of bodies, or a grid moving its children).
@@ -40,7 +47,7 @@ public abstract partial class CESharedZLevelsSystem
     public IReadOnlyList<EntityUid> ActiveBodies => _activeBodies;
 
     [PublicAPI]
-    public bool IsBodyActive(EntityUid uid) => _activeBodies.Contains(uid);
+    public bool IsBodyActive(EntityUid uid) => _activeBodySet.Contains(uid); // Pirate: multiz
 
     /// <summary>
     /// Queues a coalesced movement-cache refresh, drained at the start of the next physics update.
@@ -230,7 +237,7 @@ public abstract partial class CESharedZLevelsSystem
         if (!_timing.IsFirstTimePredicted)
             return;
 
-        if (_activeBodies.Contains(ent))
+        if (!_activeBodySet.Add(ent)) // Pirate: multiz
             return;
 
         _activeBodies.Add(ent);
@@ -250,8 +257,10 @@ public abstract partial class CESharedZLevelsSystem
         if (!_timing.IsFirstTimePredicted)
             return;
 
-        if (!_activeBodies.Remove(uid))
+        if (!_activeBodySet.Remove(uid)) // Pirate: multiz
             return;
+
+        _activeBodies.Remove(uid);
 
         SetZGravityInfluenced(uid, false);
 

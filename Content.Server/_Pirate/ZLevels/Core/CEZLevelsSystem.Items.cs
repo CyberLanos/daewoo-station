@@ -140,6 +140,11 @@ public sealed partial class CEZLevelsSystem
         if (!IsItemRestingOnMapOrGrid(xform))
             return;
 
+        // Pirate: multiz - items can only fall/rise inside a z-network. Off one, this ran a tile
+        // lookup on every single item MoveEvent for nothing.
+        if (!HasTraversalContext(xform))
+            return;
+
         if (requireZGravity && !CanItemExperienceZGravity(item, xform))
             return;
 
