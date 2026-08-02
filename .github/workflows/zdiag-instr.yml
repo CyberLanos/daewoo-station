@@ -15,9 +15,9 @@ jobs:
       fail-fast: false
       matrix:
         test:
-          - ZDiagSameSpotProfile
+          - ZDiagSameSpotTicks
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 90
     steps:
     - uses: actions/checkout@v4.2.2
     - run: git submodule update --init --recursive
@@ -28,34 +28,41 @@ jobs:
         dotnet-version: 10.0.x
     - run: dotnet restore
     - run: dotnet build --configuration DebugOpt --no-restore /m
+
     - name: Run ${{ matrix.test }}
-      timeout-minutes: 60
+      continue-on-error: true
+      timeout-minutes: 40
+      env:
+        DOTNET_gcServer: '1'
+        # Hard-cap the managed heap so the runtime throws OOM instead of the OS
+        # SIGKILLing the whole job before diagnostics can be printed. 9 GB.
+        DOTNET_GCHeapHardLimit: '240000000'
       run: |
-        export DOTNET_gcServer=1
         (while true; do echo "MEMSAMPLE t=$(date +%s) $(free -m | awk '/^Mem:/{printf "used=%s avail=%s", $3, $7}')" >> mem.log; sleep 10; done) &
-        S=$!
         set +e
-        timeout 55m dotnet test --no-build --configuration DebugOpt \
+        timeout 35m dotnet test --no-build --configuration DebugOpt \
           Content.IntegrationTests/Content.IntegrationTests.csproj \
-          --filter "FullyQualifiedName~ZDiagEntityTest.${{ matrix.test }}" \
+          --filter "FullyQualifiedName~ZDiagSameSpot.${{ matrix.test }}" \
           --logger "console;verbosity=detailed" > run.log 2>&1
-        rc=$?
-        set -e
-        kill $S 2>/dev/null || true
-        echo "=================== ZDIAG progress lines"
-        grep -a "ZDIAG" run.log | tail -100 || true
+        echo "TEST_EXIT=$?"
+
+    - name: Diagnostics
+      if: always()
+      run: |
+        echo "=================== ZDIAG"
+        grep -a "ZDIAG" run.log | tail -60 || true
         echo "=================== memory"
-        cat mem.log || true
-        echo "=================== error-ish lines"
-        grep -aiE "\[ERRO\]|\[WARN\] .*assert|exception|Assert|Failed !|System\..*Exception" run.log | tail -120 || true
+        tail -60 mem.log || true
+        echo "=================== errors"
+        grep -aiE "\[ERRO\]|exception|OutOfMemory|Assert" run.log | tail -60 || true
         echo "=================== tail"
-        tail -c 40000 run.log || true
-        echo "ZDIAG_EXIT=$rc log_lines=$(wc -l < run.log)"
+        tail -c 20000 run.log || true
+
     - name: Upload log
       if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: run-log-${{ matrix.test }}-${{ github.ref_name }}
+        name: run-log-${{ matrix.test }}
         path: |
           run.log
           mem.log
