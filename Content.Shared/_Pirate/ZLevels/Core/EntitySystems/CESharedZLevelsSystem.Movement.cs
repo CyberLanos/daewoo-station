@@ -2946,6 +2946,10 @@ public abstract partial class CESharedZLevelsSystem
             return true;
         }
 
+        // Pirate: multiz - chasm fallback only inside a z-network.
+        if (!HasTraversalContext(Transform(ent)))
+            return false;
+
         //welp, that default Chasm behavior. Not really good, but ok for now.
         if (HasComp<ChasmFallingComponent>(ent))
         {
