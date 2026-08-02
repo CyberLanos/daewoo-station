@@ -492,7 +492,6 @@ public sealed class AtmosMonitoringConsoleSystem : SharedAtmosMonitoringConsoleS
                 continue;
 
             entConsole.AtmosPipeChunks = allChunks;
-            entConsole.AtmosDevices = GetAllAtmosDeviceNavMapData(gridUid); // Pirate: multiz
             Dirty(ent, entConsole);
         }
     }
