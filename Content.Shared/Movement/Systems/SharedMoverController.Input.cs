@@ -147,10 +147,19 @@ namespace Content.Shared.Movement.Systems
 
         private void OnMoverGetState(Entity<InputMoverComponent> entity, ref ComponentGetState args)
         {
+            // Pirate: mover relative-entity - the grid/map we are relative to can be deleted without
+            // the mover being re-parented (e.g. a shuttle leaving in nukeops), leaving a dangling
+            // reference here. GetNetEntity then logs a resolve error from inside the PVS serializer,
+            // which fails integration tests. Drop the reference instead. Do not write it back to the
+            // component: PVS runs GetState from several threads at once.
+            var relativeEntity = entity.Comp.RelativeEntity;
+            if (relativeEntity is { } relative && !Exists(relative))
+                relativeEntity = null;
+
             args.State = new InputMoverComponentState()
             {
                 CanMove = entity.Comp.CanMove,
-                RelativeEntity = GetNetEntity(entity.Comp.RelativeEntity),
+                RelativeEntity = GetNetEntity(relativeEntity), // Pirate: mover relative-entity
                 LerpTarget = entity.Comp.LerpTarget,
                 HeldMoveButtons = entity.Comp.HeldMoveButtons,
                 RelativeRotation = entity.Comp.RelativeRotation,
