@@ -3,12 +3,14 @@ using Content.Server._Pirate.ZLevels.Core;
 using Content.Server.Shuttles.Components;
 using Content.Server.Shuttles.Events;
 using Content.Shared._Pirate.ZLevels.Core.Components;
+using Content.Shared._Pirate.ZLevels.Roof;
 using Content.Shared._Pirate.ZLevels.Shuttles.Components;
 using Content.Shared.Station.Components;
 using Content.Shared.Maps;
 using Robust.Server.GameObjects;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
+using Robust.Shared.Prototypes;
 
 namespace Content.Server._Pirate.ZLevels.Shuttles;
 
@@ -23,6 +25,7 @@ public sealed class CEZShuttleRoofSystem : EntitySystem
     [Dependency] private readonly MapSystem _mapSystem = default!;
     [Dependency] private readonly IMapManager _mapManager = default!;
     [Dependency] private readonly ITileDefinitionManager _tileDefMan = default!;
+    [Dependency] private readonly IPrototypeManager _protoMan = default!;
     [Dependency] private readonly MetaDataSystem _meta = default!;
 
     private const string FallbackPlatingTileId = "Plating";
@@ -177,7 +180,16 @@ public sealed class CEZShuttleRoofSystem : EntitySystem
         }
 
         SyncRoofTransform(topGrid, roofGrid);
-        CopyTiles(topGrid, roofGrid);
+
+        // Re-census only when the deck we roof over changes, the census walks every entity on it.
+        var roofComp = Comp<CEZShuttleRoofComponent>(roofGrid);
+        if (roofComp.SourceGrid != topGrid)
+        {
+            roofComp.SourceGrid = topGrid;
+            roofComp.TileGroup = ResolveTileGroup(topGrid)?.ID;
+        }
+
+        CopyTiles(topGrid, roofGrid, GetTileGroup((roofGrid, roofComp)));
 
         // Track tile changes on the current top deck.
         ClearSourceMarkers(shuttleUid, topGrid);
@@ -258,6 +270,7 @@ public sealed class CEZShuttleRoofSystem : EntitySystem
         var roofComp = AddComp<CEZShuttleRoofComponent>(gridUid);
         roofComp.Shuttle = shuttleUid;
         roofComp.SourceGrid = topShuttleGrid;
+        roofComp.TileGroup = ResolveTileGroup(topShuttleGrid)?.ID;
 
         _meta.SetEntityName(gridUid, $"Shuttle Roof ({ToPrettyString(shuttleUid)})");
 
@@ -272,7 +285,7 @@ public sealed class CEZShuttleRoofSystem : EntitySystem
         _transform.SetLocalPositionRotation(roofGrid, topXform.LocalPosition, topXform.LocalRotation, roofXform);
     }
 
-    private void CopyTiles(EntityUid topGrid, EntityUid roofGrid)
+    private void CopyTiles(EntityUid topGrid, EntityUid roofGrid, CERoofTileGroupPrototype? group)
     {
         if (!TryComp<MapGridComponent>(topGrid, out var topMapGrid) ||
             !TryComp<MapGridComponent>(roofGrid, out var roofMapGrid))
@@ -288,9 +301,29 @@ public sealed class CEZShuttleRoofSystem : EntitySystem
         foreach (var tileRef in _mapSystem.GetAllTiles(topGrid, topMapGrid))
         {
             sourcePositions.Add(tileRef.GridIndices);
+        }
+
+        // Where the deck has a diagonal wall the roof keeps the hull's chamfer instead of a full tile.
+        var diagonals = group == null
+            ? new Dictionary<Vector2i, Direction>()
+            : CollectDiagonalWalls(topGrid, topMapGrid, group, sourcePositions);
+
+        foreach (var tileRef in _mapSystem.GetAllTiles(topGrid, topMapGrid))
+        {
+            ITileDefinition targetDef;
+
+            if (group != null)
+            {
+                targetDef = diagonals.TryGetValue(tileRef.GridIndices, out var corner) &&
+                            group.DiagonalTiles.TryGetValue(corner, out var diagonalTile)
+                    ? _tileDefMan[diagonalTile]
+                    : _tileDefMan[group.Tile];
+
+                tilesToSet.Add((tileRef.GridIndices, new Tile(targetDef.TileId)));
+                continue;
+            }
 
             var sourceDef = (ContentTileDefinition)_tileDefMan[tileRef.Tile.TypeId];
-            ITileDefinition targetDef;
 
             if (sourceDef.IsSubFloor)
             {
@@ -319,6 +352,121 @@ public sealed class CEZShuttleRoofSystem : EntitySystem
 
         if (tilesToSet.Count > 0)
             _mapSystem.SetTiles(roofGrid, roofMapGrid, tilesToSet);
+    }
+
+    /// <summary>
+    /// Picks the roof tile group for a deck by counting the walls standing on it. Returns null when no group
+    /// reaches its wall threshold, which leaves the roof on the default subfloor copy.
+    /// </summary>
+    private CERoofTileGroupPrototype? ResolveTileGroup(EntityUid sourceGrid)
+    {
+        var groups = _protoMan.EnumeratePrototypes<CERoofTileGroupPrototype>().ToList();
+        if (groups.Count == 0)
+            return null;
+
+        var counts = new Dictionary<CERoofTileGroupPrototype, int>();
+        var children = Transform(sourceGrid).ChildEnumerator;
+
+        while (children.MoveNext(out var child))
+        {
+            if (MetaData(child).EntityPrototype?.ID is not { } protoId)
+                continue;
+
+            foreach (var group in groups)
+            {
+                if (group.Walls.Contains(protoId) || group.DiagonalWalls.Contains(protoId))
+                    counts[group] = counts.GetValueOrDefault(group) + 1;
+            }
+        }
+
+        CERoofTileGroupPrototype? best = null;
+        var bestCount = 0;
+
+        foreach (var (group, count) in counts)
+        {
+            if (count < group.MinWalls)
+                continue;
+
+            if (best == null || group.Priority > best.Priority || (group.Priority == best.Priority && count > bestCount))
+            {
+                best = group;
+                bestCount = count;
+            }
+        }
+
+        return best;
+    }
+
+    private CERoofTileGroupPrototype? GetTileGroup(Entity<CEZShuttleRoofComponent> roof)
+    {
+        if (roof.Comp.TileGroup is not { } groupId)
+            return null;
+
+        return _protoMan.TryIndex(groupId, out var group) ? group : null;
+    }
+
+    /// <summary>
+    /// Maps the deck's diagonal walls to the corner their filled half covers, keeping only the ones that sit
+    /// on the edge of the footprint.
+    /// </summary>
+    /// <remarks>
+    /// Diagonal walls are also used inside a hull, where a half tile would punch a notch into the middle of
+    /// the roof. A wall only chamfers the roof when both of the edges its filled half leaves open face off
+    /// the footprint, otherwise the roof stays square there.
+    /// </remarks>
+    private Dictionary<Vector2i, Direction> CollectDiagonalWalls(EntityUid sourceGrid, MapGridComponent grid,
+        CERoofTileGroupPrototype group, HashSet<Vector2i> footprint)
+    {
+        var result = new Dictionary<Vector2i, Direction>();
+        if (group.DiagonalWalls.Count == 0)
+            return result;
+
+        var children = Transform(sourceGrid).ChildEnumerator;
+
+        while (children.MoveNext(out var child))
+        {
+            if (MetaData(child).EntityPrototype?.ID is not { } protoId || !group.DiagonalWalls.Contains(protoId))
+                continue;
+
+            var xform = Transform(child);
+            var indices = _mapSystem.TileIndicesFor(sourceGrid, grid, xform.Coordinates);
+            var corner = RotateCorner(group.DiagonalWallCorner, xform.LocalRotation);
+            var (coveredA, coveredB) = CornerSides(corner);
+
+            if (footprint.Contains(indices.Offset(coveredA.GetOpposite())) ||
+                footprint.Contains(indices.Offset(coveredB.GetOpposite())))
+            {
+                continue;
+            }
+
+            result[indices] = corner;
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// The two cardinal edges a corner's filled half covers.
+    /// </summary>
+    private static (Direction, Direction) CornerSides(Direction corner)
+    {
+        return corner switch
+        {
+            Direction.NorthEast => (Direction.North, Direction.East),
+            Direction.NorthWest => (Direction.North, Direction.West),
+            Direction.SouthEast => (Direction.South, Direction.East),
+            _ => (Direction.South, Direction.West),
+        };
+    }
+
+    /// <summary>
+    /// Rotates a corner direction by an entity rotation. Direction steps of two are a quarter turn, and
+    /// rotation runs counter clockwise from South, the same way airtight directions are rotated.
+    /// </summary>
+    private static Direction RotateCorner(Direction corner, Angle rotation)
+    {
+        var quarterTurns = (int) MathF.Round((float) (rotation.Theta / MathHelper.PiOver2)) & 3;
+        return (Direction) (((int) corner + quarterTurns * 2) % 8);
     }
 
     private void LinkRoofToShuttle(EntityUid shuttleUid, EntityUid roofUid, int roofDepth)

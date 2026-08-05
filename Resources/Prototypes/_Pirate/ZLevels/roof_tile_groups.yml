@@ -1,0 +1,19 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Roof tile groups for the multiz roof generator. The generator counts the walls on the deck it roofs over;
+# the first group to reach minWalls supplies the roof tiles, otherwise the roof falls back to copying the
+# deck's subfloor. Add a group per base wall material.
+
+- type: roofTileGroup
+  id: Shuttle
+  minWalls: 10
+  walls:
+  - WallShuttle
+  diagonalWalls:
+  - WallShuttleDiagonal
+  tile: ShuttleRoof
+  diagonalTiles:
+    NorthEast: ShuttleRoofDiagonalNE
+    NorthWest: ShuttleRoofDiagonalNW
+    SouthEast: ShuttleRoofDiagonalSE
+    SouthWest: ShuttleRoofDiagonalSW

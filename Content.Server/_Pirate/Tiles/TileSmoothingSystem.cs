@@ -34,8 +34,8 @@ public sealed class TileSmoothingSystem : EntitySystem
     };
 
     /// <summary>
-    /// Our own <see cref="SharedMapSystem.SetTile"/> calls raise <see cref="TileChangedEvent"/> again,
-    /// and a variant change never changes what any neighbour smooths to, so one pass is enough.
+    /// Our own <see cref="SharedMapSystem.SetTiles"/> call raises <see cref="TileChangedEvent"/> again, and a
+    /// variant change never changes what any neighbour smooths to, so one pass is enough.
     /// </summary>
     private bool _updating;
 
@@ -43,27 +43,55 @@ public sealed class TileSmoothingSystem : EntitySystem
     {
         base.Initialize();
 
-        SubscribeLocalEvent<MapGridComponent, TileChangedEvent>(OnTileChanged);
+        // Broadcast, not directed: the engine only allows one directed MapGridComponent/TileChangedEvent
+        // subscription across all systems, and SharedCrawlUnderFloorSystem already holds it.
+        SubscribeLocalEvent<TileChangedEvent>(OnTileChanged);
     }
 
-    private void OnTileChanged(Entity<MapGridComponent> grid, ref TileChangedEvent args)
+    private void OnTileChanged(ref TileChangedEvent args)
     {
         if (_updating)
+            return;
+
+        var grid = args.Entity;
+
+        // A bulk SetTiles arrives as one event, so gather the whole neighbourhood and write it back once.
+        var dirty = new HashSet<Vector2i>();
+
+        foreach (var change in args.Changes)
+        {
+            dirty.Add(change.GridIndices);
+
+            foreach (var dir in Cardinals)
+            {
+                dirty.Add(change.GridIndices.Offset(dir));
+            }
+        }
+
+        Apply(grid, dirty);
+    }
+
+    /// <summary>
+    /// Recalculates the variants of the given tiles and writes the ones that changed in a single batch.
+    /// </summary>
+    private void Apply(Entity<MapGridComponent> grid, IEnumerable<Vector2i> indices)
+    {
+        var tiles = new List<(Vector2i, Tile)>();
+
+        foreach (var index in indices)
+        {
+            if (TryGetSmoothedTile(grid, index, out var tile))
+                tiles.Add((index, tile));
+        }
+
+        if (tiles.Count == 0)
             return;
 
         _updating = true;
 
         try
         {
-            foreach (var change in args.Changes)
-            {
-                UpdateTile(grid, change.GridIndices);
-
-                foreach (var dir in Cardinals)
-                {
-                    UpdateTile(grid, change.GridIndices.Offset(dir));
-                }
-            }
+            _maps.SetTiles(grid.Owner, grid.Comp, tiles);
         }
         finally
         {
@@ -72,17 +100,20 @@ public sealed class TileSmoothingSystem : EntitySystem
     }
 
     /// <summary>
-    /// Recalculates the variant of a single tile. Does nothing for tiles that don't smooth.
+    /// Works out the smoothed tile for a position. False when the tile doesn't smooth or already has the
+    /// right variant.
     /// </summary>
-    public void UpdateTile(Entity<MapGridComponent> grid, Vector2i indices)
+    private bool TryGetSmoothedTile(Entity<MapGridComponent> grid, Vector2i indices, out Tile smoothed)
     {
+        smoothed = Tile.Empty;
+
         if (!_maps.TryGetTile(grid.Comp, indices, out var tile))
-            return;
+            return false;
 
         if (_tileDefs[tile.TypeId] is not ContentTileDefinition def
             || def.SmoothGroup == null
             || def.SmoothMode == TileSmoothMode.None)
-            return;
+            return false;
 
         var mask = 0;
 
@@ -96,15 +127,16 @@ public sealed class TileSmoothingSystem : EntitySystem
         if (mask >= def.Variants)
         {
             Log.Error($"Tile {def.ID} smooths with mode {def.SmoothMode} but only has {def.Variants} variants, needs 16.");
-            return;
+            return false;
         }
 
         var variant = (byte) mask;
 
         if (tile.Variant == variant)
-            return;
+            return false;
 
-        _maps.SetTile(grid.Owner, grid.Comp, indices, new Tile(tile.TypeId, tile.Flags, variant, tile.RotationMirroring));
+        smoothed = new Tile(tile.TypeId, tile.Flags, variant, tile.RotationMirroring);
+        return true;
     }
 
     /// <summary>
@@ -130,7 +162,7 @@ public sealed class TileSmoothingSystem : EntitySystem
         if (_updating)
             return;
 
-        // Collect first, SetTile while enumerating the grid's chunks would invalidate the enumerator.
+        // Collect first, writing tiles while enumerating the grid's chunks would invalidate the enumerator.
         var indices = new List<Vector2i>();
         var tiles = _maps.GetAllTilesEnumerator(grid.Owner, grid.Comp);
 
@@ -139,18 +171,6 @@ public sealed class TileSmoothingSystem : EntitySystem
             indices.Add(tile.Value.GridIndices);
         }
 
-        _updating = true;
-
-        try
-        {
-            foreach (var index in indices)
-            {
-                UpdateTile(grid, index);
-            }
-        }
-        finally
-        {
-            _updating = false;
-        }
+        Apply(grid, indices);
     }
 }
