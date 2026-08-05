@@ -1,0 +1,66 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Roof picks its own sprite from the 16 variant strip, indexed by the cardinal neighbour mask
+# (North = 1, South = 2, East = 4, West = 8, the same numbering smoothed wall states use), so it draws a
+# raised lip on every edge that has no roof next to it.
+#
+# Textures/_Pirate/Tiles/Roof/script holds the strip states, named after the edges they raise. Rebuild
+# roof.png by pasting them left to right in this order:
+#   0 roof_nsew   1 roof_sew   2 roof_new   3 roof_ew
+#   4 roof_nsw    5 roof_sw    6 roof_nw    7 roof_w
+#   8 roof_nse    9 roof_se   10 roof_ne   11 roof_e
+#  12 roof_ns    13 roof_s    14 roof_n    15 roof_none
+#
+# The corner tiles are placed by hand where the roof should be chamfered, and are named after the corner
+# their filled half covers, like Tiles/plating/{ne,nw,se,sw}.png. They have one sprite each and only cover
+# two of their edges, so a Roof next to one only connects across those two.
+
+- type: tile
+  id: Roof
+  parent: BaseStationTile
+  name: roof
+  sprite: /Textures/_Pirate/Tiles/Roof/roof.png
+  variants: 16
+  placementVariants: [ 1.0 ] # Smoothing overwrites the variant, don't randomize it.
+  smoothGroup: Roof
+  smoothMode: Cardinal
+
+- type: tile
+  id: RoofCornerNE
+  parent: Roof
+  name: NE roof
+  sprite: /Textures/_Pirate/Tiles/Roof/ne.png
+  variants: 1
+  smoothMode: None
+  smoothSides: [ North, East ]
+  vertices: ["1, 0", "1, 1", "0, 1"]
+
+- type: tile
+  id: RoofCornerNW
+  parent: Roof
+  name: NW roof
+  sprite: /Textures/_Pirate/Tiles/Roof/nw.png
+  variants: 1
+  smoothMode: None
+  smoothSides: [ North, West ]
+  vertices: ["0, 0", "1, 1", "0, 1"]
+
+- type: tile
+  id: RoofCornerSE
+  parent: Roof
+  name: SE roof
+  sprite: /Textures/_Pirate/Tiles/Roof/se.png
+  variants: 1
+  smoothMode: None
+  smoothSides: [ South, East ]
+  vertices: ["0, 0", "1, 0", "1, 1"]
+
+- type: tile
+  id: RoofCornerSW
+  parent: Roof
+  name: SW roof
+  sprite: /Textures/_Pirate/Tiles/Roof/sw.png
+  variants: 1
+  smoothMode: None
+  smoothSides: [ South, West ]
+  vertices: ["0, 0", "1, 0", "0, 1"]

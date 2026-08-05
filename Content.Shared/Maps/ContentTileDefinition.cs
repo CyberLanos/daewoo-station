@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+using Content.Shared._Pirate.Tiles; // Pirate: tile smoothing
 using Content.Shared.Atmos;
 using Content.Shared.Light.Components;
 using Content.Shared.Movement.Systems;
@@ -91,6 +92,27 @@ namespace Content.Shared.Maps
         [DataField("friction")] public float Friction { get; set; } = 1f;
 
         [DataField("variants")] public byte Variants { get; set; } = 1;
+
+        #region Pirate: tile smoothing
+        /// <summary>
+        /// Tiles sharing this group smooth against each other. Null disables smoothing entirely.
+        /// </summary>
+        [DataField]
+        public string? SmoothGroup;
+
+        /// <summary>
+        /// How <see cref="Tile.Variant"/> is picked from the neighbouring tiles of our group.
+        /// </summary>
+        [DataField]
+        public TileSmoothMode SmoothMode = TileSmoothMode.None;
+
+        /// <summary>
+        /// Which of our cardinal edges neighbours may smooth against. Empty means all four.
+        /// Diagonal tiles only cover two of their edges, so they only offer those two.
+        /// </summary>
+        [DataField]
+        public List<Direction> SmoothSides = new();
+        #endregion
 
         /// <summary>
         ///     Allows the tile to be rotated/mirrored when placed on a grid.
