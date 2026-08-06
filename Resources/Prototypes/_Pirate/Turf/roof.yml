@@ -1,32 +1,38 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 # Roof tiles used by the multiz roof generator, see CEZShuttleRoofSystem and the roofTileGroup prototypes.
-# One set per base wall material; this one matches WallShuttle / WallShuttleDiagonal.
+# One set per base wall material, each in its own Textures/_Pirate/Tiles/Roof/<material> folder.
 #
-# ShuttleRoof picks its own sprite from the 16 variant strip, indexed by the cardinal neighbour mask
-# (North = 1, South = 2, East = 4, West = 8, the same numbering smoothed wall states use), so it draws a
-# raised lip on every edge that has no roof next to it.
+# The main tile of a set picks its own sprite from the 20 variant strip. Variants 0 to 15 are the cardinal
+# neighbour mask (North = 1, South = 2, East = 4, West = 8, the same numbering smoothed wall states use), so
+# the tile draws a raised lip on every edge that has no roof next to it. Variants 16 to 19 are inner corners,
+# used when the tile has all four neighbours but the diagonal one is missing. A tile wanting an inner corner
+# next to an exposed edge, or more than one at once, has no art and keeps its cardinal state; that is under
+# 1% of roof tiles, and covering it would mean drawing the full 47 tile set.
 #
-# Textures/_Pirate/Tiles/Roof/Shuttle/script holds the strip states, named after the edges they raise.
-# Rebuild roof.png by pasting them left to right in this order:
+# The set's script folder holds the strip states, named after the edges they raise. Rebuild roof.png by
+# pasting them left to right in this order:
 #   0 roof_nsew   1 roof_sew   2 roof_new   3 roof_ew
 #   4 roof_nsw    5 roof_sw    6 roof_nw    7 roof_w
 #   8 roof_nse    9 roof_se   10 roof_ne   11 roof_e
 #  12 roof_ns    13 roof_s    14 roof_n    15 roof_none
+#  16 roof_inner_ne  17 roof_inner_nw  18 roof_inner_se  19 roof_inner_sw
 #
 # The diagonal tiles go where the deck below has a diagonal wall, and are named after the corner their
 # filled half covers, like Tiles/plating/{ne,nw,se,sw}.png. They have one sprite each and only cover two of
-# their edges, so a ShuttleRoof next to one only connects across those two.
+# their edges, so a roof tile next to one only connects across those two.
+
+# WallShuttle / WallShuttleDiagonal
 
 - type: tile
   id: ShuttleRoof
   parent: BaseStationTile
   name: shuttle roof
   sprite: /Textures/_Pirate/Tiles/Roof/Shuttle/roof.png
-  variants: 16
+  variants: 20
   placementVariants: [ 1.0 ] # Smoothing overwrites the variant, don't randomize it.
   smoothGroup: ShuttleRoof
-  smoothMode: Cardinal
+  smoothMode: CardinalCorners
 
 - type: tile
   id: ShuttleRoofDiagonalNE
@@ -63,6 +69,58 @@
   parent: ShuttleRoof
   name: SW shuttle roof
   sprite: /Textures/_Pirate/Tiles/Roof/Shuttle/sw.png
+  variants: 1
+  smoothMode: None
+  smoothSides: [ South, West ]
+  vertices: ["0, 0", "1, 0", "0, 1"]
+
+# WallPlastitanium / WallPlastitaniumDiagonal
+
+- type: tile
+  id: PlastitaniumRoof
+  parent: BaseStationTile
+  name: plastitanium roof
+  sprite: /Textures/_Pirate/Tiles/Roof/Plastitanium/roof.png
+  variants: 20
+  placementVariants: [ 1.0 ] # Smoothing overwrites the variant, don't randomize it.
+  smoothGroup: PlastitaniumRoof
+  smoothMode: CardinalCorners
+
+- type: tile
+  id: PlastitaniumRoofDiagonalNE
+  parent: PlastitaniumRoof
+  name: NE plastitanium roof
+  sprite: /Textures/_Pirate/Tiles/Roof/Plastitanium/ne.png
+  variants: 1
+  smoothMode: None
+  smoothSides: [ North, East ]
+  vertices: ["1, 0", "1, 1", "0, 1"]
+
+- type: tile
+  id: PlastitaniumRoofDiagonalNW
+  parent: PlastitaniumRoof
+  name: NW plastitanium roof
+  sprite: /Textures/_Pirate/Tiles/Roof/Plastitanium/nw.png
+  variants: 1
+  smoothMode: None
+  smoothSides: [ North, West ]
+  vertices: ["0, 0", "1, 1", "0, 1"]
+
+- type: tile
+  id: PlastitaniumRoofDiagonalSE
+  parent: PlastitaniumRoof
+  name: SE plastitanium roof
+  sprite: /Textures/_Pirate/Tiles/Roof/Plastitanium/se.png
+  variants: 1
+  smoothMode: None
+  smoothSides: [ South, East ]
+  vertices: ["0, 0", "1, 0", "1, 1"]
+
+- type: tile
+  id: PlastitaniumRoofDiagonalSW
+  parent: PlastitaniumRoof
+  name: SW plastitanium roof
+  sprite: /Textures/_Pirate/Tiles/Roof/Plastitanium/sw.png
   variants: 1
   smoothMode: None
   smoothSides: [ South, West ]

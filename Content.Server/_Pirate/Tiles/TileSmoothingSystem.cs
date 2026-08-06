@@ -34,6 +34,22 @@ public sealed class TileSmoothingSystem : EntitySystem
     };
 
     /// <summary>
+    /// Order matters, the index into this is the inner corner variant after the cardinal states.
+    /// </summary>
+    private static readonly Direction[] Diagonals =
+    {
+        Direction.NorthEast,
+        Direction.NorthWest,
+        Direction.SouthEast,
+        Direction.SouthWest,
+    };
+
+    /// <summary>
+    /// How many variants the cardinal neighbour mask uses on its own.
+    /// </summary>
+    private const int CardinalStates = 16;
+
+    /// <summary>
     /// Our own <see cref="SharedMapSystem.SetTiles"/> call raises <see cref="TileChangedEvent"/> again, and a
     /// variant change never changes what any neighbour smooths to, so one pass is enough.
     /// </summary>
@@ -124,19 +140,83 @@ public sealed class TileSmoothingSystem : EntitySystem
                 mask |= 1 << i;
         }
 
-        if (mask >= def.Variants)
+        var needed = def.SmoothMode == TileSmoothMode.CardinalCorners ? CardinalStates + Diagonals.Length : CardinalStates;
+
+        if (def.Variants < needed)
         {
-            Log.Error($"Tile {def.ID} smooths with mode {def.SmoothMode} but only has {def.Variants} variants, needs 16.");
+            Log.Error($"Tile {def.ID} smooths with mode {def.SmoothMode} but only has {def.Variants} variants, needs {needed}.");
             return false;
         }
 
         var variant = (byte) mask;
+
+        // Fully surrounded but missing a diagonal neighbour: draw the lip around that inner corner. Only the
+        // single-corner case has art, anything busier keeps the flat fully-surrounded tile.
+        if (def.SmoothMode == TileSmoothMode.CardinalCorners && mask == (1 << Cardinals.Length) - 1)
+        {
+            var corner = -1;
+
+            for (var i = 0; i < Diagonals.Length; i++)
+            {
+                if (ConnectsDiagonally(grid, indices.Offset(Diagonals[i]), def.SmoothGroup, Diagonals[i]))
+                    continue;
+
+                if (corner >= 0)
+                {
+                    corner = -1;
+                    break;
+                }
+
+                corner = i;
+            }
+
+            if (corner >= 0)
+                variant = (byte) (CardinalStates + corner);
+        }
 
         if (tile.Variant == variant)
             return false;
 
         smoothed = new Tile(tile.TypeId, tile.Flags, variant, tile.RotationMirroring);
         return true;
+    }
+
+    /// <summary>
+    /// Whether the tile diagonally at <paramref name="indices"/> belongs to <paramref name="group"/> and covers
+    /// the corner it shares with the tile that is asking, which sits in the <paramref name="diagonal"/>
+    /// direction from it.
+    /// </summary>
+    /// <remarks>
+    /// A half tile leaves exactly one corner uncovered, the one opposite the half it fills, so it fails to cover
+    /// the shared corner only when the half it fills faces the same way we looked.
+    /// </remarks>
+    private bool ConnectsDiagonally(Entity<MapGridComponent> grid, Vector2i indices, string group, Direction diagonal)
+    {
+        if (!_maps.TryGetTile(grid.Comp, indices, out var tile))
+            return false;
+
+        if (_tileDefs[tile.TypeId] is not ContentTileDefinition def || def.SmoothGroup != group)
+            return false;
+
+        if (def.SmoothSides.Count == 0)
+            return true;
+
+        var (a, b) = CornerCardinals(diagonal);
+        return !(def.SmoothSides.Contains(a) && def.SmoothSides.Contains(b));
+    }
+
+    /// <summary>
+    /// The two cardinals a diagonal direction sits between.
+    /// </summary>
+    private static (Direction, Direction) CornerCardinals(Direction diagonal)
+    {
+        return diagonal switch
+        {
+            Direction.NorthEast => (Direction.North, Direction.East),
+            Direction.NorthWest => (Direction.North, Direction.West),
+            Direction.SouthEast => (Direction.South, Direction.East),
+            _ => (Direction.South, Direction.West),
+        };
     }
 
     /// <summary>

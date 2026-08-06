@@ -17,3 +17,17 @@
     NorthWest: ShuttleRoofDiagonalNW
     SouthEast: ShuttleRoofDiagonalSE
     SouthWest: ShuttleRoofDiagonalSW
+
+- type: roofTileGroup
+  id: Plastitanium
+  minWalls: 10
+  walls:
+  - WallPlastitanium
+  diagonalWalls:
+  - WallPlastitaniumDiagonal
+  tile: PlastitaniumRoof
+  diagonalTiles:
+    NorthEast: PlastitaniumRoofDiagonalNE
+    NorthWest: PlastitaniumRoofDiagonalNW
+    SouthEast: PlastitaniumRoofDiagonalSE
+    SouthWest: PlastitaniumRoofDiagonalSW

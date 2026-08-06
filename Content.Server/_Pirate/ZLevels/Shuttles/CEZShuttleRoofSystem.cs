@@ -1,7 +1,9 @@
 using System.Linq;
 using Content.Server._Pirate.ZLevels.Core;
+using Content.Server.Atmos.Components;
 using Content.Server.Shuttles.Components;
 using Content.Server.Shuttles.Events;
+using Content.Shared.Atmos;
 using Content.Shared._Pirate.ZLevels.Core.Components;
 using Content.Shared._Pirate.ZLevels.Roof;
 using Content.Shared._Pirate.ZLevels.Shuttles.Components;
@@ -29,6 +31,14 @@ public sealed class CEZShuttleRoofSystem : EntitySystem
     [Dependency] private readonly MetaDataSystem _meta = default!;
 
     private const string FallbackPlatingTileId = "Plating";
+
+    private static readonly Direction[] Cardinals =
+    {
+        Direction.North,
+        Direction.South,
+        Direction.East,
+        Direction.West,
+    };
 
     // Roof grid creation reparents mid-build.
     private bool _rebuilding;
@@ -88,7 +98,7 @@ public sealed class CEZShuttleRoofSystem : EntitySystem
     private void OnSourceTileChanged(Entity<CEZShuttleRoofSourceComponent> ent, ref TileChangedEvent args)
     {
         if (Exists(ent.Comp.Shuttle))
-            EnsureRoof(ent.Comp.Shuttle);
+            EnsureRoof(ent.Comp.Shuttle, recensus: false);
     }
 
     private void OnFTLCompleted(ref FTLCompletedEvent args)
@@ -116,7 +126,14 @@ public sealed class CEZShuttleRoofSystem : EntitySystem
         RemoveRoof(ent);
     }
 
-    public void EnsureRoof(EntityUid shuttleUid)
+    /// <param name="recensus">
+    /// Whether to re-resolve the deck's roof tile group. Off for rebuilds driven by a single tile edit, since
+    /// the census walks every entity on the deck. On for lifecycle rebuilds, which is also what makes the
+    /// group correct after a map load: the grid is reparented onto its map before its entities are started,
+    /// so the census during that parent change sees a deck with no walls on it yet. The map-init that follows
+    /// runs once everything is attached.
+    /// </param>
+    public void EnsureRoof(EntityUid shuttleUid, bool recensus = true)
     {
         // Roof grids and mid-build reparenting must not recurse.
         if (_rebuilding || HasComp<CEZShuttleRoofComponent>(shuttleUid))
@@ -125,7 +142,7 @@ public sealed class CEZShuttleRoofSystem : EntitySystem
         _rebuilding = true;
         try
         {
-            EnsureRoofCore(shuttleUid);
+            EnsureRoofCore(shuttleUid, recensus);
         }
         finally
         {
@@ -133,7 +150,7 @@ public sealed class CEZShuttleRoofSystem : EntitySystem
         }
     }
 
-    private void EnsureRoofCore(EntityUid shuttleUid)
+    private void EnsureRoofCore(EntityUid shuttleUid, bool recensus)
     {
         if (!TryFindTopShuttleGrid(shuttleUid, out var topGrid, out var topDepth))
             return;
@@ -181,12 +198,18 @@ public sealed class CEZShuttleRoofSystem : EntitySystem
 
         SyncRoofTransform(topGrid, roofGrid);
 
-        // Re-census only when the deck we roof over changes, the census walks every entity on it.
         var roofComp = Comp<CEZShuttleRoofComponent>(roofGrid);
-        if (roofComp.SourceGrid != topGrid)
+        if (recensus || roofComp.SourceGrid != topGrid)
         {
             roofComp.SourceGrid = topGrid;
-            roofComp.TileGroup = ResolveTileGroup(topGrid)?.ID;
+
+            // Careful with the null case: string implicitly converts to ProtoId, so `group?.ID` would store a
+            // ProtoId wrapping a null id rather than a null ProtoId.
+            var resolved = ResolveTileGroup(topGrid);
+            if (resolved == null)
+                roofComp.TileGroup = null;
+            else
+                roofComp.TileGroup = new ProtoId<CERoofTileGroupPrototype>(resolved.ID);
         }
 
         CopyTiles(topGrid, roofGrid, GetTileGroup((roofGrid, roofComp)));
@@ -269,8 +292,8 @@ public sealed class CEZShuttleRoofSystem : EntitySystem
 
         var roofComp = AddComp<CEZShuttleRoofComponent>(gridUid);
         roofComp.Shuttle = shuttleUid;
-        roofComp.SourceGrid = topShuttleGrid;
-        roofComp.TileGroup = ResolveTileGroup(topShuttleGrid)?.ID;
+        // SourceGrid and TileGroup are filled in by EnsureRoofCore, which owns the census.
+        roofComp.SourceGrid = EntityUid.Invalid;
 
         _meta.SetEntityName(gridUid, $"Shuttle Roof ({ToPrettyString(shuttleUid)})");
 
@@ -296,20 +319,26 @@ public sealed class CEZShuttleRoofSystem : EntitySystem
         var fallback = _tileDefMan[FallbackPlatingTileId];
 
         var tilesToSet = new List<(Vector2i, Tile)>();
-        var sourcePositions = new HashSet<Vector2i>();
+        var footprint = new HashSet<Vector2i>();
 
         foreach (var tileRef in _mapSystem.GetAllTiles(topGrid, topMapGrid))
         {
-            sourcePositions.Add(tileRef.GridIndices);
+            footprint.Add(tileRef.GridIndices);
         }
 
-        // Where the deck has a diagonal wall the roof keeps the hull's chamfer instead of a full tile.
+        // Only the walled-in part of the deck gets a roof, so thruster bays and outside catwalks stay open.
+        var roofArea = ResolveRoofArea(topGrid, topMapGrid, footprint);
+
+        // Where the deck has a diagonal wall the roof keeps the wall's chamfer instead of a full tile.
         var diagonals = group == null
             ? new Dictionary<Vector2i, Direction>()
-            : CollectDiagonalWalls(topGrid, topMapGrid, group, sourcePositions);
+            : CollectDiagonalWalls(topGrid, topMapGrid, group, roofArea);
 
         foreach (var tileRef in _mapSystem.GetAllTiles(topGrid, topMapGrid))
         {
+            if (!roofArea.Contains(tileRef.GridIndices))
+                continue;
+
             ITileDefinition targetDef;
 
             if (group != null)
@@ -343,10 +372,10 @@ public sealed class CEZShuttleRoofSystem : EntitySystem
             tilesToSet.Add((tileRef.GridIndices, new Tile(targetDef.TileId)));
         }
 
-        // Clear roof tiles with no source tile.
+        // Clear roof tiles that are no longer roofed.
         foreach (var existingTile in _mapSystem.GetAllTiles(roofGrid, roofMapGrid))
         {
-            if (!sourcePositions.Contains(existingTile.GridIndices))
+            if (!roofArea.Contains(existingTile.GridIndices))
                 tilesToSet.Add((existingTile.GridIndices, Tile.Empty));
         }
 
@@ -406,14 +435,127 @@ public sealed class CEZShuttleRoofSystem : EntitySystem
     }
 
     /// <summary>
-    /// Maps the deck's diagonal walls to the corner their filled half covers, keeping only the ones that sit
-    /// on the edge of the footprint.
+    /// Works out which of the deck's tiles carry a roof: the space its airtight walls enclose, plus the wall
+    /// tiles bordering that space so the roof reaches the hull line rather than stopping short of it.
     /// </summary>
     /// <remarks>
-    /// Diagonal walls are also used inside a hull, where a half tile would punch a notch into the middle of
-    /// the roof. A wall only chamfers the roof when both of the edges its filled half leaves open face off
-    /// the footprint, otherwise the roof stays square there.
+    /// This is what keeps thruster bays, outside catwalks and other unpressurised trimmings off the roof, so its
+    /// outline follows the hull instead of the whole footprint. Walls count by the directions they are built to
+    /// block, ignoring whether they happen to be open right now, otherwise an open airlock would leak the fill
+    /// into the ship and shrink the roof to nothing. If nothing comes out enclosed - an unfinished hull, or a
+    /// deck whose entities are not attached yet - the whole footprint is roofed, as it was before.
     /// </remarks>
+    private HashSet<Vector2i> ResolveRoofArea(EntityUid gridUid, MapGridComponent grid, HashSet<Vector2i> footprint)
+    {
+        if (footprint.Count == 0)
+            return footprint;
+
+        var blocked = new Dictionary<Vector2i, AtmosDirection>();
+        var min = new Vector2i(int.MaxValue, int.MaxValue);
+        var max = new Vector2i(int.MinValue, int.MinValue);
+
+        foreach (var indices in footprint)
+        {
+            min = Vector2i.ComponentMin(min, indices);
+            max = Vector2i.ComponentMax(max, indices);
+
+            var anchored = _mapSystem.GetAnchoredEntitiesEnumerator(gridUid, grid, indices);
+            var dirs = AtmosDirection.Invalid;
+
+            while (anchored.MoveNext(out var anchoredUid))
+            {
+                if (TryComp<AirtightComponent>(anchoredUid, out var airtight))
+                    dirs |= airtight.AirBlockedDirection;
+            }
+
+            if (dirs != AtmosDirection.Invalid)
+                blocked[indices] = dirs;
+        }
+
+        // Flood the space around the deck inwards, stopping at walls. One tile of margin is enough to get all
+        // the way around the footprint.
+        min -= Vector2i.One;
+        max += Vector2i.One;
+
+        var outside = new HashSet<Vector2i>();
+        var frontier = new Queue<Vector2i>();
+
+        for (var x = min.X; x <= max.X; x++)
+        {
+            Seed(new Vector2i(x, min.Y));
+            Seed(new Vector2i(x, max.Y));
+        }
+
+        for (var y = min.Y; y <= max.Y; y++)
+        {
+            Seed(new Vector2i(min.X, y));
+            Seed(new Vector2i(max.X, y));
+        }
+
+        while (frontier.TryDequeue(out var indices))
+        {
+            foreach (var dir in Cardinals)
+            {
+                var neighbour = indices.Offset(dir);
+
+                if (neighbour.X < min.X || neighbour.X > max.X || neighbour.Y < min.Y || neighbour.Y > max.Y)
+                    continue;
+
+                if (outside.Contains(neighbour))
+                    continue;
+
+                var atmosDir = dir.ToAtmosDirection();
+
+                if (blocked.TryGetValue(indices, out var here) && here.IsFlagSet(atmosDir))
+                    continue;
+
+                if (blocked.TryGetValue(neighbour, out var there) && there.IsFlagSet(atmosDir.GetOpposite()))
+                    continue;
+
+                Seed(neighbour);
+            }
+        }
+
+        var enclosed = new HashSet<Vector2i>();
+        foreach (var indices in footprint)
+        {
+            if (!outside.Contains(indices))
+                enclosed.Add(indices);
+        }
+
+        if (enclosed.Count == 0)
+            return footprint;
+
+        var area = new HashSet<Vector2i>(enclosed);
+
+        foreach (var (indices, _) in blocked)
+        {
+            if (area.Contains(indices))
+                continue;
+
+            foreach (var dir in Cardinals)
+            {
+                if (enclosed.Contains(indices.Offset(dir)))
+                {
+                    area.Add(indices);
+                    break;
+                }
+            }
+        }
+
+        return area;
+
+        void Seed(Vector2i indices)
+        {
+            if (outside.Add(indices))
+                frontier.Enqueue(indices);
+        }
+    }
+
+    /// <summary>
+    /// Maps the deck's diagonal walls to the corner their filled half covers, dropping the ones whose chamfer
+    /// would only carve a sealed pocket into the roof.
+    /// </summary>
     private Dictionary<Vector2i, Direction> CollectDiagonalWalls(EntityUid sourceGrid, MapGridComponent grid,
         CERoofTileGroupPrototype group, HashSet<Vector2i> footprint)
     {
@@ -430,33 +572,98 @@ public sealed class CEZShuttleRoofSystem : EntitySystem
 
             var xform = Transform(child);
             var indices = _mapSystem.TileIndicesFor(sourceGrid, grid, xform.Coordinates);
-            var corner = RotateCorner(group.DiagonalWallCorner, xform.LocalRotation);
-            var (coveredA, coveredB) = CornerSides(corner);
-
-            if (footprint.Contains(indices.Offset(coveredA.GetOpposite())) ||
-                footprint.Contains(indices.Offset(coveredB.GetOpposite())))
-            {
-                continue;
-            }
-
-            result[indices] = corner;
+            result[indices] = RotateCorner(group.DiagonalWallCorner, xform.LocalRotation);
         }
 
+        PruneSealedDiagonals(result, footprint);
         return result;
     }
 
     /// <summary>
-    /// The two cardinal edges a corner's filled half covers.
+    /// Drops diagonals whose open half does not reach the outside of the roof.
     /// </summary>
-    private static (Direction, Direction) CornerSides(Direction corner)
+    /// <remarks>
+    /// A half tile leaves the other half of its tile uncovered. That only reads as a chamfer if the gap is part
+    /// of the space around the roof: either it opens straight off the footprint, or it runs into the gap of
+    /// another diagonal facing it, the two hypotenuses forming a channel that eventually gets out. A diagonal
+    /// whose gap is sealed in by roof on every side is carving a pocket in the middle of the roof instead, and
+    /// stays a full tile. Diagonals are also used inside a hull, so this is the common case.
+    ///
+    /// Each edge of a half tile is either wholly covered or wholly open - the filled half covers the two edges
+    /// beside its corner, the gap covers the other two - so the gaps meet through tile edges only and this is
+    /// plain connectivity between tiles. Gaps that touch only at a grid corner are not a way through.
+    /// </remarks>
+    private static void PruneSealedDiagonals(Dictionary<Vector2i, Direction> diagonals, HashSet<Vector2i> footprint)
+    {
+        var reaching = new HashSet<Vector2i>();
+        var frontier = new Queue<Vector2i>();
+
+        // Seed with the gaps that open straight off the footprint.
+        foreach (var (indices, corner) in diagonals)
+        {
+            foreach (var side in OpenSides(corner))
+            {
+                if (footprint.Contains(indices.Offset(side)))
+                    continue;
+
+                if (reaching.Add(indices))
+                    frontier.Enqueue(indices);
+                break;
+            }
+        }
+
+        // Then walk gap to gap through the edges both of them leave open.
+        while (frontier.TryDequeue(out var indices))
+        {
+            foreach (var side in OpenSides(diagonals[indices]))
+            {
+                var neighbour = indices.Offset(side);
+
+                if (reaching.Contains(neighbour) || !diagonals.TryGetValue(neighbour, out var neighbourCorner))
+                    continue;
+
+                if (!IsOpenSide(neighbourCorner, side.GetOpposite()))
+                    continue;
+
+                reaching.Add(neighbour);
+                frontier.Enqueue(neighbour);
+            }
+        }
+
+        if (reaching.Count == diagonals.Count)
+            return;
+
+        foreach (var indices in diagonals.Keys.ToArray())
+        {
+            if (!reaching.Contains(indices))
+                diagonals.Remove(indices);
+        }
+    }
+
+    private static readonly Direction[] OpenSidesOfSouthEast = { Direction.North, Direction.West };
+    private static readonly Direction[] OpenSidesOfSouthWest = { Direction.North, Direction.East };
+    private static readonly Direction[] OpenSidesOfNorthEast = { Direction.South, Direction.West };
+    private static readonly Direction[] OpenSidesOfNorthWest = { Direction.South, Direction.East };
+
+    /// <summary>
+    /// The two cardinal edges left open by a half tile filling <paramref name="corner"/>, i.e. the edges beside
+    /// the opposite corner.
+    /// </summary>
+    private static Direction[] OpenSides(Direction corner)
     {
         return corner switch
         {
-            Direction.NorthEast => (Direction.North, Direction.East),
-            Direction.NorthWest => (Direction.North, Direction.West),
-            Direction.SouthEast => (Direction.South, Direction.East),
-            _ => (Direction.South, Direction.West),
+            Direction.SouthEast => OpenSidesOfSouthEast,
+            Direction.SouthWest => OpenSidesOfSouthWest,
+            Direction.NorthEast => OpenSidesOfNorthEast,
+            _ => OpenSidesOfNorthWest,
         };
+    }
+
+    private static bool IsOpenSide(Direction corner, Direction side)
+    {
+        var sides = OpenSides(corner);
+        return sides[0] == side || sides[1] == side;
     }
 
     /// <summary>
