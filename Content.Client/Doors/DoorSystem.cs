@@ -149,11 +149,12 @@ public sealed class DoorSystem : SharedDoorSystem
 
                 return;
             case DoorState.Denying:
-                // Gates do not define a denying animation.
+                #region F14: long gates - skip missing denial animation
                 if (entity.Comp.DenyingAnimation is not Animation denyingAnimation)
                     return;
 
                 _animationSystem.Play(entity, denyingAnimation, DoorComponent.AnimationKey);
+                #endregion
 
                 return;
             case DoorState.Emagging:
