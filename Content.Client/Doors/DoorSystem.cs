@@ -149,7 +149,11 @@ public sealed class DoorSystem : SharedDoorSystem
 
                 return;
             case DoorState.Denying:
-                _animationSystem.Play(entity, (Animation)entity.Comp.DenyingAnimation, DoorComponent.AnimationKey);
+                // Gates do not define a denying animation.
+                if (entity.Comp.DenyingAnimation is not Animation denyingAnimation)
+                    return;
+
+                _animationSystem.Play(entity, denyingAnimation, DoorComponent.AnimationKey);
 
                 return;
             case DoorState.Emagging:

@@ -69,6 +69,8 @@
 using Content.Server.Access;
 using Content.Server.Atmos.Components;
 using Content.Server.Atmos.EntitySystems;
+using Content.Server._F14.Doors;
+using Content.Shared._F14.Doors;
 using Content.Shared.Doors.Components;
 using Content.Shared.Doors.Systems;
 using Content.Shared.Power;
@@ -79,6 +81,7 @@ namespace Content.Server.Doors.Systems;
 public sealed class DoorSystem : SharedDoorSystem
 {
     [Dependency] private readonly AirtightSystem _airtightSystem = default!;
+    [Dependency] private readonly MultiTileDoorSystem _multiTileDoor = default!;
 
     public override void Initialize()
     {
@@ -99,6 +102,10 @@ public sealed class DoorSystem : SharedDoorSystem
 
         if (door.ChangeAirtight && TryComp(uid, out AirtightComponent? airtight))
             _airtightSystem.SetAirblocked((uid, airtight), collidable);
+
+        // Keep extra gate tiles in sync.
+        if (TryComp(uid, out MultiTileDoorComponent? multiTile))
+            _multiTileDoor.SetBlocked((uid, multiTile), collidable);
 
         // Pathfinding / AI stuff.
         RaiseLocalEvent(new AccessReaderChangeEvent(uid, collidable));

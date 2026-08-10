@@ -1,0 +1,202 @@
+# Multi-tile blast gates use extra blockers for airtightness and occlusion.
+
+- type: entity
+  id: MultiTileDoorBlocker
+  name: gate
+  description: Part of a gate.
+  categories: [ HideSpawnMenu ]
+  components:
+  # Anchored by MultiTileDoorSystem.
+  - type: Airtight
+  - type: Occluder
+
+# BaseShutter's InteractionPopup consumes activation, so gates replicate its components without it.
+- type: entity
+  id: BaseSCPGate
+  parent: BaseStructure
+  abstract: true
+  name: gate
+  description: A heavy multi-panel blast gate. It takes its time.
+  placement:
+    mode: SnapgridCenter
+  components:
+  - type: Tag
+    tags:
+    - Structure
+    - ForceNoFixRotations # Don't want the fixrotations command to target these
+  - type: InteractionOutline
+  - type: AnimationPlayer
+  - type: Appearance
+  - type: Occluder
+  - type: Airtight
+  - type: NavMapDoor
+  - type: StationAiWhitelist
+  # Access is enforced by linked controls; retain the board for deconstruction and Station AI.
+  - type: AccessReader
+    containerAccessProvider: board
+  - type: ContainerContainer
+    containers:
+      board: !type:Container
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronics ]
+  - type: Door
+    # Gates are operated by linked signal controls.
+    clickOpen: false
+    bumpOpen: false
+    openDrawDepth: BlastDoors
+    closedDrawDepth: BlastDoors
+    # The gate seals midway through the animation.
+    closeTimeOne: 0.7
+    closeTimeTwo: 0.7
+    openTimeOne: 0.7
+    openTimeTwo: 0.7
+    openingAnimationTime: 1.4
+    closingAnimationTime: 1.4
+    canPry: false
+    crushDamage:
+      types:
+        Blunt: 25
+    openSound:
+      path: /Audio/Machines/blastdoor.ogg
+    closeSound:
+      path: /Audio/Machines/blastdoor.ogg
+  - type: Weldable
+    time: 3
+  - type: DoorSignalControl
+  - type: DeviceNetwork
+    deviceNetId: Wireless
+    receiveFrequencyId: BasicDevice
+  - type: WirelessNetworkConnection
+    range: 200
+  - type: DeviceLinkSink
+    ports:
+    - Open
+    - Close
+    - Toggle
+  - type: DeviceLinkSource
+    ports:
+    - DoorStatus
+    lastSignals:
+      DoorStatus: false
+  - type: InteractionPopup
+    interactSuccessString: gate-bang
+    messagePerceivedByOthers: gate-bang
+    interactSuccessSound:
+      collection: MetalThud
+  - type: InteractionVerbs
+    allowedVerbs:
+    - KnockOnMetal
+  - type: SoundBlocker
+    soundBlockPercent: 0.8
+  - type: BlockWeather
+  - type: Damageable
+    damageContainer: StructuralInorganic
+    damageModifierSet: StrongMetallic
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 800
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalSlam
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+  - type: StaticPrice
+    price: 1000
+
+# 3x1
+
+- type: entity
+  id: SCPGate3x1
+  parent: BaseSCPGate
+  name: large gate
+  description: A three tile wide blast gate. Do not stand in it.
+  components:
+  - type: Sprite
+    drawdepth: BlastDoors
+    sprite: _F14/Structures/Doors/gate_large.rsi
+    layers:
+    - state: closed
+      map: ["enum.DoorVisualLayers.Base"]
+  - type: MultiTileDoor
+    offsets:
+    - -1,0
+    - 1,0
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-1.49,-0.49,1.49,0.49"
+        density: 100
+        mask:
+        - FullTileMask
+        layer:
+        - AirlockLayer
+  - type: WeldingSparksAnimation
+    startingOffset: -1.5, -0.5
+    endingOffset: 1.5, -0.5
+
+- type: entity
+  id: SCPGate3x1Open
+  parent: SCPGate3x1
+  suffix: Open
+  components:
+  - type: Door
+    state: Open
+  - type: Physics
+    canCollide: false
+  - type: Occluder
+    enabled: false
+  - type: Airtight
+    airBlocked: false
+
+# 2x1
+
+- type: entity
+  id: SCPGate2x1
+  parent: BaseSCPGate
+  name: gate
+  description: A two tile wide blast gate. Do not stand in it.
+  components:
+  - type: Sprite
+    drawdepth: BlastDoors
+    sprite: _F14/Structures/Doors/gate_medium.rsi
+    offset: 0.5,0
+    layers:
+    - state: closed
+      map: ["enum.DoorVisualLayers.Base"]
+  - type: MultiTileDoor
+    offsets:
+    - 1,0
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.49,-0.49,1.49,0.49"
+        density: 100
+        mask:
+        - FullTileMask
+        layer:
+        - AirlockLayer
+  - type: WeldingSparksAnimation
+    startingOffset: -0.5, -0.5
+    endingOffset: 1.5, -0.5
+
+- type: entity
+  id: SCPGate2x1Open
+  parent: SCPGate2x1
+  suffix: Open
+  components:
+  - type: Door
+    state: Open
+  - type: Physics
+    canCollide: false
+  - type: Occluder
+    enabled: false
+  - type: Airtight
+    airBlocked: false
