@@ -1,0 +1,10 @@
+- type: Interaction
+  id: KnockOnMetal
+  parent: BaseHands
+  priority: 20
+  effectSuccess:
+    popup: Visible
+    sound:
+      collection: MetalThud
+  action:
+    !type:NoOpAction

@@ -51,6 +51,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 using System.Linq;
+using Content.Shared._F14.Doors; // F14: long gates
 using Content.Shared.Access.Components;
 using Content.Shared.Access.Systems;
 using Content.Shared.Administration.Logs;
@@ -628,6 +629,17 @@ public abstract partial class SharedDoorSystem : EntitySystem
 
         _doorIntersecting.Clear();
         _entityLookup.GetLocalEntitiesIntersecting(xform.GridUid.Value, tileRef.GridIndices, _doorIntersecting, gridComp: mapGridComp, flags: (LookupFlags.All & ~LookupFlags.Sensors));
+
+        #region F14: long gates - include covered tiles in crushing checks
+        if (TryComp<MultiTileDoorComponent>(uid, out var multiTile))
+        {
+            foreach (var offset in multiTile.Offsets)
+            {
+                var tile = tileRef.GridIndices + MultiTileDoorComponent.Rotate(offset, xform.LocalRotation);
+                _entityLookup.GetLocalEntitiesIntersecting(xform.GridUid.Value, tile, _doorIntersecting, gridComp: mapGridComp, flags: (LookupFlags.All & ~LookupFlags.Sensors));
+            }
+        }
+        #endregion
 
         // TODO SLOTH fix electro's code.
         // ReSharper disable once InconsistentNaming
