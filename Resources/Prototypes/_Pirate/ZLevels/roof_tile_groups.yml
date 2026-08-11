@@ -31,3 +31,18 @@
     NorthWest: PlastitaniumRoofDiagonalNW
     SouthEast: PlastitaniumRoofDiagonalSE
     SouthWest: PlastitaniumRoofDiagonalSW
+
+- type: roofTileGroup
+  id: Mining
+  minWalls: 10
+  walls:
+  - WallMining
+  - MiningWindow
+  diagonalWalls:
+  - WallMiningDiagonal
+  tile: MiningRoof
+  diagonalTiles:
+    NorthEast: MiningRoofDiagonalNE
+    NorthWest: MiningRoofDiagonalNW
+    SouthEast: MiningRoofDiagonalSE
+    SouthWest: MiningRoofDiagonalSW

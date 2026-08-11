@@ -125,3 +125,55 @@
   smoothMode: None
   smoothSides: [ South, West ]
   vertices: ["0, 0", "1, 0", "0, 1"]
+
+# WallMining / WallMiningDiagonal / MiningWindow
+
+- type: tile
+  id: MiningRoof
+  parent: BaseStationTile
+  name: mining roof
+  sprite: /Textures/_Pirate/Tiles/Roof/Mining/roof.png
+  variants: 20
+  placementVariants: [ 1.0 ] # Smoothing overwrites the variant, don't randomize it.
+  smoothGroup: MiningRoof
+  smoothMode: CardinalCorners
+
+- type: tile
+  id: MiningRoofDiagonalNE
+  parent: MiningRoof
+  name: NE mining roof
+  sprite: /Textures/_Pirate/Tiles/Roof/Mining/ne.png
+  variants: 1
+  smoothMode: None
+  smoothSides: [ North, East ]
+  vertices: ["1, 0", "1, 1", "0, 1"]
+
+- type: tile
+  id: MiningRoofDiagonalNW
+  parent: MiningRoof
+  name: NW mining roof
+  sprite: /Textures/_Pirate/Tiles/Roof/Mining/nw.png
+  variants: 1
+  smoothMode: None
+  smoothSides: [ North, West ]
+  vertices: ["0, 0", "1, 1", "0, 1"]
+
+- type: tile
+  id: MiningRoofDiagonalSE
+  parent: MiningRoof
+  name: SE mining roof
+  sprite: /Textures/_Pirate/Tiles/Roof/Mining/se.png
+  variants: 1
+  smoothMode: None
+  smoothSides: [ South, East ]
+  vertices: ["0, 0", "1, 0", "1, 1"]
+
+- type: tile
+  id: MiningRoofDiagonalSW
+  parent: MiningRoof
+  name: SW mining roof
+  sprite: /Textures/_Pirate/Tiles/Roof/Mining/sw.png
+  variants: 1
+  smoothMode: None
+  smoothSides: [ South, West ]
+  vertices: ["0, 0", "1, 0", "0, 1"]

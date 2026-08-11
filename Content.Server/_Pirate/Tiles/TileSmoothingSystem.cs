@@ -45,6 +45,21 @@ public sealed class TileSmoothingSystem : EntitySystem
     };
 
     /// <summary>
+    /// Every tile whose sprite can be affected by a change, i.e. all eight around it.
+    /// </summary>
+    private static readonly Direction[] Neighbours =
+    {
+        Direction.North,
+        Direction.South,
+        Direction.East,
+        Direction.West,
+        Direction.NorthEast,
+        Direction.NorthWest,
+        Direction.SouthEast,
+        Direction.SouthWest,
+    };
+
+    /// <summary>
     /// How many variants the cardinal neighbour mask uses on its own.
     /// </summary>
     private const int CardinalStates = 16;
@@ -78,7 +93,9 @@ public sealed class TileSmoothingSystem : EntitySystem
         {
             dirty.Add(change.GridIndices);
 
-            foreach (var dir in Cardinals)
+            // Diagonals as well as cardinals: an inner corner depends on the diagonal neighbour, so a tile
+            // appearing there has to re-run the neighbour that was drawing a corner against its absence.
+            foreach (var dir in Neighbours)
             {
                 dirty.Add(change.GridIndices.Offset(dir));
             }
