@@ -553,26 +553,69 @@ public sealed class CEZShuttleRoofSystem : EntitySystem
     }
 
     /// <summary>
+    /// Every diagonal prototype any group knows about, mapped to the corner its filled half covers unrotated.
+    /// </summary>
+    /// <remarks>
+    /// Chamfering follows the shape of the hull, not what it is built from, so a deck roofed as one material can
+    /// still have a diagonal window of another and gets the chamfer in its own material's art. The census stays
+    /// per material and keeps using each group's own list, so a couple of foreign windows cannot drag a deck
+    /// into the wrong group.
+    /// </remarks>
+    private Dictionary<string, Direction> GetDiagonalShapes()
+    {
+        var shapes = new Dictionary<string, Direction>();
+
+        foreach (var group in _protoMan.EnumeratePrototypes<CERoofTileGroupPrototype>())
+        {
+            foreach (var proto in group.DiagonalWalls)
+            {
+                shapes[proto.Id] = group.DiagonalWallCorner;
+            }
+        }
+
+        return shapes;
+    }
+
+    /// <summary>
     /// Maps the deck's diagonal walls to the corner their filled half covers, dropping the ones whose chamfer
     /// would only carve a sealed pocket into the roof.
     /// </summary>
+    /// <remarks>
+    /// A tile can carry more than one of these, and two halves facing different ways cover between them more of
+    /// the tile than either does alone, so the roof over it stays a full tile rather than picking one of them.
+    /// </remarks>
     private Dictionary<Vector2i, Direction> CollectDiagonalWalls(EntityUid sourceGrid, MapGridComponent grid,
         CERoofTileGroupPrototype group, HashSet<Vector2i> footprint)
     {
         var result = new Dictionary<Vector2i, Direction>();
-        if (group.DiagonalWalls.Count == 0)
+        if (group.DiagonalTiles.Count == 0)
             return result;
 
+        var shapes = GetDiagonalShapes();
+        var contested = new HashSet<Vector2i>();
         var children = Transform(sourceGrid).ChildEnumerator;
 
         while (children.MoveNext(out var child))
         {
-            if (MetaData(child).EntityPrototype?.ID is not { } protoId || !group.DiagonalWalls.Contains(protoId))
+            if (MetaData(child).EntityPrototype?.ID is not { } protoId
+                || !shapes.TryGetValue(protoId, out var baseCorner))
+            {
                 continue;
+            }
 
             var xform = Transform(child);
             var indices = _mapSystem.TileIndicesFor(sourceGrid, grid, xform.Coordinates);
-            result[indices] = RotateCorner(group.DiagonalWallCorner, xform.LocalRotation);
+            var corner = RotateCorner(baseCorner, xform.LocalRotation);
+
+            if (result.TryGetValue(indices, out var existing) && existing != corner)
+                contested.Add(indices);
+
+            result[indices] = corner;
+        }
+
+        foreach (var indices in contested)
+        {
+            result.Remove(indices);
         }
 
         PruneSealedDiagonals(result, footprint);

@@ -3,6 +3,11 @@
 # Roof tile groups for the multiz roof generator. The generator counts the walls on the deck it roofs over;
 # the first group to reach minWalls supplies the roof tiles, otherwise the roof falls back to copying the
 # deck's subfloor. Add a group per base wall material.
+#
+# walls and diagonalWalls both count towards a group's own minWalls. diagonalWalls additionally says "this is a
+# half tile", and that part is shared: a deck roofed as one material still gets a chamfer over a diagonal window
+# of another, drawn in the winning group's art. So list a prototype under the group whose material it is, and
+# every group will read its shape correctly.
 
 - type: roofTileGroup
   id: Shuttle
@@ -11,6 +16,7 @@
   - WallShuttle
   diagonalWalls:
   - WallShuttleDiagonal
+  - ShuttleWindowDiagonal
   tile: ShuttleRoof
   diagonalTiles:
     NorthEast: ShuttleRoofDiagonalNE
@@ -25,6 +31,7 @@
   - WallPlastitanium
   diagonalWalls:
   - WallPlastitaniumDiagonal
+  - PlastitaniumWindowDiagonal
   tile: PlastitaniumRoof
   diagonalTiles:
     NorthEast: PlastitaniumRoofDiagonalNE
@@ -40,6 +47,7 @@
   - MiningWindow
   diagonalWalls:
   - WallMiningDiagonal
+  - MiningWindowDiagonal
   tile: MiningRoof
   diagonalTiles:
     NorthEast: MiningRoofDiagonalNE

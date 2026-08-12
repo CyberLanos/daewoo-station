@@ -26,6 +26,12 @@ public sealed partial class CERoofTileGroupPrototype : IPrototype
     /// Half-tile walls that count towards this group. The roof tile above one of these is taken from
     /// <see cref="DiagonalTiles"/> instead of <see cref="Tile"/>, so the roof keeps the hull's chamfer.
     /// </summary>
+    /// <remarks>
+    /// Chamfering is about the shape of the hull rather than what it is built from, so the generator treats the
+    /// diagonals of every group as chamfers and renders them in the art of whichever group won the deck. Listing
+    /// one here is therefore two statements: it counts towards this group's <see cref="MinWalls"/>, and it is a
+    /// half tile as far as every group is concerned.
+    /// </remarks>
     [DataField]
     public HashSet<EntProtoId> DiagonalWalls = new();
 
