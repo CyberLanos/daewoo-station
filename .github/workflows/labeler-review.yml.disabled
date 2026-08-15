@@ -5,6 +5,9 @@
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
+# F14: workflow body is fully commented out, so GitHub Actions registered it as a
+# F14: broken workflow and failed every push. Renamed to .disabled to keep the
+# F14: original content while stopping Actions from picking it up.
 #name: "Labels: Approved"
 #
 #on:

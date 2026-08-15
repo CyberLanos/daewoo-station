@@ -1,0 +1,13 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Foundation-14 map pool - only the SCP site, so the standard NanoTrasen maps
+# (and therefore the standard job rosters) are never selected.
+#
+# To use it, set the map pool CVar on the server:
+#   game.map_pool = F14MapPool
+#
+# The upstream DefaultMapPool is left untouched so merges stay clean.
+- type: gameMapPool
+  id: F14MapPool
+  maps:
+    - F14Site

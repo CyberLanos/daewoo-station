@@ -1,0 +1,98 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Foundation-14 site.
+#
+# This is what makes the SCP roles joinable: a station's `availableJobs` is the
+# only thing that decides which jobs a player can actually pick, so listing just
+# the SCP jobs here means the standard NanoTrasen roles are never offered - no
+# need to mark them setPreference:false (which breaks upstream's job tests).
+#
+# `mapPath` is a PLACEHOLDER pointing at an existing station map so the site is
+# playable today. Swap it for the real SCP facility map when one exists; nothing
+# else in this file needs to change.
+#
+# SCPClassD is given [-1, -1] so it acts as the infinite overflow role, the way
+# Passenger does on a standard station (OverflowJobs is inferred from -1 slots).
+- type: gameMap
+  id: F14Site
+  mapName: Foundation Site
+  mapPath: /Maps/_Goobstation/box.yml # F14: placeholder until an SCP facility map exists
+  minPlayers: 0
+  stations:
+    F14Site:
+      stationProto: StandardNanotrasenStation
+      components:
+        - type: StationNameSetup
+          mapNameTemplate: 'Site-{0}'
+          nameGenerator:
+            !type:NanotrasenNameGenerator
+            prefixCreator: '19'
+        - type: StationEmergencyShuttle
+          emergencyShuttlePath: /Maps/Shuttles/emergency_box.yml
+        - type: StationJobs
+          availableJobs:
+            # Class-D
+            SCPClassD: [ -1, -1 ]
+
+            # Administration
+            SCPSiteDirector: [ 1, 1 ]
+            SCPSiteManager: [ 1, 1 ]
+            SCPCommunicationsOfficer: [ 1, 1 ]
+            SCPISDDetective: [ 1, 2 ]
+            SCPEthicsCommittee: [ 1, 1 ]
+            SCPGOCRepresentative: [ 1, 1 ]
+            SCPCommsTechnician: [ 2, 3 ]
+
+            # Engineering
+            SCPEngineeringDirector: [ 1, 1 ]
+            SCPAsstEngDirector: [ 1, 1 ]
+            SCPContainmentEngineer: [ 2, 3 ]
+            SCPSeniorEngineer: [ 1, 2 ]
+            SCPEngineer: [ 2, 4 ]
+            SCPJuniorEngineer: [ 2, 4 ]
+
+            # Medical
+            SCPMedicalDirector: [ 1, 1 ]
+            SCPAsstMedDirector: [ 1, 1 ]
+            SCPSurgeon: [ 1, 2 ]
+            SCPChemist: [ 1, 2 ]
+            SCPPsychiatrist: [ 1, 2 ]
+            SCPMedicalDoctor: [ 2, 3 ]
+            SCPEMT: [ 2, 3 ]
+            SCPMedicalIntern: [ 2, 4 ]
+
+            # Logistics
+            SCPLogisticsOfficer: [ 1, 1 ]
+            SCPLogisticsSpecialist: [ 2, 3 ]
+            SCPOfficeWorker: [ 2, 4 ]
+            SCPBartender: [ 1, 2 ]
+            SCPChaplain: [ 1, 1 ]
+
+            # Research
+            SCPResearchDirector: [ 1, 1 ]
+            SCPSeniorResearcher: [ 1, 2 ]
+            SCPSeniorRobotics: [ 1, 1 ]
+            SCPResearcher: [ 2, 4 ]
+            SCPRoboticsTechnician: [ 1, 2 ]
+            SCPResearcherAssociate: [ 2, 4 ]
+            SCPJuniorRobotics: [ 1, 2 ]
+
+            # Security
+            SCPGuardCommander: [ 1, 1 ]
+            SCPLCZJuniorLt: [ 1, 1 ]
+            SCPHCZSeniorLt: [ 1, 1 ]
+            SCPEZSupervisor: [ 1, 1 ]
+            SCPRAISAAgent: [ 1, 2 ]
+            SCPLCZSergeant: [ 1, 2 ]
+            SCPHCZSergeant: [ 1, 2 ]
+            SCPEZSeniorAgent: [ 1, 2 ]
+            SCPLCZGuard: [ 2, 4 ]
+            SCPHCZGuard: [ 2, 4 ]
+            SCPEZAgent: [ 2, 4 ]
+            SCPLCZCadet: [ 2, 3 ]
+            SCPHCZPrivate: [ 2, 3 ]
+            SCPEZProbAgent: [ 2, 3 ]
+
+            # Special
+            SCPAIC: [ 1, 1 ]
+            SCPRobot: [ 1, 2 ]
