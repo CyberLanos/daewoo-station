@@ -8,10 +8,10 @@
 using Content.Server.Administration.Managers;
 using Content.Server.Database;
 using Content.Server.GameTicking;
-using Content.Server.Voting.Managers;
+using Content.Server.Voting.Managers; // F14
 using Content.Server.Roles.Jobs;
 using Content.Shared.CCVar;
-using Content.Shared.GameTicking;
+using Content.Shared.GameTicking; // F14
 using Content.Shared.Ghost;
 using Content.Shared.Mind.Components;
 using Content.Shared.Voting;
