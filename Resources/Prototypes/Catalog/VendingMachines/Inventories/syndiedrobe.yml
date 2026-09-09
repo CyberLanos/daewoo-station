@@ -1,34 +1,58 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
+#region Pirate: syndrobe
+# Everything NovaSector's SynDrobe stocked was folded into this pack rather than
+# kept as a second syndicate wardrobe - items already stocked here (the syndicate
+# winter coat and the tactical maid set) were not added twice. Lines tagged
+# "Pirate: syndrobe" came from there, at the source's own count.
+#
+# Every count in this pack, inherited ones included, is the original +4.
+#endregion Pirate: syndrobe
 - type: vendingMachineInventory
   id: SyndieDrobeInventory
   startingInventory:
-    ClothingBackpackMessengerSyndicate: 2 # Frontier
-    ClothingHeadHatOutlawHat: 3
-    ClothingHeadHatSyndie: 5
-    ClothingMaskNeckGaiter: 5
-    ClothingOuterWinterSyndie: 5
-    ClothingHeadHatSyndieMAA: 3
-    ClothingOuterWinterSyndieCap: 3
-    ClothingOuterCoatSyndieCap: 3
-    ClothingUniformJumpsuitSyndieFormal: 5
-    ClothingUniformJumpskirtSyndieFormalDress: 5
-    ClothingUniformJumpsuitOperative: 5
-    ClothingUniformJumpskirtOperative: 5
-    ClothingUniformJumpsuitCasualSyndicate: 5 # Goobstation
-    ClothingNeckScarfStripedSyndieGreen: 2
-    ClothingNeckScarfStripedSyndieRed: 2
-    ClothingShoesBootsWinterSyndicate: 2
-    ClothingHeadHatBunnyearsSyndicate: 3 # Pirate
-    CardBoxSyndicate: 2 # GoobStation
+    ClothingBackpackMessengerSyndicate: 6 # Frontier
+    ClothingHeadHatOutlawHat: 8
+    ClothingHeadHatSyndie: 8
+    ClothingMaskNeckGaiter: 8
+    ClothingOuterWinterSyndie: 8
+    ClothingHeadHatSyndieMAA: 8
+    ClothingOuterWinterSyndieCap: 8
+    ClothingOuterCoatSyndieCap: 8
+    ClothingUniformJumpsuitSyndieFormal: 8
+    ClothingUniformJumpskirtSyndieFormalDress: 8
+    ClothingUniformJumpsuitOperative: 8
+    ClothingUniformJumpskirtOperative: 8
+    ClothingUniformJumpsuitCasualSyndicate: 8 # Goobstation
+    ClothingNeckScarfStripedSyndieGreen: 6
+    ClothingNeckScarfStripedSyndieRed: 6
+    ClothingShoesBootsWinterSyndicate: 6
+    ClothingHeadHatBunnyearsSyndicate: 8 # Pirate
+    CardBoxSyndicate: 6 # GoobStation
+    ClothingUniformJumpsuitSyndieTactical: 8 # Pirate: syndrobe
+    ClothingUniformJumpskirtSyndieTactical: 8 # Pirate: syndrobe
+    ClothingUniformJumpsuitBloodRedPajamas: 8 # Pirate: syndrobe
+    ClothingUniformJumpsuitCamoGreen: 8 # Pirate: syndrobe
+    ClothingUniformJumpsuitSyndieCombat: 8 # Pirate: syndrobe
+    ClothingShoesBootsCombat: 8 # Pirate: syndrobe
+    ClothingMaskGasSyndicate: 8 # Pirate: syndrobe
+    ClothingHeadHatSyndieEngineTechCover: 8 # Pirate: syndrobe
+    ClothingHeadHatBeretSyndieBrig: 8 # Pirate: syndrobe
+    ClothingNeckSyndicateNeckpin: 8 # Pirate: syndrobe
   contrabandInventory:
-    ToyFigurineFootsoldier: 1
-    ToyFigurineNukieElite: 1
-    ToyFigurineNukieCommander: 1
-    ClothingUniformJumpskirtTacticalMaid: 5
-    ClothingHeadHatTacticalMaidHeadband: 5
-    ClothingHandsTacticalMaidGloves: 5
-    ClothingShoesRealJordans: 1 # Goobstation
+    ToyFigurineFootsoldier: 5
+    ToyFigurineNukieElite: 5
+    ToyFigurineNukieCommander: 5
+    ClothingUniformJumpskirtTacticalMaid: 8
+    ClothingHeadHatTacticalMaidHeadband: 8
+    ClothingHandsTacticalMaidGloves: 8
+    ClothingShoesRealJordans: 5 # Goobstation
+    CombatKnife: 5 # Pirate: syndrobe
+    ClothingUniformJumpsuitSyndieInsulated: 6 # Pirate: syndrobe
+    ClothingShoesBootsCombatInsulated: 6 # Pirate: syndrobe
   emaggedInventory:
-    ClothingOuterCoatSyndieCapArmored: 1
-    ClothingOuterWinterSyndieCapArmored: 1
+    ClothingOuterCoatSyndieCapArmored: 5
+    ClothingOuterWinterSyndieCapArmored: 5
+    SurvivalKnife: 5 # Pirate: syndrobe
+    CigPackSyndicate: 8 # Pirate: syndrobe
+    ClothingHandsGlovesCombat: 8 # Pirate: syndrobe

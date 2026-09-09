@@ -1,0 +1,86 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Headgear stocked by the SynDrobe, ported from NovaSector (SS13) at commit
+# 9d5bb13a76866960c76cb78217e7436e65239268.
+#
+# Both hats derive from security headgear in SS13 and share
+# /datum/armor/cosmetic_sec: melee 30, bullet 25, laser 25, energy 35,
+# bomb 25, fire 20, acid 50, wound 5. Converted as coefficient =
+# 1 - percent / 100, with melee -> Blunt + Slash, bullet -> Piercing,
+# energy -> Shock, acid -> Caustic and bomb -> ExplosionResistance.
+# SS13 splits laser and fire, which both land on SS14's Heat; the laser
+# figure wins since Heat damage here is mostly energy weapons. SS13's
+# `wound` armour has no SS14 analogue and is dropped.
+
+# /obj/item/clothing/head/soft/sec/syndicate
+# SS13 soft caps can be worn backwards, which maps onto SS14 foldable
+# clothing using the source's "_flipped" states.
+- type: entity
+  parent: [ClothingHeadBase, BaseFoldable, BaseSyndicateContraband]
+  id: ClothingHeadHatSyndieEngineTechCover
+  name: engine tech utility cover
+  description: A utility cover for an engine technician, there's a tag that reads 'IP-DS-2'.
+  components:
+  - type: Clothing
+    sprite: _Pirate/Clothing/Head/SynDrobe/enginetechcover.rsi
+    stripDelay: 2 # SS13 strip_delay is 6s; SS14 adds this to a 4s base
+  - type: Appearance
+  - type: Foldable
+    canFoldInsideContainer: true
+    foldVerbText: fold-flip-verb
+    unfoldVerbText: fold-flip-verb
+  - type: FoldableClothing
+    foldedEquippedPrefix: flipped
+  - type: Sprite
+    sprite: _Pirate/Clothing/Head/SynDrobe/enginetechcover.rsi
+    layers:
+    - state: icon
+      map: ["unfoldedLayer"]
+    - state: icon-flipped
+      map: ["foldedLayer"]
+      visible: false
+  - type: Armor
+    coverage:
+    - Head
+    modifiers:
+      coefficients:
+        Blunt: 0.7
+        Slash: 0.7
+        Piercing: 0.75
+        Shock: 0.65
+        Heat: 0.75
+        Caustic: 0.5
+  - type: ExplosionResistance
+    damageCoefficient: 0.75
+
+# /obj/item/clothing/head/beret/sec/syndicate
+# The SS13 item is a GAGS badged beret coloured "#3F3C40#DB2929"; the sprite
+# is baked from those two colours.
+- type: entity
+  parent: [ClothingHeadBase, BaseSyndicateContraband]
+  id: ClothingHeadHatBeretSyndieBrig
+  name: brig officer's beret
+  description: A stylish and protective beret, produced and manufactured by Interdyne Pharmaceuticals with help from the Gorlex Marauders.
+  components:
+  - type: Sprite
+    sprite: _Pirate/Clothing/Head/SynDrobe/brigofficerberet.rsi
+  - type: Clothing
+    sprite: _Pirate/Clothing/Head/SynDrobe/brigofficerberet.rsi
+    stripDelay: 2 # SS13 strip_delay is 6s; SS14 adds this to a 4s base
+  - type: Armor
+    coverage:
+    - Head
+    modifiers:
+      coefficients:
+        Blunt: 0.7
+        Slash: 0.7
+        Piercing: 0.75
+        Shock: 0.65
+        Heat: 0.75
+        Caustic: 0.5
+  - type: ExplosionResistance
+    damageCoefficient: 0.75
+  - type: Tag
+    tags:
+    - ClothMade
+    - Recyclable
+    - WhitelistChameleon

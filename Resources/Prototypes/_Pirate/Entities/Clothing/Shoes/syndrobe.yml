@@ -1,0 +1,18 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Ported from NovaSector (SS13) at commit
+# 9d5bb13a76866960c76cb78217e7436e65239268.
+
+# /obj/item/clothing/shoes/combat/coldres
+# Plain combat boots plus cold_protection down to FIRE_SUIT_MIN_TEMP_PROTECT
+# (60K). SS14 models that as a cooling coefficient, so it reuses the value
+# from ClothingShoesBaseWinterBoots. Same sprite as the base combat boots in
+# the source, so it reuses the SS14 combat boot .rsi.
+- type: entity
+  parent: ClothingShoesBootsCombat
+  id: ClothingShoesBootsCombatInsulated
+  name: insulated combat boots
+  description: High speed, low drag combat boots, now with an added layer of insulation.
+  components:
+  - type: TemperatureProtection
+    heatingCoefficient: 1.025
+    coolingCoefficient: 0.25

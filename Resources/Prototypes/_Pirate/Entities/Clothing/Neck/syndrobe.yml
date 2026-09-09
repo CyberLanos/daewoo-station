@@ -1,0 +1,19 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Ported from NovaSector (SS13) at commit
+# 9d5bb13a76866960c76cb78217e7436e65239268.
+
+# /obj/item/clothing/accessory/nova/acc_medal/neckpin/syndicate
+# The SS13 item is a GAGS neckpin coloured "#262626#9c0000"; the sprite is
+# baked from those two colours. SS13 accessories pin onto a uniform, which
+# SS14 has no slot for, so it takes the neck slot like SS14's own medals.
+# No armour or other stats in the source.
+- type: entity
+  parent: [ClothingNeckPinBase, BaseSyndicateContraband]
+  id: ClothingNeckSyndicateNeckpin
+  name: Syndicate neckpin
+  description: A pin specially dedicated to show loyalty to the Syndicate!
+  components:
+  - type: Sprite
+    sprite: _Pirate/Clothing/Neck/SynDrobe/syndicateneckpin.rsi
+  - type: Clothing
+    sprite: _Pirate/Clothing/Neck/SynDrobe/syndicateneckpin.rsi

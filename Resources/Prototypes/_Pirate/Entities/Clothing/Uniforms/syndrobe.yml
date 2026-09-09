@@ -1,0 +1,180 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Uniforms stocked by the SynDrobe, ported from NovaSector (SS13) at commit
+# 9d5bb13a76866960c76cb78217e7436e65239268.
+#
+# SS13 armour is a percentage reduction, so every value below is
+# `coefficient = 1 - percent / 100` off the source armour datum:
+#   melee -> Blunt + Slash, bullet -> Piercing, laser/fire -> Heat,
+#   energy -> Shock, acid -> Caustic, bomb -> ExplosionResistance.
+# SS13's `wound` and `bio` armour have no SS14 analogue and are dropped.
+#
+# All of these are NO_SENSORS in SS13, hence UnsensoredClothingUniformBase.
+# The ones SS13 marks can_adjust get ClothingUniformFoldableBase, using the
+# source's "_d" (adjusted) worn state as the folded sprite.
+
+# Tactical turtleneck / skirtleneck ---------------------------------------
+# /obj/item/clothing/under/syndicate/nova/tactical
+# armour: /datum/armor/clothing_under/syndicate - melee 10, fire 50, acid 40
+- type: entity
+  parent: [UnsensoredClothingUniformBase, ClothingUniformFoldableBase, BaseSyndicateContraband]
+  id: ClothingUniformJumpsuitSyndieTactical
+  name: tactical turtleneck
+  description: A snug syndicate-red turtleneck with charcoal-black cargo pants. Good luck arguing allegiance with this on.
+  components:
+  - type: Sprite
+    sprite: _Pirate/Clothing/Uniforms/SynDrobe/tacticalturtleneck.rsi
+  - type: Clothing
+    sprite: _Pirate/Clothing/Uniforms/SynDrobe/tacticalturtleneck.rsi
+  - type: Armor
+    coverage:
+    - Chest
+    - Groin
+    - Arm
+    - Leg
+    modifiers:
+      coefficients:
+        Blunt: 0.9
+        Slash: 0.9
+        Heat: 0.5
+        Caustic: 0.6
+  - type: StaticPrice
+    price: 50
+
+- type: entity
+  parent: [UnsensoredClothingUniformSkirtBase, ClothingUniformFoldableBase, BaseSyndicateContraband]
+  id: ClothingUniformJumpskirtSyndieTactical
+  name: tactical skirtleneck
+  description: A snug syndicate-red skirtleneck with a charcoal-black skirt. Good luck arguing allegiance with this on.
+  components:
+  - type: Sprite
+    sprite: _Pirate/Clothing/Uniforms/SynDrobe/tacticalskirtleneck.rsi
+  - type: Clothing
+    sprite: _Pirate/Clothing/Uniforms/SynDrobe/tacticalskirtleneck.rsi
+  - type: Armor
+    coverage:
+    - Chest
+    - Groin
+    - Arm
+    - Leg
+    modifiers:
+      coefficients:
+        Blunt: 0.9
+        Slash: 0.9
+        Heat: 0.5
+        Caustic: 0.6
+  - type: StaticPrice
+    price: 50
+
+- type: entity
+  parent: [UnsensoredClothingUniformBase, BaseSyndicateContraband]
+  id: ClothingUniformJumpsuitBloodRedPajamas
+  name: blood-red pajamas
+  description: Do operatives dream of nuclear sheep?
+  components:
+  - type: Sprite
+    sprite: _Pirate/Clothing/Uniforms/SynDrobe/bloodredpajamas.rsi
+  - type: Clothing
+    sprite: _Pirate/Clothing/Uniforms/SynDrobe/bloodredpajamas.rsi
+  - type: Armor
+    coverage:
+    - Chest
+    - Groin
+    - Arm
+    - Leg
+    modifiers:
+      coefficients:
+        Heat: 0.5
+        Caustic: 0.6
+  - type: StaticPrice
+    price: 50
+
+- type: entity
+  parent: [UnsensoredClothingUniformBase, BaseSyndicateContraband]
+  id: ClothingUniformJumpsuitCamoGreen
+  name: camouflage fatigues
+  description: A green military camouflage uniform.
+  components:
+  - type: Sprite
+    sprite: _Pirate/Clothing/Uniforms/SynDrobe/camogreen.rsi
+  - type: Clothing
+    sprite: _Pirate/Clothing/Uniforms/SynDrobe/camogreen.rsi
+  - type: Armor
+    coverage:
+    - Chest
+    - Groin
+    - Arm
+    - Leg
+    modifiers:
+      coefficients:
+        Blunt: 0.9
+        Slash: 0.9
+        Heat: 0.5
+        Caustic: 0.6
+  - type: StaticPrice
+    price: 50
+
+# Combat uniform ---------------------------------------------------------
+# /obj/item/clothing/under/syndicate/combat
+- type: entity
+  parent: [UnsensoredClothingUniformBase, BaseSyndicateContraband]
+  id: ClothingUniformJumpsuitSyndieCombat
+  name: combat uniform
+  description: With a suit lined with this many pockets, you are ready to operate.
+  components:
+  - type: Sprite
+    sprite: _Pirate/Clothing/Uniforms/SynDrobe/combatuniform.rsi
+  - type: Clothing
+    sprite: _Pirate/Clothing/Uniforms/SynDrobe/combatuniform.rsi
+  - type: Armor
+    coverage:
+    - Chest
+    - Groin
+    - Arm
+    - Leg
+    modifiers:
+      coefficients:
+        Blunt: 0.9
+        Slash: 0.9
+        Heat: 0.5
+        Caustic: 0.6
+  - type: StaticPrice
+    price: 50
+
+# Insulated tactical turtleneck ------------------------------------------
+# /obj/item/clothing/under/syndicate/coldres
+# armour: /datum/armor/clothing_under/syndicate/coldres
+#   melee 20, bullet 10, energy 5, fire 25, acid 25
+# cold_protection down to FIRE_SUIT_MIN_TEMP_PROTECT (60K); SS14 models that
+# as a cooling coefficient, so it reuses the winter coat's value.
+- type: entity
+  parent: [UnsensoredClothingUniformBase, ClothingUniformFoldableBase, BaseSyndicateContraband]
+  id: ClothingUniformJumpsuitSyndieInsulated
+  name: insulated tactical turtleneck
+  description: A nondescript and slightly suspicious-looking turtleneck with digital camouflage cargo pants. The interior has been padded with special insulation for both warmth and protection.
+  components:
+  # The source gives coldres no icon_state of its own, so it wears the plain
+  # tactical turtleneck sprite - which is pixel-identical to SS14's operative
+  # jumpsuit, so it reuses that .rsi instead of duplicating the art.
+  - type: Sprite
+    sprite: _Goobstation/Clothing/Uniforms/Jumpsuit/Syndicate/operative.rsi
+  - type: Clothing
+    sprite: _Goobstation/Clothing/Uniforms/Jumpsuit/Syndicate/operative.rsi
+  - type: Armor
+    coverage:
+    - Chest
+    - Groin
+    - Arm
+    - Leg
+    modifiers:
+      coefficients:
+        Blunt: 0.8
+        Slash: 0.8
+        Piercing: 0.9
+        Shock: 0.95
+        Heat: 0.75
+        Caustic: 0.75
+  - type: TemperatureProtection
+    heatingCoefficient: 1.1
+    coolingCoefficient: 0.1
+  - type: StaticPrice
+    price: 50

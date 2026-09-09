@@ -28,6 +28,14 @@
     slots: [innerclothing]
     equipSound:
       path: /Audio/Items/jumpsuit_equip.ogg
+    # Pirate clothingDelay start
+    # These were only on ClothingUniformBase below, which left every unsensored
+    # uniform (operative, ninja, syndicate pyjamas, abductor, the ported
+    # SynDrobe stock...) instant to put on while every other jumpsuit took 1.5s.
+    # Same values, one level up, so both variants share them.
+    equipDelay: 1.5
+    unequipDelay: 1.2
+    # Pirate clothingDelay end
   - type: Butcherable
     butcheringType: Knife
     spawned:
