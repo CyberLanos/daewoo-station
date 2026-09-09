@@ -8,8 +8,18 @@
   - type: TurretTargetSettings
     exemptAccessLevels:
     - Interdyne
+    - TurretExempt
 #  - type: Machine (Потім додам)
 #    board: WeaponEnergyTurretSecurityMachineCircuitboard
   - type: DeviceNetwork
     receiveFrequencyId: TurretControl
     transmitFrequencyId: Turret
+
+# A turret that is already deployed and set to lethal when the map it is placed on loads.
+- type: entity
+  parent: WeaponEnergyTurretInterdyne
+  id: WeaponEnergyTurretInterdyneActive
+  suffix: Interdyne, Lethal, Active
+  components:
+  - type: TurretStartupState
+    armamentState: 1

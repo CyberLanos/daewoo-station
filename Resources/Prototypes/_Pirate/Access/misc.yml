@@ -1,3 +1,10 @@
 - type: accessLevel
   id: DV-SpareSafe
   name: id-card-access-level-emergency-command
+
+# Never appears on an ID card or in any access group; it exists purely so turrets can be told
+# to leave something alone (see TurretTargetSettings.exemptAccessLevels). Carrying it grants
+# no access to anything, since no AccessReader ever asks for it.
+- type: accessLevel
+  id: TurretExempt
+  canAddToIdCard: false

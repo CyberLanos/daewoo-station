@@ -29,3 +29,14 @@
     - Interdyne
     - InterdyneCommand
     - InterdyneOfficer
+    - TurretExempt
+
+# Matches WeaponEnergyTurretInterdyneActive, so the panel opens on the lethal setting
+# instead of reporting the turrets as safe.
+- type: entity
+  parent: WeaponEnergyTurretInterdyneControlPanel
+  id: WeaponEnergyTurretInterdyneControlPanelActive
+  suffix: Interdyne, Lethal, Active
+  components:
+  - type: DeployableTurretController
+    armamentState: 1

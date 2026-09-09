@@ -1,0 +1,21 @@
+# Livestock kept inside turret-covered bases. They are ordinary animals in every way except
+# that they carry the TurretExempt access level, which keeps sentry turrets from picking them
+# as targets. Their factions are left alone so every other NPC still treats them normally.
+
+- type: entity
+  parent: MobCow
+  id: MobCowTurretExempt
+  suffix: Turret Exempt
+  components:
+  - type: Access
+    tags:
+    - TurretExempt
+
+- type: entity
+  parent: MobAlexander
+  id: MobAlexanderTurretExempt
+  suffix: Turret Exempt
+  components:
+  - type: Access
+    tags:
+    - TurretExempt
