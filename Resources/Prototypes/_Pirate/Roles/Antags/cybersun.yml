@@ -1,0 +1,17 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Gives the Cybersun ghost roles a ban key of their own, so admins can role ban a player from
+# Cybersun specifically.
+#
+# Without this, MindRoleGhostRoleCybersun inherits antagPrototype: GenericTeamAntagonist from
+# MindRoleGhostRoleTeamAntagonist - a key shared by 67 other ghost roles (Bingle, angry slimes,
+# Carp Dragon, Blobbernaut and so on). Banning someone from Cybersun meant banning them from all of
+# those as well, because GenericTeamAntagonist was the only key the pods carried.
+- type: antag
+  id: Cybersun
+  name: roles-antag-cybersun-name
+  antagonist: true
+  # Not player-selectable: these are taken from the ghost roles window, never rolled from a
+  # character's antag preferences, so this must not show up in character setup.
+  setPreference: false
+  objective: roles-antag-cybersun-objective

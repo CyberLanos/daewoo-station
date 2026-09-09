@@ -29,3 +29,6 @@
   components:
   - type: MindRole
     roleType: Cybersun
+    # Overrides the inherited GenericTeamAntagonist so Cybersun can be role banned on its own
+    # instead of only together with the 67 other ghost roles sharing that key.
+    antagPrototype: Cybersun
