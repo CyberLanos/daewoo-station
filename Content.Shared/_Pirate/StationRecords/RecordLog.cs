@@ -4,16 +4,25 @@ using Robust.Shared.Serialization;
 
 namespace Content.Shared._Pirate.StationRecords;
 
+/// <summary>
+/// What a record log entry is.
+/// </summary>
 [Serializable, NetSerializable]
 public enum RecordLogKind : byte
 {
+    /// <summary>Written automatically when a console changes the person's status (sec, psi).</summary>
     StatusChange,
 
+    /// <summary>Typed by someone at a console.</summary>
     Note,
 
+    /// <summary>NanoTrasen HR background on the character, from character creation. Read-only, never deleted.</summary>
     Background,
 }
 
+/// <summary>
+/// Which console's history an entry belongs to; each console only shows its own.
+/// </summary>
 [Serializable, NetSerializable]
 public enum RecordLogBook : byte
 {
@@ -22,18 +31,24 @@ public enum RecordLogBook : byte
     Crew,
 }
 
+/// <summary>
+/// One history entry on a person's record.
+/// </summary>
 [Serializable, NetSerializable, DataRecord]
 public sealed partial record RecordLogEntry
 {
+    /// <summary>Unique within the person's log, used to delete it.</summary>
     [DataField]
     public uint Id;
 
     [DataField]
     public RecordLogKind Kind;
 
+    /// <summary>What it is about beyond the kind, e.g. the new status. Optional.</summary>
     [DataField]
     public string? Topic;
 
+    /// <summary>For status changes: the new status (enum name), for its HUD icon and colour.</summary>
     [DataField]
     public string? Status;
 
@@ -46,50 +61,22 @@ public sealed partial record RecordLogEntry
     [DataField]
     public string? AuthorTitle;
 
+    /// <summary>Name of the station it was written on. None for the HR background.</summary>
     [DataField]
     public string? StationName;
 
+    /// <summary>Real time (UTC) it was written; shown with the in-game year.</summary>
     [DataField]
     public DateTime Time;
 
+    /// <summary>Round time it was written.</summary>
     [DataField]
     public TimeSpan RoundTime;
-    [DataField]
-    public bool Archived;
-}
-public static class RecordLogOrder
-{
-    // History order is current-round entries, profile backgrounds, then archived entries.
-    public static List<RecordLogEntry> ForDisplay(IEnumerable<RecordLogEntry> log)
-    {
-        var sorted = new List<RecordLogEntry>(log);
-        sorted.Sort(Compare);
-        return sorted;
-    }
-
-    private static int Compare(RecordLogEntry a, RecordLogEntry b)
-    {
-        var byGroup = Group(a).CompareTo(Group(b));
-        if (byGroup != 0)
-            return byGroup;
-
-        // The HR file keeps the order it was written in the character editor.
-        if (Group(a) == 1)
-            return a.Id.CompareTo(b.Id);
-
-        var byTime = b.Time.CompareTo(a.Time);
-        return byTime != 0 ? byTime : b.Id.CompareTo(a.Id);
-    }
-
-    private static int Group(RecordLogEntry entry)
-    {
-        if (entry.Kind == RecordLogKind.Background)
-            return 1;
-
-        return entry.Archived ? 2 : 0;
-    }
 }
 
+/// <summary>
+/// A person's record histories, one book per console. Stored as its own entry in the station records.
+/// </summary>
 [Serializable, NetSerializable, DataRecord]
 public sealed partial record RecordLogs
 {
@@ -116,10 +103,16 @@ public sealed partial record RecordLogs
     }
 }
 
+/// <summary>
+/// Notes typed into a record's history: one paragraph of limited length, so entries stay readable.
+/// </summary>
 public static class RecordLogNotes
 {
     public const int MaxLength = 300;
 
+    /// <summary>
+    /// Trims and collapses every run of whitespace, line breaks included, into one space.
+    /// </summary>
     public static string Sanitize(string text)
     {
         var result = new System.Text.StringBuilder(text.Length);
@@ -142,15 +135,24 @@ public static class RecordLogNotes
     }
 }
 
+/// <summary>
+/// Add a note to the selected record's history on this console.
+/// </summary>
 [Serializable, NetSerializable]
 public sealed class RecordLogAddNoteMessage(string text) : BoundUserInterfaceMessage
 {
     public readonly string Text = text;
 }
 
+/// <summary>
+/// Print the selected record's history on this console.
+/// </summary>
 [Serializable, NetSerializable]
 public sealed class RecordLogPrintMessage : BoundUserInterfaceMessage;
 
+/// <summary>
+/// Delete an entry from the selected record's history on this console. Background entries can't be deleted.
+/// </summary>
 [Serializable, NetSerializable]
 public sealed class RecordLogDeleteMessage(uint entryId) : BoundUserInterfaceMessage
 {

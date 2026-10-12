@@ -1,3 +1,4 @@
+# Title of the reason under a status on the criminal and psionics records consoles
 records-status-reason = Reason
 records-status-reason-security-wanted = Wanted for
 records-status-reason-security-suspected = Suspected of

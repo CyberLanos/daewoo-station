@@ -21,6 +21,11 @@ public sealed class PsionicsRecordsConsoleState : BoundUserInterfaceState
     /// The selected person's photo, stored on their criminal record.
     /// </summary>
     public Content.Shared._Pirate.StationRecords.RecordPortraitData? Portrait;
+
+    /// <summary>
+    /// The History tab: this console's log of the selected person.
+    /// </summary>
+    public List<Content.Shared._Pirate.StationRecords.RecordLogEntry>? Log;
     public readonly Dictionary<uint, string>? RecordListing;
     public readonly StationRecordsFilter? Filter;
 

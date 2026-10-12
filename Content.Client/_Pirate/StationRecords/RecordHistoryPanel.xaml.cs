@@ -12,6 +12,13 @@ using Robust.Client.UserInterface.XAML;
 using Robust.Shared.Utility;
 
 namespace Content.Client._Pirate.StationRecords;
+
+/// <summary>
+/// The History tab of the records consoles (criminal, crew, psionics): name, divider, then this console's log of the
+/// person, newest first. Each entry shows its icon and title (see <see cref="Describe"/>), when (in-game year, the
+/// viewer's real date and time), who wrote it, where, and the text. Those with access can print the log, add notes
+/// and delete entries, except the HR background. The console's search box filters it (<see cref="SetQuery"/>).
+/// </summary>
 [GenerateTypedNameReferences]
 public sealed partial class RecordHistoryPanel : BoxContainer
 {
@@ -27,6 +34,10 @@ public sealed partial class RecordHistoryPanel : BoxContainer
     private static readonly Color BackgroundColor = Color.FromHex("#EFB04A");
 
     private readonly SpriteSystem _sprite;
+
+    /// <summary>
+    /// Which console this is on: picks the status icons and colours. Set from XAML.
+    /// </summary>
     public RecordLogBook Book { get; set; } = RecordLogBook.Crew;
     private RecordNoteDialog? _dialog;
     private uint? _recordKey;
@@ -40,7 +51,6 @@ public sealed partial class RecordHistoryPanel : BoxContainer
         _sprite = IoCManager.Resolve<IEntityManager>().System<SpriteSystem>();
         AddNoteButton.OnPressed += _ => OpenAddDialog();
         PrintButton.OnPressed += _ => OnPrint?.Invoke();
-        RecordConsoleSounds.Mute(PrintButton);
     }
 
     public void UpdateLog(uint recordKey, string name, IReadOnlyList<RecordLogEntry>? log, bool canEdit)
@@ -54,10 +64,14 @@ public sealed partial class RecordHistoryPanel : BoxContainer
         PersonName.Text = name;
         AddNoteButton.Visible = canEdit;
         PrintButton.Visible = canEdit;
-        _log = log == null ? null : RecordLogOrder.ForDisplay(log);
+        _log = log;
         _canEdit = canEdit;
         Rebuild();
     }
+
+    /// <summary>
+    /// Shows only the entries containing <paramref name="query"/> in any of their text; empty shows all.
+    /// </summary>
     public void SetQuery(string query)
     {
         query = query.Trim();
@@ -88,8 +102,9 @@ public sealed partial class RecordHistoryPanel : BoxContainer
         var shown = 0;
         if (_log != null)
         {
-            foreach (var entry in _log)
+            for (var i = _log.Count - 1; i >= 0; i--)
             {
+                var entry = _log[i];
                 var look = Describe(entry);
                 if (!Matches(entry, look.Title))
                     continue;
@@ -113,7 +128,7 @@ public sealed partial class RecordHistoryPanel : BoxContainer
             || Contains(AuthorName(entry))
             || Contains(entry.AuthorTitle)
             || Contains(entry.StationName)
-            || entry.Kind != RecordLogKind.Background && Contains(FormatTime(entry.Time));
+            || Contains(FormatTime(entry.Time));
 
         bool Contains(string? text) => text != null && text.Contains(_query, StringComparison.CurrentCultureIgnoreCase);
     }
@@ -130,9 +145,7 @@ public sealed partial class RecordHistoryPanel : BoxContainer
             VerticalAlignment = Control.VAlignment.Center,
         });
         header.AddChild(new Label { Text = title, FontColorOverride = color, ClipText = true, HorizontalExpand = true });
-        // The shift-start timestamp positions the HR file; it isn't a date anyone wrote down.
-        if (entry.Kind != RecordLogKind.Background)
-            header.AddChild(new Label { Text = FormatTime(entry.Time), FontColorOverride = Color.DarkGray });
+        header.AddChild(new Label { Text = FormatTime(entry.Time), FontColorOverride = Color.DarkGray });
 
         if (_canEdit && entry.Kind != RecordLogKind.Background)
         {
@@ -155,6 +168,7 @@ public sealed partial class RecordHistoryPanel : BoxContainer
         };
         body.AddChild(header);
 
+        // Author and station each get their own line: both can be long, and they wrap instead of clipping.
         var author = AuthorName(entry);
         if (!string.IsNullOrWhiteSpace(entry.AuthorTitle))
             author = $"{author} ({entry.AuthorTitle})";
@@ -199,12 +213,17 @@ public sealed partial class RecordHistoryPanel : BoxContainer
         return entry.AuthorName
             ?? Loc.GetString(entry.Kind == RecordLogKind.Background ? "records-log-hr-author" : "records-log-unknown-author");
     }
+
+    /// <summary>
+    /// Title, colour and icon of an entry. Status changes are titled by the new status and use its HUD icon and
+    /// colour; typed entries look the same on all three consoles; the HR background is the personnel file.
+    /// </summary>
     private (string Title, Color Color, SpriteSpecifier Icon) Describe(RecordLogEntry entry)
     {
         switch (entry.Kind)
         {
             case RecordLogKind.Background:
-                return (entry.Topic ?? Loc.GetString("records-log-kind-background"), BackgroundColor,
+                return (Loc.GetString("records-log-kind-background"), BackgroundColor,
                     new SpriteSpecifier.Rsi(LogIcons, "hr_file"));
 
             case RecordLogKind.StatusChange:
@@ -218,6 +237,10 @@ public sealed partial class RecordHistoryPanel : BoxContainer
                 return (Loc.GetString("records-log-kind-note"), NoteColor, new SpriteSpecifier.Rsi(LogIcons, "note"));
         }
     }
+
+    /// <summary>
+    /// Colours follow the HUD icons, brightened where the icon itself is too dark or white to read as text.
+    /// </summary>
     private static (Color, SpriteSpecifier) SecurityStatusLook(string? status)
     {
         var (state, color) = status switch
@@ -255,6 +278,10 @@ public sealed partial class RecordHistoryPanel : BoxContainer
             ? new SpriteSpecifier.Rsi(JobIcons, "Unknown")
             : new SpriteSpecifier.Rsi(PsionicsIcons, state));
     }
+
+    /// <summary>
+    /// Real date and time in the viewer's time zone, with the in-game year: 12/10/2468 14:05.
+    /// </summary>
     private static string FormatTime(DateTime utc)
     {
         var local = DateTime.SpecifyKind(utc, DateTimeKind.Utc).ToLocalTime();
@@ -273,6 +300,5 @@ public sealed partial class RecordHistoryPanel : BoxContainer
         _dialog.OnConfirmed += text => OnAddNote?.Invoke(text);
         _dialog.OnClose += () => { _dialog = null; };
         _dialog.OpenCentered();
-        RecordConsoleSounds.AttachDialog(this, _dialog);
     }
 }

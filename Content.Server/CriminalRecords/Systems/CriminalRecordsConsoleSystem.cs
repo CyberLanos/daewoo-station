@@ -27,6 +27,7 @@ using Content.Shared._Pirate.Contractors.Prototypes;
 using Robust.Shared.Enums;
 using Robust.Shared.Prototypes;
 using Content.Server._Pirate.StationRecords; // Pirate: records select - photo handling lives there now
+using Content.Shared._Pirate.StationRecords; // Pirate: records select
 #endregion
 
 namespace Content.Server.CriminalRecords.Systems;
@@ -46,6 +47,7 @@ public sealed partial class CriminalRecordsConsoleSystem : SharedCriminalRecords
     #region Pirate: records photos
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
     [Dependency] private readonly RecordPortraitSystem _portraits = default!; // Pirate: records select
+    [Dependency] private readonly RecordLogSystem _logs = default!; // Pirate: records select
     private static readonly IReadOnlyDictionary<string, TimeSpan> EmptyPlayTimes = new Dictionary<string, TimeSpan>();
     #endregion
 
@@ -66,9 +68,9 @@ public sealed partial class CriminalRecordsConsoleSystem : SharedCriminalRecords
             subs.Event<CriminalRecordChangeStatus>(OnChangeStatus);
             subs.Event<CriminalRecordAddHistory>(OnAddHistory);
             subs.Event<CriminalRecordDeleteHistory>(OnDeleteHistory);
-            subs.Event<RecordLogAddNoteMessage>(OnAddLogNote); // Pirate: record history
-            subs.Event<RecordLogDeleteMessage>(OnDeleteLogEntry); // Pirate: record history
-            subs.Event<RecordLogPrintMessage>(OnPrintLog); // Pirate: record history
+            subs.Event<RecordLogAddNoteMessage>(OnAddLogNote); // Pirate: records select
+            subs.Event<RecordLogDeleteMessage>(OnDeleteLogEntry); // Pirate: records select
+            subs.Event<RecordLogPrintMessage>(OnPrintLog); // Pirate: records select
             subs.Event<CriminalRecordSetStatusFilter>(OnStatusFilterPressed);
             #region Pirate: records photos
             subs.Event<CriminalRecordCreateRecord>(OnCreateRecord);
@@ -308,8 +310,8 @@ public sealed partial class CriminalRecordsConsoleSystem : SharedCriminalRecords
             officer = tryGetIdentityShortInfoEvent.Title;
 
         _criminalRecords.TryChangeStatus(key.Value, msg.Status, msg.Reason, officer);
-        _logs.Add(key.Value, RecordLogBook.Security, RecordLogKind.StatusChange, // Pirate: record history
-            Loc.GetString($"criminal-records-status-{msg.Status.ToString().ToLower()}"), reason ?? string.Empty, mob, ent, msg.Status.ToString()); // Pirate: record history
+        _logs.Add(key.Value, RecordLogBook.Security, RecordLogKind.StatusChange, // Pirate: records select
+            Loc.GetString($"criminal-records-status-{msg.Status.ToString().ToLower()}"), reason ?? string.Empty, mob, ent, msg.Status.ToString()); // Pirate: records select
 
         (string, object)[] args;
         if (reason != null)
@@ -387,7 +389,7 @@ public sealed partial class CriminalRecordsConsoleSystem : SharedCriminalRecords
         UpdateUserInterface(ent);
     }
 
-    #region Pirate: record history
+    #region Pirate: records select - History tab notes. Also kept in the crime history, which the PDA wanted list shows.
     private void OnAddLogNote(Entity<CriminalRecordsConsoleComponent> ent, ref RecordLogAddNoteMessage msg)
     {
         if (!CheckSelected(ent, msg.Actor, out var mob, out var key))
@@ -411,7 +413,7 @@ public sealed partial class CriminalRecordsConsoleSystem : SharedCriminalRecords
         if (!_logs.TryDelete(key.Value, RecordLogBook.Security, msg.EntryId, out var removed))
             return;
 
-        // Pirate: record history - Keep the copy in criminal history for the PDA wanted list.
+        // the note's crime history copy goes with it
         if (removed is { Kind: RecordLogKind.Note } && _records.TryGetRecord<CriminalRecord>(key.Value, out var record))
         {
             var index = record.History.FindIndex(h => h.AddTime == removed.RoundTime && h.Crime == removed.Message);
@@ -705,6 +707,7 @@ public sealed partial class CriminalRecordsConsoleSystem : SharedCriminalRecords
                 state.StationRecord = stationRecord;
                 state.SelectedKey = id;
                 _portraits.EnsureNumber(key, state.CriminalRecord); // Pirate: records select - mugshot placard number
+                state.Log = _logs.GetLog(key, RecordLogBook.Security); // Pirate: records select
             }
             else
             {

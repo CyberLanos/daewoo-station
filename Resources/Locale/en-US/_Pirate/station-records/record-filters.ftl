@@ -1,3 +1,4 @@
+# Search type dropdown shared by the criminal, crew and psionics records consoles
 records-filter-all = All fields
 records-filter-name = Name
 records-filter-job = Job

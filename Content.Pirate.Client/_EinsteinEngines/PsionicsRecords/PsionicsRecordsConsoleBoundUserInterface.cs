@@ -44,6 +44,9 @@ public sealed class PsionicsRecordsConsoleBoundUserInterface : BoundUserInterfac
         _window.OnPrintPortrait += (key, image) => SendMessage(new RecordPortraitPrintMessage(key, image));
         _window.OnUploadPortrait += () => SendMessage(new RecordPortraitUploadMessage());
         _window.OnStoreGeneratedPortrait += (key, image) => SendMessage(new RecordPortraitStoreGeneratedMessage(key, image));
+        _window.OnAddLogNote += text => SendMessage(new RecordLogAddNoteMessage(text));
+        _window.OnDeleteLogEntry += id => SendMessage(new RecordLogDeleteMessage(id));
+        _window.OnPrintLog += () => SendMessage(new RecordLogPrintMessage());
         _window.OnClose += Close;
         RecordConsoleSounds.Attach(this, _window);
     }

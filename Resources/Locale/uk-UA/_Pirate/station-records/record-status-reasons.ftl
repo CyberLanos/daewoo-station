@@ -1,3 +1,4 @@
+# Title of the reason under a status on the criminal and psionics records consoles
 records-status-reason = Підстава
 records-status-reason-security-wanted = Підстава для розшуку
 records-status-reason-security-suspected = Підстава для підозри

@@ -44,6 +44,9 @@ public sealed partial class PsionicsRecordsConsoleWindow : DefaultWindow
     public Action<PsionicsStatus>? OnStatusSelected;
     public Action<PsionicsStatus, string>? OnDialogConfirmed;
     public Action<uint, byte[]?>? OnPrintPortrait;
+    public Action<string>? OnAddLogNote;
+    public Action<uint>? OnDeleteLogEntry;
+    public Action? OnPrintLog;
     public Action? OnUploadPortrait;
     public Action<uint, byte[]>? OnStoreGeneratedPortrait;
 
@@ -56,6 +59,7 @@ public sealed partial class PsionicsRecordsConsoleWindow : DefaultWindow
 
     private readonly RecordSelectionController<PsionicsRecordsConsoleState> _selection;
     private readonly RecordFieldWidths _fieldWidths;
+    private readonly RecordTabs _tabs;
     private readonly SpriteSystem _spriteSystem;
 
     private StationRecordFilterType _currentFilterType;
@@ -138,6 +142,12 @@ public sealed partial class PsionicsRecordsConsoleWindow : DefaultWindow
             SetStatus((PsionicsStatus) args.Id);
         };
 
+        _tabs = new RecordTabs(ProfileTabButton, HistoryTabButton, ProfileView, HistoryView);
+        _tabs.BindSearch(FilterType, FilterText, HistoryView);
+        HistoryView.OnPrint += () => OnPrintLog?.Invoke();
+        HistoryView.OnAddNote += text => OnAddLogNote?.Invoke(text);
+        HistoryView.OnDeleteEntry += id => OnDeleteLogEntry?.Invoke(id);
+
         // Status is the only dropdown here; the read-only values share its column.
         _fieldWidths = new RecordFieldWidths([StatusOptionButton],
             [SpeciesValue, NationalityValue, EmployerValue, AgeValue, GenderValue],
@@ -201,6 +211,7 @@ public sealed partial class PsionicsRecordsConsoleWindow : DefaultWindow
         {
             PopulateRecordContainer(state.StationRecord, state.PsionicsRecord);
             Portrait.SetPortrait(key, state.Portrait, state.StationRecord.JobPrototype, state.StationRecord.Name, state.StationRecord.Age);
+            HistoryView.UpdateLog(key, state.StationRecord.Name, state.Log, editing);
             _selectedRecord = state.PsionicsRecord;
         }
         else

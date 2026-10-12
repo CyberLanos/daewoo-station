@@ -43,6 +43,7 @@ public sealed class GeneralStationRecordConsoleState : BoundUserInterfaceState
     public readonly uint MaxStringLength; // Pirate: records photos
 
     public Content.Shared._Pirate.StationRecords.RecordPortraitData? Portrait; // Pirate: records select - the selected person's photo (stored on their criminal record)
+    public List<Content.Shared._Pirate.StationRecords.RecordLogEntry>? Log; // Pirate: records select - the History tab
 
     public GeneralStationRecordConsoleState(uint? key,
         GeneralStationRecord? record,

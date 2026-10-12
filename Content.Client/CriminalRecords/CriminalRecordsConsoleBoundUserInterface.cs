@@ -4,8 +4,7 @@ using Content.Shared.Access.Systems;
 using Content.Shared.CriminalRecords;
 using Content.Shared.CriminalRecords.Components;
 using Content.Shared.StationRecords;
-using Content.Shared._Pirate.StationRecords; // Pirate: record history
-using Content.Client._Pirate.StationRecords; // Pirate: records interactive sounds
+using Content.Shared._Pirate.StationRecords; // Pirate: records select
 using Robust.Client.Player;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
@@ -59,13 +58,12 @@ public sealed class CriminalRecordsConsoleBoundUserInterface : BoundUserInterfac
         _window.OnStoreGeneratedPortrait += (recordKey, imageData) =>
             SendMessage(new CriminalRecordStoreGeneratedPhoto(recordKey, imageData));
         #endregion
-        #region Pirate: record history
+        #region Pirate: records select - history is the window's History tab now, not a separate window
         _window.OnAddLogNote += text => SendMessage(new RecordLogAddNoteMessage(text));
         _window.OnDeleteLogEntry += id => SendMessage(new RecordLogDeleteMessage(id));
         _window.OnPrintLog += () => SendMessage(new RecordLogPrintMessage());
         #endregion
         _window.OnClose += Close;
-        RecordConsoleSounds.Attach(this, _window); // Pirate: records interactive sounds
     }
 
     protected override void UpdateState(BoundUserInterfaceState state)

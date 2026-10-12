@@ -7,7 +7,7 @@ using Robust.Client.UserInterface.XAML;
 using Content.Shared.Access.Systems; // Pirate: records photos
 using Robust.Client.Player; // Pirate: records photos
 using Robust.Shared.Prototypes; // Pirate: records photos
-using Content.Client._Pirate.StationRecords; // Pirate: record history
+using Content.Client._Pirate.StationRecords; // Pirate: records select
 
 namespace Content.Client.StationRecords;
 
@@ -44,11 +44,12 @@ public sealed partial class GeneralStationRecordConsoleWindow : DefaultWindow
         _player = player; // Pirate: records photos
         _accessReader = accessReader; // Pirate: records photos
 
-        _currentFilterType = RecordFilters.Default; // Pirate: record history
+        _currentFilterType = RecordFilters.Default; // Pirate: records select
 
-        RecordFilters.Populate(StationRecordsFilterType); // Pirate: record history
+        RecordFilters.Populate(StationRecordsFilterType); // Pirate: records select - shared labels, "all fields" first
 
         InitRecordSelection(); // Pirate: records select - replaces the select/deselect handlers, see RecordSelectionController
+        InitTabs(); // Pirate: records select
 
         StationRecordsFilterType.OnItemSelected += eventArgs =>
         {
@@ -125,7 +126,7 @@ public sealed partial class GeneralStationRecordConsoleWindow : DefaultWindow
         _selectedKey = state.SelectedKey; // Pirate: records photos
         _record = state.Record; // Pirate: evidence board
         PinBoardButton.Visible = _record != null; // Pirate: evidence board
-        TopRow.Visible = _record != null; // Pirate: record history
+        TopRow.Visible = _record != null; // Pirate: records select
         if (previousSelectedKey != _selectedKey) // Pirate: records photos
             ResetDeleteConfirmation(); // Pirate: records photos
 
@@ -137,8 +138,8 @@ public sealed partial class GeneralStationRecordConsoleWindow : DefaultWindow
             RecordListing.Visible = false;
             RecordListingStatus.Text = Loc.GetString("general-station-record-console-empty-state");
             RecordContainer.Visible = false;
-            HistoryView.Visible = false; // Pirate: record history
-            _tabs.SetHasRecord(false); // Pirate: record history
+            HistoryView.Visible = false; // Pirate: records select
+            _tabs.SetHasRecord(false); // Pirate: records select
             RecordContainerStatus.Visible = false;
             UpdateRecordActionButtons(); // Pirate: records photos
             return;
@@ -160,12 +161,15 @@ public sealed partial class GeneralStationRecordConsoleWindow : DefaultWindow
                 : Loc.GetString("general-station-record-console-select-record-info");
             PopulateRecordContainer(state.Record); // Pirate: records photos
             ShowRecordPortrait(state); // Pirate: records select
+            HistoryView.UpdateLog(state.SelectedKey ?? 0, state.Record.Name, state.Log, _access && _canManageRecords); // Pirate: records select
+            _tabs.SetHasRecord(state.SelectedKey != null); // Pirate: records select - the search bar searches the history only while one is shown
+            _tabs.Refresh(); // Pirate: records select - RecordContainer.Visible above ignores the Profile / History choice
         }
         else
         {
             RecordContainer.RemoveAllChildren();
-            HistoryView.Visible = false; // Pirate: record history
-            _tabs.SetHasRecord(false); // Pirate: record history
+            HistoryView.Visible = false; // Pirate: records select
+            _tabs.SetHasRecord(false); // Pirate: records select
         }
     }
     private void PopulateRecordListing(Dictionary<uint, string> listing, uint? selected)
@@ -204,7 +208,7 @@ public sealed partial class GeneralStationRecordConsoleWindow : DefaultWindow
 
     private string GetTypeFilterLocals(StationRecordFilterType type)
     {
-        return RecordFilters.Label(type); // Pirate: record history
+        return RecordFilters.Label(type); // Pirate: records select
     }
 
     #region Pirate: evidence board

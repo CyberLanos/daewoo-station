@@ -45,5 +45,5 @@ public enum StationRecordFilterType : byte
     Species,
     Prints,
     DNA,
-    All, // Pirate: record history
+    All, // Pirate: records select - search every field; the consoles' default
 }

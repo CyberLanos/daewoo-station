@@ -1,3 +1,4 @@
+# History tab of the criminal, crew and psionics records consoles
 records-console-tab-profile = Профіль
 records-console-tab-history = Історія
 records-log-kind-status-change = Зміна статусу

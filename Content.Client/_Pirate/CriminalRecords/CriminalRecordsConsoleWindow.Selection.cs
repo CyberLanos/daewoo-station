@@ -66,6 +66,23 @@ public sealed partial class CriminalRecordsConsoleWindow
         _identityEditorSource = source;
     }
 
+    public event Action<string>? OnAddLogNote;
+    public event Action<uint>? OnDeleteLogEntry;
+    public event Action? OnPrintLog;
+    private RecordTabs _tabs = default!;
+
+    /// <summary>
+    /// Profile / History switch over the record; the history is this console's log of the person.
+    /// </summary>
+    private void InitTabs()
+    {
+        _tabs = new RecordTabs(ProfileTabButton, HistoryTabButton, ProfileView, HistoryView);
+        _tabs.BindSearch(FilterType, FilterText, HistoryView, DeleteRecordButton, AddRecordButton);
+        HistoryView.OnAddNote += text => OnAddLogNote?.Invoke(text);
+        HistoryView.OnDeleteEntry += id => OnDeleteLogEntry?.Invoke(id);
+        HistoryView.OnPrint += () => OnPrintLog?.Invoke();
+    }
+
     /// <summary>
     /// Aligned label column; values fill the rest, at least the widest dropdown option plus 20px.
     /// </summary>

@@ -8,6 +8,10 @@ using Robust.Shared.Utility;
 
 namespace Content.Client._Pirate.StationRecords;
 
+/// <summary>
+/// Writes a note for a record's history. Notes are one paragraph (line breaks become spaces) of at most
+/// <see cref="RecordLogNotes.MaxLength"/> characters; the counter turns red and adding is blocked past that.
+/// </summary>
 [GenerateTypedNameReferences]
 public sealed partial class RecordNoteDialog : FancyWindow
 {

@@ -1,7 +1,8 @@
+<!--
+SPDX-License-Identifier: AGPL-3.0-or-later
+-->
 
-
-
-<!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
+<!-- The History tab of the records consoles: the person's name, a divider, then their log for this console. -->
 <BoxContainer xmlns="https://spacestation14.io"
               Orientation="Vertical"
               HorizontalExpand="True"

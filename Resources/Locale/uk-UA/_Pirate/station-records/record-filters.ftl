@@ -1,3 +1,4 @@
+# Search type dropdown shared by the criminal, crew and psionics records consoles
 records-filter-all = Усі поля
 records-filter-name = Ім'я
 records-filter-job = Посада

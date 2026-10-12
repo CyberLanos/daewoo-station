@@ -8,6 +8,10 @@ namespace Content.Server.StationRecords.Systems;
 
 public sealed partial class StationRecordsSystem
 {
+    /// <summary>
+    /// <see cref="StationRecordFilterType.All"/>: the search text anywhere in the record - name, job, species,
+    /// nationality, employer (ids and their shown names), fingerprints or DNA.
+    /// </summary>
     private bool MatchesAnyField(GeneralStationRecord record, string lowerCaseFilter)
     {
         return Matches(record.Name)

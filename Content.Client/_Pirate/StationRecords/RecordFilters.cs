@@ -5,6 +5,10 @@ using Robust.Client.UserInterface.Controls;
 
 namespace Content.Client._Pirate.StationRecords;
 
+/// <summary>
+/// The search-type dropdown shared by the records consoles (criminal, crew, psionics): one set of labels,
+/// "all fields" first and selected by default.
+/// </summary>
 public static class RecordFilters
 {
     public const StationRecordFilterType Default = StationRecordFilterType.All;

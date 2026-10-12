@@ -267,7 +267,7 @@ public sealed class RecordPhotoComposerSystem : EntitySystem
     }
 
     /// <summary>
-    /// Name over "№number ... ██.██.birth-year", held at knee height. The birth year is the in-game year minus the
+    /// Name over "#number ... ██.██.birth-year", held at knee height. The birth year is the in-game year minus the
     /// record's age; nobody enters a birthday, so day and month are redacted.
     /// </summary>
     private static void DrawPlacard(DrawingHandleScreen handle, Font font, float scale, MugshotLabel label)
@@ -280,7 +280,7 @@ public sealed class RecordPhotoComposerSystem : EntitySystem
 
         // Second line: number flush left, date of birth flush right, three characters apart. It is the same width
         // for everyone, so it sets the plate width: every placard is the same compact size.
-        var number = $"\u2116{label.Number:D6}";
+        var number = $"#{label.Number:D6}";
         var year = label.BirthYear > 0
             ? label.BirthYear.ToString()
             : new string(block, 4);
