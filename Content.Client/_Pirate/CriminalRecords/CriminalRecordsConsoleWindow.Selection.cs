@@ -2,17 +2,19 @@
 
 using Content.Client._Pirate.StationRecords;
 using Content.Shared.CriminalRecords;
-using Content.Shared.Preferences;
 using Content.Shared.StationRecords;
 using Robust.Shared.Enums;
 
 namespace Content.Client.CriminalRecords;
 
+/// <summary>
+/// Record switching on the criminal records console is a full server round trip (the client only ever has the
+/// selected record), so list selection goes through <see cref="RecordSelectionController{TState}"/>; the photo is the
+/// shared <see cref="RecordPortraitPanel"/>.
+/// </summary>
 public sealed partial class CriminalRecordsConsoleWindow
 {
     private RecordSelectionController<CriminalRecordsConsoleState> _selection = default!;
-
-    public uint SelectionRequest => _selection.LastRequest;
     private RecordFieldWidths _fieldWidths = default!;
 
     private uint? _identityEditorKey;
@@ -23,20 +25,22 @@ public sealed partial class CriminalRecordsConsoleWindow
         _selection = new RecordSelectionController<CriminalRecordsConsoleState>(RecordListing);
         _selection.SelectionRequested += key => OnKeySelected?.Invoke(key);
         _selection.ShowCached += (cached, last) =>
+            // No filter: it would overwrite whatever is being typed into the search box.
             UpdateState(new CriminalRecordsConsoleState(last.RecordListing, null)
             {
                 SelectedKey = cached.SelectedKey,
                 StationRecord = cached.StationRecord,
                 CriminalRecord = cached.CriminalRecord,
-                Portrait = cached.Portrait,
-                Log = cached.Log,
                 FilterStatus = last.FilterStatus,
             });
     }
 
+    /// <summary>
+    /// False for a state that predates a record the user already clicked; only the list is refreshed from it.
+    /// </summary>
     private bool AcceptServerState(CriminalRecordsConsoleState state)
     {
-        if (_selection.AcceptServerState(state, state.SelectedKey, state.SelectionRequest, state is { StationRecord: not null, CriminalRecord: not null }))
+        if (_selection.AcceptServerState(state, state.SelectedKey, state is { StationRecord: not null, CriminalRecord: not null }))
             return true;
 
         NoRecords.Visible = state.RecordListing == null || state.RecordListing.Count == 0;
@@ -44,9 +48,13 @@ public sealed partial class CriminalRecordsConsoleWindow
         return false;
     }
 
-    private void RefreshRecordIdentityEditor(uint key, GeneralStationRecord stationRecord, HumanoidCharacterProfile? snapshot)
+    /// <summary>
+    /// The identity selectors re-run every nationality / employer requirement check; skip that when the state
+    /// carries the same identity for the same record (every unrelated record change sends a new state).
+    /// </summary>
+    private void RefreshRecordIdentityEditor(uint key, GeneralStationRecord stationRecord, CriminalRecord criminalRecord)
     {
-        var profile = BuildRecordIdentityProfile(stationRecord, snapshot);
+        var profile = BuildRecordIdentityProfile(stationRecord, criminalRecord);
         var source = (profile.Species, profile.Nationality, profile.Employer, profile.Gender, profile.Age,
             stationRecord.Species, stationRecord.Nationality, stationRecord.Employer, stationRecord.Age);
 
@@ -58,20 +66,9 @@ public sealed partial class CriminalRecordsConsoleWindow
         _identityEditorSource = source;
     }
 
-    public event Action<string>? OnAddLogNote;
-    public event Action<uint>? OnDeleteLogEntry;
-    public event Action? OnPrintLog;
-    private RecordTabs _tabs = default!;
-
-    private void InitTabs()
-    {
-        _tabs = new RecordTabs(ProfileTabButton, HistoryTabButton, ProfileView, HistoryView);
-        _tabs.BindSearch(FilterType, FilterText, HistoryView);
-        HistoryView.OnAddNote += text => OnAddLogNote?.Invoke(text);
-        HistoryView.OnDeleteEntry += id => OnDeleteLogEntry?.Invoke(id);
-        HistoryView.OnPrint += () => OnPrintLog?.Invoke();
-    }
-
+    /// <summary>
+    /// Aligned label column; values fill the rest, at least the widest dropdown option plus 20px.
+    /// </summary>
     private void InitFieldWidths()
     {
         _fieldWidths = new RecordFieldWidths(

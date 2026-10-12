@@ -6,6 +6,16 @@ using Robust.Client.UserInterface.Controls;
 
 namespace Content.Client._Pirate.StationRecords;
 
+/// <summary>
+/// Lays out the "label: value" rows of a records console's info column. Each row is a horizontal box whose first
+/// child is the label (cell) and whose value fills the rest:
+/// <list type="bullet">
+/// <item>labels share one column, as wide as the widest label, so every value starts at the same x;</item>
+/// <item>values stretch over whatever the window leaves them, but never below the widest option of any dropdown
+/// plus 20px - OptionButton sizes itself to the selected option, so left alone every dropdown (and every record)
+/// was a different width, and long options got cut off.</item>
+/// </list>
+/// </summary>
 public sealed class RecordFieldWidths
 {
     private const float Extra = 20f;
@@ -16,6 +26,9 @@ public sealed class RecordFieldWidths
     private float _valueWidth;
     private float _labelWidth;
 
+    /// <param name="dropdowns">Dropdowns to measure and size.</param>
+    /// <param name="values">Other values in the column (age field, read-only values); they just take the width.</param>
+    /// <param name="extraRows">Rows with no sized value whose label should still line up (e.g. the job row).</param>
     public RecordFieldWidths(OptionButton[] dropdowns, Control[] values, Control[]? extraRows = null)
     {
         _dropdowns = dropdowns;
@@ -23,9 +36,13 @@ public sealed class RecordFieldWidths
         _extraRows = extraRows ?? [];
     }
 
+    /// <summary>
+    /// Re-measures after the dropdowns were (re)populated. Only ever widens, so the column doesn't jump around
+    /// between records whose option lists differ (nationalities depend on species).
+    /// </summary>
     public void Update()
     {
-        // Controls outside the UI tree have no stylesheet to measure.
+        // Out of the UI tree there is no stylesheet, so nothing can be measured; wait for the next call.
         if (_dropdowns.Length > 0 && !_dropdowns[0].IsInsideTree)
             return;
 
@@ -108,7 +125,7 @@ public sealed class RecordFieldWidths
         var widest = 0f;
         try
         {
-            // Select() updates the label without raising selection events.
+            // Select() only swaps the label text, it raises no events.
             for (var i = 0; i < button.ItemCount; i++)
             {
                 button.Select(i);

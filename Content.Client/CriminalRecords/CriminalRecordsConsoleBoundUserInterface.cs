@@ -53,7 +53,7 @@ public sealed class CriminalRecordsConsoleBoundUserInterface : BoundUserInterfac
         _window.OnForensicsInfoChanged += (fingerprint, dna) =>
             SendMessage(new CriminalRecordEditForensics(fingerprint, dna));
         _window.OnPrintPhoto += (key, image) =>
-            SendMessage(new CriminalRecordPrintPhoto(key, image)); // Pirate: records photos
+            SendMessage(new CriminalRecordPrintPhoto(key, image)); // Pirate: records select - the panel renders the photo itself now
         _window.OnUploadPhoto += () =>
             SendMessage(new CriminalRecordUploadPhoto());
         _window.OnStoreGeneratedPortrait += (recordKey, imageData) =>

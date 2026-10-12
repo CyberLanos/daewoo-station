@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                Title="{Loc 'general-station-record-console-window-title'}"
                MinSize="930 600"
                SetSize="930 600">
-    <!-- Pirate: records photos -->
+    <!-- Pirate: records select - room for the record photo, same size as criminal records -->
     <BoxContainer Orientation="Vertical">
         <BoxContainer Name="TopBar" Margin="5 5 5 10" HorizontalExpand="true" VerticalAlignment="Center">
             <OptionButton Name="StationRecordsFilterType" MinWidth="200" Margin="0 0 10 0"/>

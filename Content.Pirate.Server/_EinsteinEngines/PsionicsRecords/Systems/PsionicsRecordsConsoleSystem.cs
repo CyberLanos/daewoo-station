@@ -18,6 +18,10 @@ using Content.Shared.Psionics.Components;
 using Content.Server._Pirate.StationRecords;
 using Content.Shared._Pirate.StationRecords;
 
+/// <summary>
+/// EVERYTHING HERE IS A MODIFIED VERSION OF CRIMINAL RECORDS
+/// </summary>
+
 namespace Content.Server.PsionicsRecords.Systems;
 
 public sealed partial class PsionicsRecordsConsoleSystem : SharedPsionicsRecordsConsoleSystem
@@ -31,7 +35,6 @@ public sealed partial class PsionicsRecordsConsoleSystem : SharedPsionicsRecords
     [Dependency] private readonly StationSystem _station = default!;
     [Dependency] private readonly UserInterfaceSystem _ui = default!;
     [Dependency] private readonly RecordPortraitSystem _portraits = default!;
-    [Dependency] private readonly RecordLogSystem _logs = default!;
 
 	    public override void Initialize()
 	    {
@@ -48,9 +51,6 @@ public sealed partial class PsionicsRecordsConsoleSystem : SharedPsionicsRecords
 	            subs.Event<RecordPortraitPrintMessage>(OnPrintPortrait);
 	            subs.Event<RecordPortraitUploadMessage>(OnUploadPortrait);
 	            subs.Event<RecordPortraitStoreGeneratedMessage>(OnStoreGeneratedPortrait);
-	            subs.Event<RecordLogAddNoteMessage>(OnAddLogNote);
-	            subs.Event<RecordLogDeleteMessage>(OnDeleteLogEntry);
-	            subs.Event<RecordLogPrintMessage>(OnPrintLog);
 	        });
 
 	        // Pirate-PsionicsMenu-Start
@@ -201,36 +201,10 @@ public sealed partial class PsionicsRecordsConsoleSystem : SharedPsionicsRecords
             _stationRecords.TryGetRecord(key, out state.StationRecord, stationRecords);
             _stationRecords.TryGetRecord(key, out state.PsionicsRecord, stationRecords);
             state.Portrait = _portraits.GetPortrait(key);
-            state.Log = _logs.GetLog(key, RecordLogBook.Psionics);
             state.SelectedKey = id;
         }
 
         _ui.SetUiState(uid, PsionicsRecordsConsoleKey.Key, state);
-    }
-
-    private void OnAddLogNote(Entity<PsionicsRecordsConsoleComponent> ent, ref RecordLogAddNoteMessage msg)
-    {
-        if (!CheckSelected(ent, msg.Actor, out var mob, out var key))
-            return;
-
-        var text = RecordLogNotes.Sanitize(msg.Text);
-        if (text.Length < 1 || text.Length > RecordLogNotes.MaxLength)
-            return;
-
-        _logs.Add(key.Value, RecordLogBook.Psionics, RecordLogKind.Note, null, text, mob, ent);
-        UpdateUserInterface(ent);
-    }
-
-    private void OnDeleteLogEntry(Entity<PsionicsRecordsConsoleComponent> ent, ref RecordLogDeleteMessage msg)
-    {
-        if (CheckSelected(ent, msg.Actor, out _, out var key) && _logs.TryDelete(key.Value, RecordLogBook.Psionics, msg.EntryId, out _))
-            UpdateUserInterface(ent);
-    }
-
-    private void OnPrintLog(Entity<PsionicsRecordsConsoleComponent> ent, ref RecordLogPrintMessage msg)
-    {
-        if (CheckSelected(ent, msg.Actor, out var mob, out var key))
-            _logs.Print(ent, mob.Value, key.Value, RecordLogBook.Psionics);
     }
 
     private void OnPrintPortrait(Entity<PsionicsRecordsConsoleComponent> ent, ref RecordPortraitPrintMessage msg)
@@ -247,7 +221,7 @@ public sealed partial class PsionicsRecordsConsoleSystem : SharedPsionicsRecords
 
     private void OnStoreGeneratedPortrait(Entity<PsionicsRecordsConsoleComponent> ent, ref RecordPortraitStoreGeneratedMessage msg)
     {
-        // Accept late results only for their original selection.
+        // No ActiveKey gate: the render is async and the user has often clicked on by the time it lands.
         if (!_access.IsAllowed(msg.Actor, ent) || _station.GetOwningStation(ent) is not { } station)
             return;
 
@@ -258,6 +232,10 @@ public sealed partial class PsionicsRecordsConsoleSystem : SharedPsionicsRecords
         }
     }
 
+    /// <summary>
+    /// Boilerplate that most actions use, if they require that a record be selected.
+    /// Obviously shouldn't be used for selecting records.
+    /// </summary>
     private bool CheckSelected(Entity<PsionicsRecordsConsoleComponent> ent, EntityUid user,
         [NotNullWhen(true)] out EntityUid? mob, [NotNullWhen(true)] out StationRecordKey? key)
     {

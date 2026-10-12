@@ -5,11 +5,14 @@ using Content.Client.Lobby;
 using Content.Shared._Pirate.StationRecords;
 using Content.Shared.Roles;
 using Robust.Client.UserInterface;
-using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 
 namespace Content.Client._Pirate.StationRecords;
 
+/// <summary>
+/// Takes the arriving player's record photo: the server asks once their records exist, this renders their
+/// character (photo dress code applied) in memory and sends the bare render back to be stored.
+/// </summary>
 public sealed class RecordPortraitRequestSystem : EntitySystem
 {
     [Dependency] private readonly IPrototypeManager _proto = default!;
@@ -18,25 +21,10 @@ public sealed class RecordPortraitRequestSystem : EntitySystem
 
     private const int Attempts = 4;
 
-    private readonly HashSet<EntityUid> _pendingDummies = new();
-
     public override void Initialize()
     {
         base.Initialize();
         SubscribeNetworkEvent<RecordPortraitRenderRequestEvent>(OnRenderRequest);
-        SubscribeLocalEvent<LocalPlayerDetachedEvent>(OnLocalPlayerDetached);
-    }
-
-    // Headless renders may never finish, so delete pending dummies when the player detaches.
-    private void OnLocalPlayerDetached(LocalPlayerDetachedEvent ev)
-    {
-        foreach (var dummy in _pendingDummies)
-        {
-            if (Exists(dummy))
-                Del(dummy);
-        }
-
-        _pendingDummies.Clear();
     }
 
     private async void OnRenderRequest(RecordPortraitRenderRequestEvent ev)
@@ -49,11 +37,10 @@ public sealed class RecordPortraitRequestSystem : EntitySystem
                 job = indexedJob;
 
             dummy = _ui.GetUIController<LobbyUIController>().LoadProfileEntity(ev.Profile, job, true);
-            _pendingDummies.Add(dummy);
             _composer.DressForPhoto(dummy);
 
             byte[]? image = null;
-            for (var attempt = 0; attempt < Attempts && image is not { Length: > 0 } && Exists(dummy); attempt++)
+            for (var attempt = 0; attempt < Attempts && image is not { Length: > 0 }; attempt++)
             {
                 if (attempt > 0)
                     await Task.Delay(100);
@@ -71,17 +58,12 @@ public sealed class RecordPortraitRequestSystem : EntitySystem
                 });
             }
         }
-        catch (OperationCanceledException)
-        {
-            // The composer cancels pending renders when the client shuts down.
-        }
         catch (Exception e)
         {
             Log.Warning($"Failed to render the arrival record photo: {e}");
         }
         finally
         {
-            _pendingDummies.Remove(dummy);
             if (dummy.IsValid() && Exists(dummy))
                 Del(dummy);
         }

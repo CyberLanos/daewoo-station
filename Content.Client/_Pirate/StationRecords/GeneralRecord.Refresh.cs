@@ -8,6 +8,9 @@ namespace Content.Client.StationRecords;
 
 public sealed partial class GeneralRecord
 {
+    /// <summary>
+    /// The record the panel last showed from the server; null after a local edit so the next state repopulates.
+    /// </summary>
     private GeneralStationRecord? _shownRecord;
 
     private RecordFieldWidths? _fieldWidths;
@@ -21,6 +24,10 @@ public sealed partial class GeneralRecord
         [AgeEdit],
         [PersonJob.Parent!]);
 
+    /// <summary>
+    /// Refreshes the panel in place. The console used to build a new panel (XAML load + every nationality /
+    /// employer requirement check) on each state, and every record change on the station sends one.
+    /// </summary>
     public void SetRecord(GeneralStationRecord record)
     {
         if (record.Equals(_shownRecord))
@@ -42,6 +49,11 @@ public sealed partial class GeneralRecord
         Portrait.SetEditable(editable);
     }
 
+    /// <summary>
+    /// The panel is populated before the console adds it to the window, when nothing can be measured yet.
+    /// Deferred: EnteredTree runs before the children are in the tree, so measuring here was skipped and the first
+    /// record showed unaligned, full-width dropdowns until the next repopulate.
+    /// </summary>
     protected override void EnteredTree()
     {
         base.EnteredTree();

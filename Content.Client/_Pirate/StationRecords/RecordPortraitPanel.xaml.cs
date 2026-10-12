@@ -20,6 +20,12 @@ using Robust.Shared.Utility;
 
 namespace Content.Client._Pirate.StationRecords;
 
+/// <summary>
+/// The photo block of the records consoles (criminal, crew, psionics). An uploaded photo is shown as it is.
+/// Otherwise the person's character is rendered once (stored on the record as a bare render) and shown as this
+/// console's mugshot - <see cref="PhotoStyle"/> background plus a name placard, see <see cref="RecordPhotoComposerSystem"/>.
+/// The photo lives on the person's criminal record, so all three consoles share it.
+/// </summary>
 [GenerateTypedNameReferences]
 public sealed partial class RecordPortraitPanel : BoxContainer
 {
@@ -31,10 +37,20 @@ public sealed partial class RecordPortraitPanel : BoxContainer
     private readonly RecordPhotoComposerSystem _composer;
     private RecordPhotoStyle _photoStyle = RecordPhotoStyle.Civilian;
 
+    /// <summary>
+    /// Print pressed: (record key, photo to print). The image is null when there was nothing to render;
+    /// the server then prints the stored photo if it has one.
+    /// </summary>
     public event Action<uint, byte[]?>? OnPrint;
 
+    /// <summary>
+    /// Upload pressed: store the photo card the user is holding as the selected record's photo.
+    /// </summary>
     public event Action? OnUpload;
 
+    /// <summary>
+    /// A record without a photo had its preview rendered: (record key, PNG) to store as its photo.
+    /// </summary>
     public event Action<uint, byte[]>? OnStoreGenerated;
 
     private uint? _key;
@@ -48,6 +64,9 @@ public sealed partial class RecordPortraitPanel : BoxContainer
     private readonly Dictionary<uint, (byte[] Data, Texture Texture)> _textureCache = new();
     private readonly Dictionary<uint, (HumanoidCharacterProfile Profile, string? Job, byte[] Data)> _generatedCache = new();
 
+    /// <summary>
+    /// Composed mugshots per record, with what they were composed from.
+    /// </summary>
     private readonly Dictionary<uint, (string Source, byte[] Png)> _mugshotCache = new();
     private readonly Dictionary<uint, string> _composing = new();
 
@@ -61,10 +80,11 @@ public sealed partial class RecordPortraitPanel : BoxContainer
 
         PrintButton.OnPressed += _ => Print();
         UploadButton.OnPressed += _ => OnUpload?.Invoke();
-        RecordConsoleSounds.Mute(PrintButton);
-        RecordConsoleSounds.Mute(UploadButton);
     }
 
+    /// <summary>
+    /// Which console's mugshot to make. Set from XAML.
+    /// </summary>
     public RecordPhotoStyle PhotoStyle
     {
         get => _photoStyle;
@@ -76,12 +96,18 @@ public sealed partial class RecordPortraitPanel : BoxContainer
         }
     }
 
+    /// <summary>
+    /// Shows the record's photo: an uploaded one as it is, otherwise this console's mugshot of the stored render,
+    /// or of a live preview of <paramref name="portrait"/>'s snapshot (dressed for <paramref name="jobPrototype"/>)
+    /// that gets rendered and stored.
+    /// </summary>
     public void SetPortrait(uint key, RecordPortraitData? portrait, string? jobPrototype, string name, int age)
     {
         var image = portrait?.ImageData;
         var snapshot = portrait?.Snapshot;
 
         _key = key;
+        // The placard as frozen when the photo was taken; the record's current values only until then.
         var birthYear = portrait is { BirthYear: > 0 } ? portrait.BirthYear
             : age > 0 ? PirateStationCalendar.CurrentYear - age
             : 0;
@@ -126,6 +152,9 @@ public sealed partial class RecordPortraitPanel : BoxContainer
         UploadButton.Disabled = !editable;
     }
 
+    /// <summary>
+    /// Hides the print / upload buttons, for consoles that only look at photos.
+    /// </summary>
     public void SetButtonsVisible(bool visible)
     {
         PrintButton.Visible = visible;
@@ -157,6 +186,7 @@ public sealed partial class RecordPortraitPanel : BoxContainer
 
         try
         {
+            // What is on screen: the photo or the finished mugshot. Still being made: render and compose it now.
             var image = _shownImageData;
             if (image is not { Length: > 0 } && await TryRenderWithRetry(_previewDummy) is { } render)
                 image = await _composer.Compose(render, _photoStyle, _label);
@@ -220,6 +250,8 @@ public sealed partial class RecordPortraitPanel : BoxContainer
         _previewDummy = dummy;
         _previewKey = key;
         PortraitSprite.SetEntity(dummy);
+        // Hidden: the mugshot is a few frames away, and the full-size live sprite just flashed before it.
+        // Shown only if rendering the mugshot fails (see GenerateAsync).
         PortraitSprite.Visible = false;
     }
 
@@ -248,6 +280,10 @@ public sealed partial class RecordPortraitPanel : BoxContainer
         return true;
     }
 
+    /// <summary>
+    /// Renders a record's preview once (on its own dummy, so switching records can't delete it mid-render),
+    /// shows it and raises <see cref="OnStoreGenerated"/>. Cached, so revisits don't spawn dummies again.
+    /// </summary>
     private void EnsureGenerated(uint key, HumanoidCharacterProfile? snapshot, string? jobPrototype)
     {
         if (snapshot == null || !_pendingGeneratedKeys.Add(key))
@@ -266,13 +302,13 @@ public sealed partial class RecordPortraitPanel : BoxContainer
     {
         try
         {
-            // Keep the dummy alive until the asynchronous GPU readback completes.
             var image = await TryRenderWithRetry(dummy);
             if (Disposed)
                 return;
 
             if (image is not { Length: > 0 })
             {
+                // No mugshot to come: fall back to the live preview rather than an empty frame.
                 if (_key == key && _previewKey == key)
                     PortraitSprite.Visible = true;
 
@@ -295,6 +331,10 @@ public sealed partial class RecordPortraitPanel : BoxContainer
         }
     }
 
+    /// <summary>
+    /// Shows this console's mugshot of <paramref name="render"/>; composes it first if the cached one is stale.
+    /// Until then whatever is up (the live preview, or just the background) stays.
+    /// </summary>
     private void ShowMugshot(uint key, byte[] render)
     {
         var source = MugshotSource(render);
@@ -339,6 +379,9 @@ public sealed partial class RecordPortraitPanel : BoxContainer
         }
     }
 
+    /// <summary>
+    /// Everything a mugshot is made of, to tell when a cached one is stale.
+    /// </summary>
     private string MugshotSource(byte[] render)
     {
         var hash = 17;
@@ -387,6 +430,7 @@ public sealed partial class RecordPortraitPanel : BoxContainer
 
         try
         {
+            // In memory: the sprite export this used to go through left a PNG in the player's data folder per render.
             return await _composer.RenderEntity(dummy);
         }
         catch (Exception)
@@ -395,6 +439,9 @@ public sealed partial class RecordPortraitPanel : BoxContainer
         }
     }
 
+    /// <summary>
+    /// Decodes a photo once per record and content, instead of on every console state.
+    /// </summary>
     private Texture LoadTextureCached(uint key, byte[] imageData)
     {
         if (_textureCache.TryGetValue(key, out var cached) && cached.Data.AsSpan().SequenceEqual(imageData))
@@ -406,6 +453,7 @@ public sealed partial class RecordPortraitPanel : BoxContainer
             texture = Texture.LoadFromPNGStream(stream, $"record-portrait-{key}");
         }
 
+        // The shown texture is cleared before this runs, so nothing evicted here is on screen.
         if (_textureCache.Remove(key, out var replaced))
             DisposeTexture(replaced.Texture);
 

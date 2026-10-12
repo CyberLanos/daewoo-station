@@ -106,14 +106,14 @@ public sealed partial class GeneralRecord : Control
         PersonPrintsEdit.OnFocusExit += args => CommitForensicsEdits(args.Text, PersonDnaEdit.Text);
         PersonDnaEdit.OnTextEntered += args => CommitForensicsEdits(PersonPrintsEdit.Text, args.Text);
         PersonDnaEdit.OnFocusExit += args => CommitForensicsEdits(PersonPrintsEdit.Text, args.Text);
-        InitPortrait(); // Pirate: records photos
+        InitPortrait(); // Pirate: records select
 
         PopulateRecord(record);
     }
 
     private void PopulateRecord(GeneralStationRecord record)
     {
-        _shownRecord = record; // Pirate: records photos
+        _shownRecord = record; // Pirate: records select
         var na = Loc.GetString("generic-not-available-shorthand");
 
         PersonName.Text = record.Name;
@@ -208,10 +208,10 @@ public sealed partial class GeneralRecord : Control
             _suppressEvents = false;
         }
 
-        FieldWidths.Update(); // Pirate: records photos
+        FieldWidths.Update(); // Pirate: records select - options changed, the column may need to widen
 
-        if (rawRecord == null) // Pirate: records photos
-            _shownRecord = null; // Pirate: records photos
+        if (rawRecord == null) // Pirate: records select - a local edit, the next state must repopulate
+            _shownRecord = null; // Pirate: records select
 
         if (sendUpdate && !_speciesUnset && !_genderUnset) // Pirate: records photos
             OnIdentityInfoChanged?.Invoke(profile.Species, profile.Nationality, profile.Employer, profile.Age, profile.Gender);
@@ -345,7 +345,7 @@ public sealed partial class GeneralRecord : Control
         if (_suppressEvents)
             return;
 
-        _shownRecord = null; // Pirate: records photos
+        _shownRecord = null; // Pirate: records select - a local edit, the next state must repopulate
         OnForensicsInfoChanged?.Invoke(fingerprint, dna);
     }
 

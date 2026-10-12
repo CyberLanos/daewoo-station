@@ -5,7 +5,13 @@ using Robust.Shared.Serialization;
 
 namespace Content.Shared._Pirate.StationRecords;
 
+// Record photo messages for the crew and psionics records consoles. The criminal records console predates these
+// and keeps its own (CriminalRecordPrintPhoto etc.); all of them end up in the server's RecordPortraitSystem.
 
+/// <summary>
+/// Print the selected record's photo. <see cref="ImageData"/> is the client's render, used only when the record has
+/// no stored photo yet.
+/// </summary>
 [Serializable, NetSerializable]
 public sealed class RecordPortraitPrintMessage : BoundUserInterfaceMessage
 {
@@ -19,9 +25,16 @@ public sealed class RecordPortraitPrintMessage : BoundUserInterfaceMessage
     }
 }
 
+/// <summary>
+/// Store the photo card the user holds as the selected record's photo.
+/// </summary>
 [Serializable, NetSerializable]
 public sealed class RecordPortraitUploadMessage : BoundUserInterfaceMessage;
 
+/// <summary>
+/// Server to the arriving player's client: render your character for your new record's photo.
+/// The server can't draw; the reply is <see cref="RecordPortraitRenderResultEvent"/>.
+/// </summary>
 [Serializable, NetSerializable]
 public sealed class RecordPortraitRenderRequestEvent : EntityEventArgs
 {
@@ -31,6 +44,9 @@ public sealed class RecordPortraitRenderRequestEvent : EntityEventArgs
     public string? JobPrototype;
 }
 
+/// <summary>
+/// The bare render asked for by <see cref="RecordPortraitRenderRequestEvent"/>.
+/// </summary>
 [Serializable, NetSerializable]
 public sealed class RecordPortraitRenderResultEvent : EntityEventArgs
 {
@@ -39,6 +55,9 @@ public sealed class RecordPortraitRenderResultEvent : EntityEventArgs
     public byte[] ImageData = [];
 }
 
+/// <summary>
+/// Store the client's render of a record's character as its photo, if it has none yet.
+/// </summary>
 [Serializable, NetSerializable]
 public sealed class RecordPortraitStoreGeneratedMessage : BoundUserInterfaceMessage
 {

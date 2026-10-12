@@ -19,17 +19,35 @@ using Color = Robust.Shared.Maths.Color;
 
 namespace Content.Client._Pirate.StationRecords;
 
+/// <summary>
+/// Which records console a mugshot is for; picks its background.
+/// </summary>
 public enum RecordPhotoStyle : byte
 {
+    /// <summary>Criminal records: height chart.</summary>
     Security,
 
+    /// <summary>Crew records: studio grey with the NT logo.</summary>
     Civilian,
 
+    /// <summary>Psionics registry (Mantis): purple backdrop.</summary>
     Psionics,
 }
 
+/// <summary>
+/// What goes on the mugshot placard. <paramref name="BirthYear"/> 0 = unknown.
+/// </summary>
 public readonly record struct MugshotLabel(string Name, int Number, int BirthYear);
 
+/// <summary>
+/// Off-screen rendering for record photos, entirely in memory (nothing is written to the player's disk):
+/// <list type="bullet">
+/// <item><see cref="RenderEntity"/> - a bare render of a character dummy, what the records store;</item>
+/// <item><see cref="Compose"/> - a console's mugshot of such a render: its background, the character at 6x with its
+/// feet on the bottom edge, and a name placard over the lower body. 240x240 - the console photo box, shown 1:1.</item>
+/// </list>
+/// Drawn through render targets: the sandbox has no other way to draw an entity or put text into an image.
+/// </summary>
 public sealed class RecordPhotoComposerSystem : EntitySystem
 {
     [Dependency] private readonly IClyde _clyde = default!;
@@ -41,6 +59,9 @@ public sealed class RecordPhotoComposerSystem : EntitySystem
 
     public const int PhotoSize = 240;
 
+    /// <summary>
+    /// Record photo dress code: no headwear and nothing covering the face. Taken off the photo dummy before it is rendered.
+    /// </summary>
     private static readonly string[] PhotoHiddenSlots = ["head", "mask", "eyes"];
     private const int CharacterScale = 6;
 
@@ -75,6 +96,10 @@ public sealed class RecordPhotoComposerSystem : EntitySystem
         return _sprite.Frame0(new SpriteSpecifier.Rsi(BackgroundRsi, StateFor(style)));
     }
 
+    /// <summary>
+    /// Composes a mugshot from a bare character render. Completes a frame or two later (the pixels are read back
+    /// from the GPU asynchronously); null if the render can't be read.
+    /// </summary>
     public Task<byte[]?> Compose(byte[] renderPng, RecordPhotoStyle style, MugshotLabel label)
     {
         Texture character;
@@ -88,7 +113,8 @@ public sealed class RecordPhotoComposerSystem : EntitySystem
             return Task.FromResult<byte[]?>(null);
         }
 
-        // Unifont stays crisp at 16 px; 12 pt at 96 DPI produces that size.
+        // Unifont is a 16px bitmap font: only crisp at exactly 16px. Font sizes are points at the display font DPI
+        // (16pt came out ~21px and overflowed the plate), so ask for 12pt (16px at 96 DPI) and cancel any custom DPI.
         var font = _font ??= new VectorFont(_resourceCache.GetResource<FontResource>(PlacardFont), 12);
         var fontScale = 96f / Math.Max(1, _cfg.GetCVar(CVars.DisplayFontDpi));
         var background = GetBackground(style);
@@ -98,6 +124,10 @@ public sealed class RecordPhotoComposerSystem : EntitySystem
             () => DisposeTexture(character));
     }
 
+    /// <summary>
+    /// Applies the record photo dress code to a photo dummy (a client-side profile dummy, never a real mob):
+    /// takes off headwear, masks and glasses, as the lobby does when it swaps loadout gear.
+    /// </summary>
     public void DressForPhoto(EntityUid dummy)
     {
         foreach (var slot in PhotoHiddenSlots)
@@ -107,12 +137,16 @@ public sealed class RecordPhotoComposerSystem : EntitySystem
         }
     }
 
+    /// <summary>
+    /// Renders an entity facing south into a PNG, the same picture the sprite export makes, without the file.
+    /// Null if it has no visible sprite. The entity has to stay alive until the task completes.
+    /// </summary>
     public Task<byte[]?> RenderEntity(EntityUid entity)
     {
-        // Render in memory; sprite export writes the PNG to the player's data folder.
         if (!TryComp<SpriteComponent>(entity, out var sprite))
             return Task.FromResult<byte[]?>(null);
 
+        // Same canvas as ContentSpriteSystem.Export: the largest visible layer.
         var size = Vector2i.Zero;
         foreach (var layer in sprite.AllLayers)
         {
@@ -135,7 +169,6 @@ public sealed class RecordPhotoComposerSystem : EntitySystem
         var target = _clyde.CreateRenderTarget(size,
             new RenderTargetFormatParameters(RenderTargetColorFormat.Rgba8Srgb), name: "record-photo");
         var result = new TaskCompletionSource<byte[]?>();
-        // Render targets are drawn during the UI pass; readback happens after that frame.
         _control.Queue.Enqueue(new RenderJob(target, draw, result, cleanup));
         return result.Task;
     }
@@ -162,6 +195,10 @@ public sealed class RecordPhotoComposerSystem : EntitySystem
         TaskCompletionSource<byte[]?> Result,
         Action? Cleanup);
 
+    /// <summary>
+    /// Render targets are drawn during the UI draw pass, so the jobs wait here for the next frame.
+    /// Sits on the UI root: no clipping, and its transform is reset before drawing anyway.
+    /// </summary>
     private sealed class ComposerControl : Control
     {
         public readonly Queue<RenderJob> Queue = new();
@@ -207,6 +244,7 @@ public sealed class RecordPhotoComposerSystem : EntitySystem
                 }
                 finally
                 {
+                    // The draw is flushed by the end of RenderInRenderTarget.
                     job.Cleanup?.Invoke();
                 }
             }
@@ -217,6 +255,7 @@ public sealed class RecordPhotoComposerSystem : EntitySystem
     {
         handle.DrawTextureRect(background, UIBox2.FromDimensions(0, 0, PhotoSize, PhotoSize));
 
+        // Feet on the bottom edge. Renders are normally 32x32; anything bigger is scaled down to fit.
         var size = character.Size;
         var scale = Math.Clamp(PhotoSize / Math.Max(size.X, size.Y), 1, CharacterScale);
         var width = size.X * scale;
@@ -227,6 +266,10 @@ public sealed class RecordPhotoComposerSystem : EntitySystem
         DrawPlacard(handle, font, fontScale, label);
     }
 
+    /// <summary>
+    /// Name over "№number ... ██.██.birth-year", held at knee height. The birth year is the in-game year minus the
+    /// record's age; nobody enters a birthday, so day and month are redacted.
+    /// </summary>
     private static void DrawPlacard(DrawingHandleScreen handle, Font font, float scale, MugshotLabel label)
     {
         const char block = '\u2588';
@@ -235,7 +278,9 @@ public sealed class RecordPhotoComposerSystem : EntitySystem
         const int lineGap = 2;
         const int kneeHeight = 192;
 
-        var number = $"#{label.Number:D6}";
+        // Second line: number flush left, date of birth flush right, three characters apart. It is the same width
+        // for everyone, so it sets the plate width: every placard is the same compact size.
+        var number = $"\u2116{label.Number:D6}";
         var year = label.BirthYear > 0
             ? label.BirthYear.ToString()
             : new string(block, 4);
@@ -243,11 +288,11 @@ public sealed class RecordPhotoComposerSystem : EntitySystem
 
         var numberWidth = handle.GetDimensions(font, number, scale).X;
         var birthWidth = handle.GetDimensions(font, birth, scale).X;
-        var plateGap = handle.GetDimensions(font, "   ", scale).X;
-        var gap = handle.GetDimensions(font, " ", scale).X;
-        var textWidth = MathF.Ceiling(numberWidth + plateGap + birthWidth);
+        var minGap = handle.GetDimensions(font, "   ", scale).X;
+        var textWidth = MathF.Ceiling(numberWidth + minGap + birthWidth);
         var lineHeight = MathF.Round(font.GetLineHeight(scale));
 
+        // Longer names are cut to fit; the full name is next to the photo and in the printed photo's title.
         var name = label.Name.ToUpperInvariant();
         while (name.Length > 1 && handle.GetDimensions(font, name, scale).X > textWidth)
         {
@@ -265,10 +310,10 @@ public sealed class RecordPhotoComposerSystem : EntitySystem
         handle.DrawRect(box, Color.FromHex("#E1E1E1"), filled: false);
         handle.DrawRect(new UIBox2(box.Left + 1, box.Top + 1, box.Right - 1, box.Bottom - 1), Color.FromHex("#E1E1E1"), filled: false);
 
+        // Whole pixels, or the bitmap glyphs get resampled.
         var secondLine = top + padY + lineHeight + lineGap;
         handle.DrawString(font, new Vector2(MathF.Round((PhotoSize - nameWidth) / 2), top + padY), name, scale, Color.FromHex("#F0F0F0"));
-        var numberLeft = MathF.Round((PhotoSize - (numberWidth + gap + birthWidth)) / 2);
-        handle.DrawString(font, new Vector2(numberLeft, secondLine), number, scale, Color.FromHex("#C3C3C3"));
-        handle.DrawString(font, new Vector2(MathF.Round(numberLeft + numberWidth + gap), secondLine), birth, scale, Color.FromHex("#C3C3C3"));
+        handle.DrawString(font, new Vector2(left + padX, secondLine), number, scale, Color.FromHex("#C3C3C3"));
+        handle.DrawString(font, new Vector2(MathF.Round(left + width - padX - birthWidth), secondLine), birth, scale, Color.FromHex("#C3C3C3"));
     }
 }

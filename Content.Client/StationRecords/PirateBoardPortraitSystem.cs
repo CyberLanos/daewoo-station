@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 using Content.Client.Lobby;
-using Content.Client._Pirate.StationRecords; // Pirate: records photos
+using Content.Client._Pirate.StationRecords;
 using Content.Pirate.Shared.WebUi;
 using Content.Shared.Roles;
 using Robust.Client.Graphics;
@@ -17,13 +17,19 @@ using System.Threading.Tasks;
 
 namespace Content.Client.StationRecords;
 
-// Pirate: records photos - Render a profile dummy, never a live crew mob.
+/// <summary>
+///     Portraits for the evidence board: when the server quests a pinned
+///     character card, this renders the spawn-time profile snapshot the
+///     same way the records consoles do — LoadProfileEntity dummy,
+///     rendered to a PNG in memory, upload back — and the server paints
+///     it as a data URI. Never touches a live crew mob.
+/// </summary>
 public sealed class PirateBoardPortraitSystem : EntitySystem
 {
     [Dependency] private readonly IUserInterfaceManager _ui = default!;
     [Dependency] private readonly IPrototypeManager _protos = default!;
     [Dependency] private readonly IEntityManager _ent = default!;
-    [Dependency] private readonly RecordPhotoComposerSystem _composer = default!; // Pirate: records photos
+    [Dependency] private readonly RecordPhotoComposerSystem _composer = default!; // Pirate: records select
 
     public override void Initialize()
     {
@@ -51,7 +57,7 @@ public sealed class PirateBoardPortraitSystem : EntitySystem
                 }
                 puppet = _ui.GetUIController<LobbyUIController>()
                     .LoadProfileEntity(profile, job, true);
-                _composer.DressForPhoto(puppet); // Pirate: records photos
+                _composer.DressForPhoto(puppet); // Pirate: records select - no masks or glasses on photos
             }
             catch (Exception ex)
             {
@@ -80,14 +86,15 @@ public sealed class PirateBoardPortraitSystem : EntitySystem
         }
     }
 
-    // Pirate: records photos - Keep renders in memory; sprite export writes PNGs to the player's data folder.
+    // Rendered in memory by the records photo composer - the sprite export it used to go through left a PNG in
+    // the player's data folder for every portrait. Pirate: records select
     private async Task<byte[]?> TryGeneratePortraitData(EntityUid puppet, int attempts = 4)
     {
         for (var attempt = 0; attempt < attempts; attempt++)
         {
             try
             {
-                if (await _composer.RenderEntity(puppet) is { Length: > 0 } data) // Pirate: records photos
+                if (await _composer.RenderEntity(puppet) is { Length: > 0 } data)
                     return data;
             }
             catch (Exception)

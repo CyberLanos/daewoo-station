@@ -16,8 +16,8 @@ using Content.Shared.Preferences;
 using Content.Shared.Roles;
 using Robust.Shared.Enums;
 using Robust.Shared.Prototypes;
-using Content.Server._Pirate.StationRecords; // Pirate: records photos
-using Content.Shared._Pirate.StationRecords; // Pirate: records photos
+using Content.Server._Pirate.StationRecords; // Pirate: records select
+using Content.Shared._Pirate.StationRecords; // Pirate: records select
 #endregion
 
 namespace Content.Server.StationRecords.Systems;
@@ -30,8 +30,7 @@ public sealed class GeneralStationRecordConsoleSystem : EntitySystem
     [Dependency] private readonly StationRecordsSystem _stationRecords = default!;
     #region Pirate: records photos
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
-    [Dependency] private readonly RecordPortraitSystem _portraits = default!; // Pirate: records photos
-    [Dependency] private readonly RecordLogSystem _logs = default!; // Pirate: record history
+    [Dependency] private readonly RecordPortraitSystem _portraits = default!; // Pirate: records select
     private static readonly IReadOnlyDictionary<string, TimeSpan> EmptyPlayTimes = new Dictionary<string, TimeSpan>();
     #endregion
 
@@ -51,13 +50,10 @@ public sealed class GeneralStationRecordConsoleSystem : EntitySystem
             subs.Event<GeneralRecordEditIdentity>(OnEditIdentity);
             subs.Event<GeneralRecordEditForensics>(OnEditForensics);
             #endregion
-            #region Pirate: records photos
+            #region Pirate: records select - record photos, shared with the criminal and psionics consoles
             subs.Event<RecordPortraitPrintMessage>(OnPrintPortrait);
             subs.Event<RecordPortraitUploadMessage>(OnUploadPortrait);
             subs.Event<RecordPortraitStoreGeneratedMessage>(OnStoreGeneratedPortrait);
-            subs.Event<RecordLogAddNoteMessage>(OnAddLogNote);
-            subs.Event<RecordLogDeleteMessage>(OnDeleteLogEntry);
-            subs.Event<RecordLogPrintMessage>(OnPrintLog);
             #endregion
             subs.Event<DeleteStationRecord>(OnRecordDelete);
         });
@@ -360,7 +356,7 @@ public sealed class GeneralStationRecordConsoleSystem : EntitySystem
         return true;
     }
 
-    #region Pirate: records photos
+    #region Pirate: records select
     private bool TryGetPortraitTarget(Entity<GeneralStationRecordConsoleComponent> ent, EntityUid actor, out StationRecordKey key)
     {
         key = default;
@@ -386,31 +382,9 @@ public sealed class GeneralStationRecordConsoleSystem : EntitySystem
             UpdateUserInterface(ent);
     }
 
-    private void OnAddLogNote(Entity<GeneralStationRecordConsoleComponent> ent, ref RecordLogAddNoteMessage msg)
-    {
-        var text = RecordLogNotes.Sanitize(msg.Text);
-        if (text.Length < 1 || text.Length > RecordLogNotes.MaxLength || !TryGetPortraitTarget(ent, msg.Actor, out var key))
-            return;
-
-        _logs.Add(key, RecordLogBook.Crew, RecordLogKind.Note, null, text, msg.Actor, ent);
-        UpdateUserInterface(ent);
-    }
-
-    private void OnDeleteLogEntry(Entity<GeneralStationRecordConsoleComponent> ent, ref RecordLogDeleteMessage msg)
-    {
-        if (TryGetPortraitTarget(ent, msg.Actor, out var key) && _logs.TryDelete(key, RecordLogBook.Crew, msg.EntryId, out _))
-            UpdateUserInterface(ent);
-    }
-
-    private void OnPrintLog(Entity<GeneralStationRecordConsoleComponent> ent, ref RecordLogPrintMessage msg)
-    {
-        if (TryGetPortraitTarget(ent, msg.Actor, out var key))
-            _logs.Print(ent, msg.Actor, key, RecordLogBook.Crew);
-    }
-
     private void OnStoreGeneratedPortrait(Entity<GeneralStationRecordConsoleComponent> ent, ref RecordPortraitStoreGeneratedMessage msg)
     {
-        // Pirate: records photos - Accept late render results for their original record.
+        // No ActiveKey gate: the render is async and the user has often clicked on by the time it lands.
         if (!_access.IsAllowed(msg.Actor, ent) || _station.GetOwningStation(ent) is not { } station)
             return;
 
@@ -466,12 +440,8 @@ public sealed class GeneralStationRecordConsoleSystem : EntitySystem
 
         var newState = new GeneralStationRecordConsoleState(console.ActiveKey, record, listing, console.Filter,
             CanManageRecords(ent), ent.Comp.MaxStringLength); // Pirate: records photos
-        newState.SelectionRequest = console.SelectionRequest; // Pirate: records select
-        if (record != null) // Pirate: records photos
-        {
-            newState.Portrait = _portraits.GetPortrait(key); // Pirate: records photos
-            newState.Log = _logs.GetLog(key, RecordLogBook.Crew); // Pirate: record history
-        }
+        if (record != null) // Pirate: records select
+            newState.Portrait = _portraits.GetPortrait(key); // Pirate: records select
         #endregion
         _ui.SetUiState(uid, GeneralStationRecordConsoleKey.Key, newState);
     }

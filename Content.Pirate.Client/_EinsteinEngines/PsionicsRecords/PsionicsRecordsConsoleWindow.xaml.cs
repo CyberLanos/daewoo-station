@@ -20,6 +20,10 @@ using Robust.Client.GameObjects;
 using Robust.Shared.Enums;
 using System.Numerics;
 
+/// <summary>
+/// EVERYTHING HERE IS A MODIFIED VERSION OF CRIMINAL RECORDS
+/// </summary>
+
 namespace Content.Pirate.Client._EinsteinEngines.PsionicsRecords;
 
 [GenerateTypedNameReferences]
@@ -40,9 +44,6 @@ public sealed partial class PsionicsRecordsConsoleWindow : DefaultWindow
     public Action<PsionicsStatus>? OnStatusSelected;
     public Action<PsionicsStatus, string>? OnDialogConfirmed;
     public Action<uint, byte[]?>? OnPrintPortrait;
-    public Action<string>? OnAddLogNote;
-    public Action<uint>? OnDeleteLogEntry;
-    public Action? OnPrintLog;
     public Action? OnUploadPortrait;
     public Action<uint, byte[]>? OnStoreGeneratedPortrait;
 
@@ -54,10 +55,7 @@ public sealed partial class PsionicsRecordsConsoleWindow : DefaultWindow
     private DialogWindow? _reasonDialog;
 
     private readonly RecordSelectionController<PsionicsRecordsConsoleState> _selection;
-
-    public uint SelectionRequest => _selection.LastRequest;
     private readonly RecordFieldWidths _fieldWidths;
-    private readonly RecordTabs _tabs;
     private readonly SpriteSystem _spriteSystem;
 
     private StationRecordFilterType _currentFilterType;
@@ -101,18 +99,17 @@ public sealed partial class PsionicsRecordsConsoleWindow : DefaultWindow
 
         OnClose += () => _reasonDialog?.Close();
 
-        // ItemList emits deselect events on switches and re-clicks.
+        // ItemList's own select/deselect events sent "select nothing" on every switch and on a re-click.
         _selection = new RecordSelectionController<PsionicsRecordsConsoleState>(RecordListing);
         _selection.SelectionRequested += key => OnKeySelected?.Invoke(key);
         _selection.ShowCached += (cached, last) =>
-            // Preserve the search text while updating the cached record state.
+            // No filter: it would overwrite whatever is being typed into the search box.
             UpdateState(new PsionicsRecordsConsoleState(last.RecordListing, null)
             {
                 SelectedKey = cached.SelectedKey,
                 StationRecord = cached.StationRecord,
                 PsionicsRecord = cached.PsionicsRecord,
                 Portrait = cached.Portrait,
-                Log = cached.Log,
             });
 
         _spriteSystem = IoCManager.Resolve<IEntityManager>().System<SpriteSystem>();
@@ -141,12 +138,7 @@ public sealed partial class PsionicsRecordsConsoleWindow : DefaultWindow
             SetStatus((PsionicsStatus) args.Id);
         };
 
-        _tabs = new RecordTabs(ProfileTabButton, HistoryTabButton, ProfileView, HistoryView);
-        _tabs.BindSearch(FilterType, FilterText, HistoryView);
-        HistoryView.OnPrint += () => OnPrintLog?.Invoke();
-        HistoryView.OnAddNote += text => OnAddLogNote?.Invoke(text);
-        HistoryView.OnDeleteEntry += id => OnDeleteLogEntry?.Invoke(id);
-
+        // Status is the only dropdown here; the read-only values share its column.
         _fieldWidths = new RecordFieldWidths([StatusOptionButton],
             [SpeciesValue, NationalityValue, EmployerValue, AgeValue, GenderValue],
             [PersonJob.Parent!]);
@@ -157,8 +149,8 @@ public sealed partial class PsionicsRecordsConsoleWindow : DefaultWindow
     {
         var hasRecords = state.RecordListing != null && state.RecordListing.Count > 0;
 
-        // Ignore stale replies so the latest selection stays active.
-        if (!_selection.AcceptServerState(state, state.SelectedKey, state.SelectionRequest, state is { PsionicsRecord: not null, StationRecord: not null }))
+        // A state from before the user's latest click: refresh the list, keep the panel on the clicked record.
+        if (!_selection.AcceptServerState(state, state.SelectedKey, state is { PsionicsRecord: not null, StationRecord: not null }))
         {
             NoRecords.Visible = !hasRecords;
             _selection.SetListing(state.RecordListing);
@@ -209,7 +201,6 @@ public sealed partial class PsionicsRecordsConsoleWindow : DefaultWindow
         {
             PopulateRecordContainer(state.StationRecord, state.PsionicsRecord);
             Portrait.SetPortrait(key, state.Portrait, state.StationRecord.JobPrototype, state.StationRecord.Name, state.StationRecord.Age);
-            HistoryView.UpdateLog(key, state.StationRecord.Name, state.Log, editing);
             _selectedRecord = state.PsionicsRecord;
         }
         else
@@ -241,9 +232,10 @@ public sealed partial class PsionicsRecordsConsoleWindow : DefaultWindow
             : na;
         AgeValue.Text = stationRecord.Age > 0 ? stationRecord.Age.ToString() : na;
 
+        // Status icon as on the criminal records console: the psionics HUD icon, or the "unknown" job icon for none.
         PersonStatusTX.SetFromSpriteSpecifier(GetStatusIcon(psionicsRecord.Status));
         PersonStatusTX.DisplayRect.TextureScale = new Vector2(3f, 3f);
-        // Gender is unavailable when the record has no species.
+        // Same rule as the other consoles: no species on the record means the gender was never filled in either.
         GenderValue.Text = string.IsNullOrWhiteSpace(stationRecord.Species) ? na : GetGenderName(stationRecord.Gender);
 
         StatusOptionButton.SelectId((int) psionicsRecord.Status);

@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                   HorizontalExpand="True"
                   Margin="5"
                   SeparationOverride="6">
-        <!-- Pirate: records photos (start) -->
+        <!-- Pirate: records select (start) - photo on the left, character info on the right, as on criminal records -->
         <BoxContainer Orientation="Horizontal"
                       HorizontalExpand="True"
                       Margin="0 0 0 5"
@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                       HorizontalExpand="True"
                       SizeFlagsStretchRatio="1"
                       SeparationOverride="6">
-        <!-- Pirate: records photos (end) -->
+        <!-- Pirate: records select (end) -->
         <Label Name="PersonName"
                StyleClasses="font-large" /> <!-- Pirate: ui fixes (legacy style migration; prefer upstream on conflict) -->
         <BoxContainer Orientation="Horizontal"
@@ -77,10 +77,10 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <OptionButton Name="GenderButton"
                           HorizontalExpand="True" />
         </BoxContainer>
-        <!-- Pirate: records photos (start) -->
+        <!-- Pirate: records select (start) -->
         </BoxContainer>
         </BoxContainer>
-        <!-- Pirate: records photos (end) -->
+        <!-- Pirate: records select (end) -->
         <BoxContainer Orientation="Horizontal"
                       HorizontalExpand="True"
                       Margin="0 0 0 5"

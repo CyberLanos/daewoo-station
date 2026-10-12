@@ -27,7 +27,6 @@ using Robust.Client.GameObjects;
 #region Pirate: records photos
 using Content.Client._Pirate.UserInterface.Controls;
 using Content.Shared._Pirate.StationRecords;
-using Content.Client._Pirate.StationRecords;
 using Content.Shared.Customization.Systems;
 using Content.Shared.Humanoid;
 using Content.Shared.Humanoid.Prototypes;
@@ -88,7 +87,7 @@ public sealed partial class CriminalRecordsConsoleWindow : FancyWindow
     public Action<uint>? OnDeleteRecord;
     public Action<string, string, string, int, Gender>? OnIdentityInfoChanged;
     public Action<string, string>? OnForensicsInfoChanged;
-    public Action<uint, byte[]?>? OnPrintPhoto; // Pirate: records photos
+    public Action<uint, byte[]?>? OnPrintPhoto; // Pirate: records select - (record key, rendered photo) from the shared RecordPortraitPanel
     public Action? OnUploadPhoto;
     public Action<uint, byte[]>? OnStoreGeneratedPortrait;
     private readonly List<SpeciesPrototype> _species = new();
@@ -143,7 +142,7 @@ public sealed partial class CriminalRecordsConsoleWindow : FancyWindow
 
         OnClose += () => _reasonDialog?.Close();
 
-        InitRecordSelection(); // Pirate: records photos
+        InitRecordSelection(); // Pirate: records select - replaces the select/deselect handlers, see RecordSelectionController
 
         FilterType.OnItemSelected += eventArgs =>
         {
@@ -207,9 +206,9 @@ public sealed partial class CriminalRecordsConsoleWindow : FancyWindow
         InitTabs(); // Pirate: record history
 
         #region Pirate: records photos
-        Portrait.OnPrint += (key, image) => OnPrintPhoto?.Invoke(key, image); // Pirate: records photos
-        Portrait.OnUpload += () => OnUploadPhoto?.Invoke(); // Pirate: records photos
-        Portrait.OnStoreGenerated += (key, image) => OnStoreGeneratedPortrait?.Invoke(key, image); // Pirate: records photos
+        Portrait.OnPrint += (key, image) => OnPrintPhoto?.Invoke(key, image); // Pirate: records select
+        Portrait.OnUpload += () => OnUploadPhoto?.Invoke(); // Pirate: records select
+        Portrait.OnStoreGenerated += (key, image) => OnStoreGeneratedPortrait?.Invoke(key, image); // Pirate: records select
         PopulateGenderOptions();
         RefreshSpeciesOptions();
         PersonPrintsEdit.IsValid = text => text.Length <= _maxLength;
@@ -256,7 +255,7 @@ public sealed partial class CriminalRecordsConsoleWindow : FancyWindow
         PersonPrintsEdit.OnFocusExit += args => CommitForensicsEdits(args.Text, PersonDnaEdit.Text);
         PersonDnaEdit.OnTextEntered += args => CommitForensicsEdits(PersonPrintsEdit.Text, args.Text);
         PersonDnaEdit.OnFocusExit += args => CommitForensicsEdits(PersonPrintsEdit.Text, args.Text);
-        InitFieldWidths(); // Pirate: records photos
+        InitFieldWidths(); // Pirate: records select
         UpdateRecordActionButtons();
         #endregion
     }
@@ -268,8 +267,8 @@ public sealed partial class CriminalRecordsConsoleWindow : FancyWindow
 
     public void UpdateState(CriminalRecordsConsoleState state)
     {
-        if (!AcceptServerState(state)) // Pirate: records photos
-            return; // Pirate: records photos
+        if (!AcceptServerState(state)) // Pirate: records select
+            return; // Pirate: records select
 
         var previousSelectedKey = _selectedKey; // Pirate: records photos
 
@@ -330,7 +329,7 @@ public sealed partial class CriminalRecordsConsoleWindow : FancyWindow
             if (state.SelectedKey is { } selectedKey)
                 PopulateRecordContainer(selectedKey, state.StationRecord, state.CriminalRecord, state.Portrait);
             else
-                Portrait.ClearPortrait(); // Pirate: records photos
+                Portrait.ClearPortrait(); // Pirate: records select
             #endregion
             HistoryView.UpdateLog(state.SelectedKey ?? 0, state.StationRecord.Name, state.Log, _access); // Pirate: record history
             _selectedRecord = state.CriminalRecord;
@@ -342,16 +341,16 @@ public sealed partial class CriminalRecordsConsoleWindow : FancyWindow
             #region Pirate: records photos
             ResetDeleteConfirmation();
             _recordProfile = null;
-            Portrait.ClearPortrait(); // Pirate: records photos
+            Portrait.ClearPortrait(); // Pirate: records select
             #endregion
         }
 
-        Portrait.SetEditable(editing); // Pirate: records photos
+        Portrait.SetEditable(editing); // Pirate: records select - after SetPortrait, print also needs a photo to print
     }
 
     private void PopulateRecordListing(Dictionary<uint, string>? listing)
     {
-        _selection.SetListing(listing); // Pirate: records photos
+        _selection.SetListing(listing); // Pirate: records select - consistent sort/diff + highlight follows the shown record
     }
 
     private void PopulateRecordContainer(uint key, GeneralStationRecord stationRecord, CriminalRecord criminalRecord, RecordPortraitData? portrait) // Pirate: records photos
@@ -360,8 +359,8 @@ public sealed partial class CriminalRecordsConsoleWindow : FancyWindow
         var na = Loc.GetString("generic-not-available-shorthand");
 
         #region Pirate: records photos
-        Portrait.SetPortrait(key, portrait, stationRecord.JobPrototype, stationRecord.Name, stationRecord.Age); // Pirate: records photos
-        RefreshRecordIdentityEditor(key, stationRecord, portrait?.Snapshot); // Pirate: records photos
+        Portrait.SetPortrait(key, RecordPortraitData.FromRecord(criminalRecord), stationRecord.JobPrototype, stationRecord.Name, stationRecord.Age); // Pirate: records select
+        RefreshRecordIdentityEditor(key, stationRecord, criminalRecord); // Pirate: records select - skips the rebuild when the identity is unchanged
         PersonJobIcon.Texture = null;
         #endregion
 
@@ -434,8 +433,8 @@ public sealed partial class CriminalRecordsConsoleWindow : FancyWindow
 
     private void UpdateRecordIdentityProfile(HumanoidCharacterProfile profile, bool sendUpdate, GeneralStationRecord? rawRecord = null)
     {
-        if (rawRecord == null) // Pirate: records photos
-            _identityEditorKey = null; // Pirate: records photos
+        if (rawRecord == null) // Pirate: records select - a local edit, the next state must repopulate
+            _identityEditorKey = null; // Pirate: records select
 
         profile = NormalizeRecordIdentityProfile(profile);
         _recordProfile = profile;
@@ -469,7 +468,7 @@ public sealed partial class CriminalRecordsConsoleWindow : FancyWindow
             _suppressIdentityEditorEvents = false;
         }
 
-        _fieldWidths.Update(); // Pirate: records photos
+        _fieldWidths.Update(); // Pirate: records select - options changed, the column may need to widen
 
         if (sendUpdate)
             SendIdentityUpdate(profile);

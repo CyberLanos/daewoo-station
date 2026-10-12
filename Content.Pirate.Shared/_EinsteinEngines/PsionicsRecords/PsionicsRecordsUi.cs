@@ -16,9 +16,11 @@ public sealed class PsionicsRecordsConsoleState : BoundUserInterfaceState
 
     public PsionicsRecord? PsionicsRecord = null;
     public GeneralStationRecord? StationRecord = null;
+
+    /// <summary>
+    /// The selected person's photo, stored on their criminal record.
+    /// </summary>
     public Content.Shared._Pirate.StationRecords.RecordPortraitData? Portrait;
-    public List<Content.Shared._Pirate.StationRecords.RecordLogEntry>? Log;
-    public uint SelectionRequest;
     public readonly Dictionary<uint, string>? RecordListing;
     public readonly StationRecordsFilter? Filter;
 

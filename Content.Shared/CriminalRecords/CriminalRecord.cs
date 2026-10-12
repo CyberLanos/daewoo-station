@@ -41,6 +41,33 @@ public sealed partial record CriminalRecord
     public GeneralStationRecord? GeneralRecordSnapshot;
     #endregion
 
+    #region Pirate: records select
+    /// <summary>
+    /// <see cref="PortraitImageData"/> is a bare render of the character (transparent background), not a photo:
+    /// each records console builds its own mugshot from it.
+    /// </summary>
+    [DataField]
+    public bool PortraitIsRender;
+
+    /// <summary>
+    /// Number on the mugshot placard, unique per station. 0 until the server assigns it.
+    /// </summary>
+    [DataField]
+    public int PortraitNumber;
+
+    /// <summary>
+    /// Name on the mugshot placard, frozen when the photo is taken (on arrival) so renames don't change it.
+    /// </summary>
+    [DataField]
+    public string? PortraitName;
+
+    /// <summary>
+    /// Birth year on the mugshot placard, frozen with <see cref="PortraitName"/>. 0 if unknown.
+    /// </summary>
+    [DataField]
+    public int PortraitBirthYear;
+    #endregion
+
     /// <summary>
     /// Criminal history of the person.
     /// This should have charges and time served added after someone is detained.

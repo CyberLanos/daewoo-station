@@ -48,8 +48,7 @@ public sealed partial class GeneralStationRecordConsoleWindow : DefaultWindow
 
         RecordFilters.Populate(StationRecordsFilterType); // Pirate: record history
 
-        InitRecordSelection(); // Pirate: records photos
-        InitTabs(); // Pirate: record history
+        InitRecordSelection(); // Pirate: records select - replaces the select/deselect handlers, see RecordSelectionController
 
         StationRecordsFilterType.OnItemSelected += eventArgs =>
         {
@@ -100,8 +99,8 @@ public sealed partial class GeneralStationRecordConsoleWindow : DefaultWindow
 
     public void UpdateState(GeneralStationRecordConsoleState state)
     {
-        if (!AcceptServerState(state)) // Pirate: records photos
-            return; // Pirate: records photos
+        if (!AcceptServerState(state)) // Pirate: records select
+            return; // Pirate: records select
 
         var previousSelectedKey = _selectedKey; // Pirate: records photos
         _maxLength = state.MaxStringLength; // Pirate: records photos
@@ -160,10 +159,7 @@ public sealed partial class GeneralStationRecordConsoleWindow : DefaultWindow
                 ? Loc.GetString("general-station-record-console-no-record-found")
                 : Loc.GetString("general-station-record-console-select-record-info");
             PopulateRecordContainer(state.Record); // Pirate: records photos
-            ShowRecordPortrait(state); // Pirate: records photos
-            HistoryView.UpdateLog(state.SelectedKey ?? 0, state.Record.Name, state.Log, _access && _canManageRecords); // Pirate: record history
-            _tabs.SetHasRecord(state.SelectedKey != null); // Pirate: record history
-            _tabs.Refresh(); // Pirate: record history
+            ShowRecordPortrait(state); // Pirate: records select
         }
         else
         {
@@ -174,12 +170,12 @@ public sealed partial class GeneralStationRecordConsoleWindow : DefaultWindow
     }
     private void PopulateRecordListing(Dictionary<uint, string> listing, uint? selected)
     {
-        _selection.SetListing(listing); // Pirate: records photos
+        _selection.SetListing(listing); // Pirate: records select - diffed instead of rebuilt; highlight follows the shown record
     }
 
     private void PopulateRecordContainer(GeneralStationRecord record) // Pirate: records photos
     {
-        #region Pirate: records photos
+        #region Pirate: records select - refresh the panel in place instead of rebuilding it on every state
         if (RecordContainer.ChildCount == 1 && RecordContainer.GetChild(0) is GeneralRecord shown)
         {
             shown.SetRecord(record);
@@ -194,16 +190,16 @@ public sealed partial class GeneralStationRecordConsoleWindow : DefaultWindow
             OnIdentityInfoChanged?.Invoke(species, nationality, employer, age, gender);
         newRecord.OnForensicsInfoChanged += (fingerprint, dna) =>
             OnForensicsInfoChanged?.Invoke(fingerprint, dna);
-        newRecord.OnPrintPortrait += (key, image) => OnPrintPortrait?.Invoke(key, image); // Pirate: records photos
-        newRecord.OnUploadPortrait += () => OnUploadPortrait?.Invoke(); // Pirate: records photos
-        newRecord.OnStoreGeneratedPortrait += (key, image) => OnStoreGeneratedPortrait?.Invoke(key, image); // Pirate: records photos
+        newRecord.OnPrintPortrait += (key, image) => OnPrintPortrait?.Invoke(key, image); // Pirate: records select
+        newRecord.OnUploadPortrait += () => OnUploadPortrait?.Invoke(); // Pirate: records select
+        newRecord.OnStoreGeneratedPortrait += (key, image) => OnStoreGeneratedPortrait?.Invoke(key, image); // Pirate: records select
         #endregion
         RecordContainer.AddChild(newRecord);
     }
 
     private void FilterListingOfRecords(string text = "")
     {
-        OnFiltersChanged?.Invoke(_currentFilterType, text); // Pirate: records photos
+        OnFiltersChanged?.Invoke(_currentFilterType, text); // Pirate: records select - _isPopulating guard dropped, the list no longer raises events while populating
     }
 
     private string GetTypeFilterLocals(StationRecordFilterType type)

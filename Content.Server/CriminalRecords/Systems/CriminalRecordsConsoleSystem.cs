@@ -26,8 +26,7 @@ using Content.Shared.Roles;
 using Content.Shared._Pirate.Contractors.Prototypes;
 using Robust.Shared.Enums;
 using Robust.Shared.Prototypes;
-using Content.Server._Pirate.StationRecords; // Pirate: records photos
-using Content.Shared._Pirate.StationRecords; // Pirate: record history
+using Content.Server._Pirate.StationRecords; // Pirate: records select - photo handling lives there now
 #endregion
 
 namespace Content.Server.CriminalRecords.Systems;
@@ -46,8 +45,7 @@ public sealed partial class CriminalRecordsConsoleSystem : SharedCriminalRecords
     [Dependency] private readonly UserInterfaceSystem _ui = default!;
     #region Pirate: records photos
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
-    [Dependency] private readonly RecordPortraitSystem _portraits = default!; // Pirate: records photos
-    [Dependency] private readonly RecordLogSystem _logs = default!; // Pirate: record history
+    [Dependency] private readonly RecordPortraitSystem _portraits = default!; // Pirate: records select
     private static readonly IReadOnlyDictionary<string, TimeSpan> EmptyPlayTimes = new Dictionary<string, TimeSpan>();
     #endregion
 
@@ -133,7 +131,7 @@ public sealed partial class CriminalRecordsConsoleSystem : SharedCriminalRecords
 
     private void OnConsoleShutdown(Entity<CriminalRecordsConsoleComponent> ent, ref ComponentShutdown args) // Pirate: records photos
     {
-        _portraits.CancelPrintJob(ent); // Pirate: records photos
+        _portraits.CancelPrintJob(ent); // Pirate: records select
     }
 
     private void OnCreateRecord(Entity<CriminalRecordsConsoleComponent> ent, ref CriminalRecordCreateRecord msg)
@@ -622,7 +620,7 @@ public sealed partial class CriminalRecordsConsoleSystem : SharedCriminalRecords
 
         return true;
     }
-    // Pirate: records photos
+    // Pirate: records select - photo handling moved to RecordPortraitSystem, shared with the crew and psionics consoles
     private void OnPrintPhoto(Entity<CriminalRecordsConsoleComponent> ent, ref CriminalRecordPrintPhoto msg)
     {
         if (!CheckSelected(ent, msg.Actor, out var mob, out var key))
@@ -648,7 +646,7 @@ public sealed partial class CriminalRecordsConsoleSystem : SharedCriminalRecords
         if (!_access.IsAllowed(msg.Actor, ent))
             return;
 
-        // Pirate: records photos - Accept late render results for their original record.
+        // No ActiveKey gate: the render is async and the user has often clicked on by the time it lands.
         if (_station.GetOwningStation(ent) is not { } station)
             return;
 
@@ -706,8 +704,7 @@ public sealed partial class CriminalRecordsConsoleSystem : SharedCriminalRecords
             {
                 state.StationRecord = stationRecord;
                 state.SelectedKey = id;
-                state.Portrait = _portraits.GetPortrait(key); // Pirate: records photos
-                state.Log = _logs.GetLog(key, RecordLogBook.Security); // Pirate: record history
+                _portraits.EnsureNumber(key, state.CriminalRecord); // Pirate: records select - mugshot placard number
             }
             else
             {

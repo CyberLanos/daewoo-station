@@ -9,7 +9,7 @@ using System.Text;
 using Content.Shared._Pirate;
 using Content.Shared._Pirate.StationRecords;
 using Content.Shared.GameTicking;
-using Content.Shared.Access.Systems;
+using Content.Shared.Inventory;
 using Robust.Shared.Network;
 using Content.Shared.CriminalRecords;
 using Content.Shared.Hands.Components;
@@ -21,11 +21,16 @@ using Robust.Shared.Timing;
 
 namespace Content.Server._Pirate.StationRecords;
 
+/// <summary>
+/// Record photos for the records consoles (criminal, crew, psionics). A person's photo is stored on their criminal
+/// record, so every console reads and writes the same one. Without an uploaded photo it is a bare render of the
+/// character, and each console composes its own mugshot (background + placard) from it client-side.
+/// </summary>
 public sealed class RecordPortraitSystem : EntitySystem
 {
     [Dependency] private readonly SharedAudioSystem _audio = default!;
     [Dependency] private readonly HandsSystem _hands = default!;
-    [Dependency] private readonly SharedIdCardSystem _idCard = default!;
+    [Dependency] private readonly InventorySystem _inventory = default!;
     [Dependency] private readonly PhotoSystem _photo = default!;
     [Dependency] private readonly PopupSystem _popup = default!;
     [Dependency] private readonly StationRecordsSystem _records = default!;
@@ -33,54 +38,56 @@ public sealed class RecordPortraitSystem : EntitySystem
     private static readonly SoundSpecifier PrintSound = new SoundPathSpecifier("/Audio/Machines/printer.ogg");
     private static readonly SoundSpecifier UploadSound = new SoundPathSpecifier("/Audio/_Pirate/Machines/terminal_prompt_confirm.ogg");
     private static readonly TimeSpan PrintDelay = TimeSpan.FromSeconds(2.3f);
+    // 6 digits: with ~200 people a hash clash is rare (~2%), so nearly everyone keeps the same number every round.
     private const int MaxNumber = 999999;
 
+    /// <summary>
+    /// Consoles with a photo in the printer.
+    /// </summary>
     private readonly HashSet<EntityUid> _activePrintJobs = new();
 
+    /// <summary>
+    /// Arrival photos asked of a player's client: record -> who may answer.
+    /// </summary>
     private readonly Dictionary<(EntityUid Station, uint Id), NetUserId> _pendingRenders = new();
 
     public override void Initialize()
     {
         base.Initialize();
 
-        SubscribeLocalEvent<AfterGeneralRecordCreatedEvent>(OnGeneralRecordCreated);
+        // After the records exist: StationRecordsSystem creates them (and the criminal record) on this event.
         SubscribeLocalEvent<PlayerSpawnCompleteEvent>(OnPlayerSpawn, after: [typeof(StationRecordsSystem)]);
         SubscribeNetworkEvent<RecordPortraitRenderResultEvent>(OnRenderResult);
         SubscribeLocalEvent<RoundRestartCleanupEvent>(_ => _pendingRenders.Clear());
     }
 
-    private void OnGeneralRecordCreated(AfterGeneralRecordCreatedEvent ev)
-    {
-        if (!string.IsNullOrWhiteSpace(ev.Record.Species))
-            EnsurePortrait(ev.Key).ProfileSnapshot = new(ev.Profile);
-    }
-
+    /// <summary>
+    /// The photo is taken when the character arrives: number and placard frozen now, and the player's own client
+    /// renders their character (the server can't draw). Consoles still render one on first view if it never comes.
+    /// </summary>
     private void OnPlayerSpawn(PlayerSpawnCompleteEvent args)
     {
-        // The key is on the ID card itself, which usually sits inside the PDA in the ID slot.
-        if (!_idCard.TryFindIdCard(args.Mob, out var idCard)
+        if (!_inventory.TryGetSlotEntity(args.Mob, "id", out var idCard)
             || !TryComp<StationRecordKeyStorageComponent>(idCard, out var keyStorage)
             || keyStorage.Key is not { } key
-            || !_records.TryGetRecord<GeneralStationRecord>(key, out _))
+            || !_records.TryGetRecord<CriminalRecord>(key, out var record))
         {
             return;
         }
 
-        var record = EnsurePortrait(key);
         EnsureNumber(key, record);
         FreezePlacard(key, record);
 
-        if (record.ImageData is { Length: > 0 } || record.ProfileSnapshot == null)
+        if (record.PortraitImageData is { Length: > 0 } || record.PortraitProfileSnapshot == null)
             return;
 
         _records.TryGetRecord<GeneralStationRecord>(key, out var general);
         _pendingRenders[(key.OriginStation, key.Id)] = args.Player.UserId;
-        // The server cannot render the character, so request its owner's client to do it.
         RaiseNetworkEvent(new RecordPortraitRenderRequestEvent
         {
             Station = GetNetEntity(key.OriginStation),
             RecordId = key.Id,
-            Profile = record.ProfileSnapshot,
+            Profile = record.PortraitProfileSnapshot,
             JobPrototype = general?.JobPrototype,
         }, args.Player);
     }
@@ -89,7 +96,7 @@ public sealed class RecordPortraitSystem : EntitySystem
     {
         var station = GetEntity(ev.Station);
 
-        // Only the requested player's session may store this render.
+        // Only the player it was asked of, once.
         if (!_pendingRenders.TryGetValue((station, ev.RecordId), out var user) || user != args.SenderSession.UserId)
             return;
 
@@ -97,100 +104,74 @@ public sealed class RecordPortraitSystem : EntitySystem
         StoreGenerated(new StationRecordKey(ev.RecordId, station), ev.ImageData);
     }
 
-    public RecordPortrait EnsurePortrait(StationRecordKey key)
+    /// <summary>
+    /// Fixes the placard's name and birth year as they are now, if not done yet. Later renames or age edits on
+    /// the record don't touch the photo.
+    /// </summary>
+    public void FreezePlacard(StationRecordKey key, CriminalRecord record)
     {
-        if (_records.TryGetRecord<RecordPortrait>(key, out var portrait))
-            return portrait;
-
-        portrait = new RecordPortrait();
-        _records.AddRecordEntry(key, portrait);
-        return portrait;
-    }
-
-    public HumanoidCharacterProfile? GetSnapshot(StationRecordKey key)
-    {
-        return _records.TryGetRecord<RecordPortrait>(key, out var portrait) ? portrait.ProfileSnapshot : null;
-    }
-
-    public void EnsureSnapshot(StationRecordKey key, HumanoidCharacterProfile profile)
-    {
-        var portrait = EnsurePortrait(key);
-        portrait.ProfileSnapshot ??= profile;
-    }
-
-    public void UpdateSnapshot(StationRecordKey key, HumanoidCharacterProfile profile)
-    {
-        if (_records.TryGetRecord<RecordPortrait>(key, out var portrait)
-            && (portrait.ProfileSnapshot != null || portrait.ImageData is { Length: > 0 }))
-        {
-            portrait.ProfileSnapshot = profile;
-        }
-    }
-
-    public void RenameSnapshot(StationRecordKey key, string name)
-    {
-        if (_records.TryGetRecord<RecordPortrait>(key, out var portrait) && portrait.ProfileSnapshot != null)
-            portrait.ProfileSnapshot = portrait.ProfileSnapshot.WithName(name);
-    }
-
-    private GeneralStationRecord? GetGeneral(StationRecordKey key)
-    {
-        if (_records.TryGetRecord<GeneralStationRecord>(key, out var general))
-            return general;
-
-        return _records.TryGetRecord<CriminalRecord>(key, out var criminal) ? criminal.GeneralRecordSnapshot : null;
-    }
-
-    public void FreezePlacard(StationRecordKey key, RecordPortrait record)
-    {
-        if (record.Name != null || GetGeneral(key) is not { } general)
+        if (record.PortraitName != null)
             return;
 
-        record.Name = general.Name;
-        record.BirthYear = general.Age > 0 ? PirateStationCalendar.CurrentYear - general.Age : 0;
+        var general = _records.TryGetRecord<GeneralStationRecord>(key, out var stationRecord)
+            ? stationRecord
+            : record.GeneralRecordSnapshot;
+
+        if (general == null)
+            return;
+
+        record.PortraitName = general.Name;
+        record.PortraitBirthYear = general.Age > 0 ? PirateStationCalendar.CurrentYear - general.Age : 0;
     }
 
+    /// <summary>
+    /// The record's photo for a console state, with its placard number assigned.
+    /// </summary>
     public RecordPortraitData? GetPortrait(StationRecordKey key)
     {
-        if (!_records.TryGetRecord<RecordPortrait>(key, out var record))
+        if (!_records.TryGetRecord<CriminalRecord>(key, out var record))
             return null;
 
         EnsureNumber(key, record);
-        return new RecordPortraitData
-        {
-            ImageData = record.ImageData,
-            IsRender = record.IsRender,
-            Snapshot = record.ProfileSnapshot,
-            Number = record.Number,
-            Name = record.Name,
-            BirthYear = record.BirthYear,
-        };
+        return RecordPortraitData.FromRecord(record);
     }
 
-    public void EnsureNumber(StationRecordKey key, RecordPortrait record)
+    /// <summary>
+    /// Gives the record its mugshot number if it has none: a hash of DNA + fingerprint, moved to the next free
+    /// number if someone on the station already has it. Assigned once, so it stays put if forensics are edited.
+    /// </summary>
+    public void EnsureNumber(StationRecordKey key, CriminalRecord? record = null)
     {
-        if (record.Number != 0)
+        if (record == null && !_records.TryGetRecord(key, out record))
             return;
 
-        var general = GetGeneral(key);
+        if (record.PortraitNumber != 0)
+            return;
+
+        var general = _records.TryGetRecord<GeneralStationRecord>(key, out var stationRecord)
+            ? stationRecord
+            : record.GeneralRecordSnapshot;
 
         var taken = new HashSet<int>();
-        foreach (var (_, other) in _records.GetRecordsOfType<RecordPortrait>(key.OriginStation))
+        foreach (var (_, other) in _records.GetRecordsOfType<CriminalRecord>(key.OriginStation))
         {
-            if (other.Number != 0)
-                taken.Add(other.Number);
+            if (other.PortraitNumber != 0)
+                taken.Add(other.PortraitNumber);
         }
 
-        // Hash identity for a stable placard number, then probe the rare collision.
         var number = (int) (Fnv1a($"{general?.DNA}|{general?.Fingerprint}") % MaxNumber) + 1;
         for (var i = 0; i < MaxNumber && taken.Contains(number); i++)
         {
             number = number % MaxNumber + 1;
         }
 
-        record.Number = number;
+        record.PortraitNumber = number;
     }
 
+    /// <summary>
+    /// Prints the record's photo at <paramref name="console"/>: an uploaded photo as it is, otherwise
+    /// <paramref name="renderedImage"/>, the console's mugshot of the character.
+    /// </summary>
     public void Print(EntityUid console, EntityUid user, StationRecordKey key, byte[]? renderedImage)
     {
         if (_activePrintJobs.Contains(console))
@@ -199,24 +180,25 @@ public sealed class RecordPortraitSystem : EntitySystem
             return;
         }
 
-        if (!_records.TryGetRecord<RecordPortrait>(key, out var record))
+        if (!_records.TryGetRecord<CriminalRecord>(key, out var record))
             return;
 
         byte[]? imageData = null;
         byte[]? previewData = null;
 
-        if (record.ImageData is { Length: > 0 } existingImage && !record.IsRender)
+        if (record.PortraitImageData is { Length: > 0 } existingImage && !record.PortraitIsRender)
         {
-            if (_photo.TryPreparePhotoCardData(existingImage, record.PreviewData, out var preparedImage, out var preparedPreview))
+            // An uploaded photo prints as it is.
+            if (_photo.TryPreparePhotoCardData(existingImage, record.PortraitPreviewData, out var preparedImage, out var preparedPreview))
             {
                 imageData = preparedImage;
                 previewData = preparedPreview;
 
-                if (!ByteArraysEqual(record.ImageData, preparedImage) ||
-                    !ByteArraysEqual(record.PreviewData, preparedPreview))
+                if (!ByteArraysEqual(record.PortraitImageData, preparedImage) ||
+                    !ByteArraysEqual(record.PortraitPreviewData, preparedPreview))
                 {
-                    record.ImageData = [.. preparedImage];
-                    record.PreviewData = preparedPreview == null ? null : [.. preparedPreview];
+                    record.PortraitImageData = [.. preparedImage];
+                    record.PortraitPreviewData = preparedPreview == null ? null : [.. preparedPreview];
                     _records.Synchronize(key);
                 }
             }
@@ -224,12 +206,14 @@ public sealed class RecordPortraitSystem : EntitySystem
         else if (renderedImage is { Length: > 0 }
                  && _photo.TryPreparePhotoCardData(renderedImage, null, out var mugshot, out var mugshotPreview))
         {
+            // The console's mugshot of the stored render. Not stored: each console has its own look.
             imageData = mugshot;
             previewData = mugshotPreview;
         }
-        else if (record.ImageData is { Length: > 0 } render
-                 && _photo.TryPreparePhotoCardData(render, record.PreviewData, out var bareRender, out var bareRenderPreview))
+        else if (record.PortraitImageData is { Length: > 0 } render
+                 && _photo.TryPreparePhotoCardData(render, record.PortraitPreviewData, out var bareRender, out var bareRenderPreview))
         {
+            // No mugshot from the console; the bare render beats printing nothing.
             imageData = bareRender;
             previewData = bareRenderPreview;
         }
@@ -237,7 +221,9 @@ public sealed class RecordPortraitSystem : EntitySystem
         if (imageData is not { Length: > 0 })
             return;
 
-        var printedName = GetGeneral(key)?.Name;
+        var printedName = _records.TryGetRecord<GeneralStationRecord>(key, out var stationRecord)
+            ? stationRecord.Name
+            : record.GeneralRecordSnapshot?.Name;
 
         _activePrintJobs.Add(console);
         _audio.PlayPvs(PrintSound, console);
@@ -264,39 +250,45 @@ public sealed class RecordPortraitSystem : EntitySystem
         });
     }
 
+    /// <summary>
+    /// Stores the photo card <paramref name="user"/> is holding as the record's photo.
+    /// </summary>
     public bool Upload(EntityUid console, EntityUid user, StationRecordKey key)
     {
         if (!TryGetHeldPhotoCard(user, out var heldPhoto)
             || heldPhoto.ImageData is not { Length: > 0 } imageData
-            || GetGeneral(key) == null
+            || !_records.TryGetRecord<CriminalRecord>(key, out var record)
             || !_photo.TryPreparePhotoCardData(imageData, heldPhoto.PreviewData, out var preparedImage, out var preparedPreview))
         {
             return false;
         }
 
-        var record = EnsurePortrait(key);
-        record.ImageData = [.. preparedImage];
-        record.PreviewData = preparedPreview == null ? null : [.. preparedPreview];
-        record.IsRender = false;
+        record.PortraitImageData = [.. preparedImage];
+        record.PortraitPreviewData = preparedPreview == null ? null : [.. preparedPreview];
+        record.PortraitIsRender = false;
 
         _audio.PlayPvs(UploadSound, console);
         _records.Synchronize(key);
         return true;
     }
 
+    /// <summary>
+    /// Stores a client's bare render of the record's character, if it has no photo yet. Consoles compose their
+    /// mugshots from it.
+    /// </summary>
     public bool StoreGenerated(StationRecordKey key, byte[] imageData)
     {
-        if (!_records.TryGetRecord<RecordPortrait>(key, out var record)
-            || record.ProfileSnapshot == null
-            || record.ImageData is { Length: > 0 }
+        if (!_records.TryGetRecord<CriminalRecord>(key, out var record)
+            || record.PortraitProfileSnapshot == null
+            || record.PortraitImageData is { Length: > 0 }
             || !_photo.TryPreparePhotoCardData(imageData, null, out var preparedImage, out var preparedPreview))
         {
             return false;
         }
 
-        record.ImageData = [.. preparedImage];
-        record.PreviewData = preparedPreview == null ? null : [.. preparedPreview];
-        record.IsRender = true;
+        record.PortraitImageData = [.. preparedImage];
+        record.PortraitPreviewData = preparedPreview == null ? null : [.. preparedPreview];
+        record.PortraitIsRender = true;
         EnsureNumber(key, record);
         FreezePlacard(key, record);
         _records.Synchronize(key);
