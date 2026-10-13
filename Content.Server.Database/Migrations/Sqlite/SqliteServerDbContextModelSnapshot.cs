@@ -1587,11 +1587,24 @@ namespace Content.Server.Database.Migrations.Sqlite
                         .HasColumnType("TEXT")
                         .HasColumnName("secrets");
 
-            #region Pirate: persistent record history
-                    b.Property<string>("RecordBackgrounds")
+            #region Pirate: records select - station records background
+                    b.Property<string>("CrewRecordBackground")
                         .IsRequired()
+                        .HasMaxLength(1024)
                         .HasColumnType("TEXT")
-                        .HasColumnName("record_backgrounds");
+                        .HasColumnName("crew_record_background");
+
+                    b.Property<string>("PsionicsRecordBackground")
+                        .IsRequired()
+                        .HasMaxLength(1024)
+                        .HasColumnType("TEXT")
+                        .HasColumnName("psionics_record_background");
+
+                    b.Property<string>("SecurityRecordBackground")
+                        .IsRequired()
+                        .HasMaxLength(1024)
+                        .HasColumnType("TEXT")
+                        .HasColumnName("security_record_background");
             #endregion
 
                     b.Property<string>("SkinColor")

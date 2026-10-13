@@ -20,9 +20,15 @@ public sealed partial class PsionicsRecordsConsoleComponent : Component
     [DataField]
     public StationRecordsFilter? Filter;
 
+    /// <summary>
+    /// Only list people with this psionics status; None lists everyone.
+    /// </summary>
     [DataField]
     public PsionicsStatus FilterStatus = PsionicsStatus.None;
 
+    /// <summary>
+    /// Channel to send messages to when someone's status gets changed.
+    /// </summary>
     [DataField]
     public ProtoId<RadioChannelPrototype> RadioChannel = "Science";
 

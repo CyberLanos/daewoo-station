@@ -267,7 +267,7 @@ public sealed class RecordPhotoComposerSystem : EntitySystem
     }
 
     /// <summary>
-    /// Name over "#number ... ██.██.birth-year", held at knee height. The birth year is the in-game year minus the
+    /// Name over "#number ██.██.birth-year", held at knee height. The birth year is the in-game year minus the
     /// record's age; nobody enters a birthday, so day and month are redacted.
     /// </summary>
     private static void DrawPlacard(DrawingHandleScreen handle, Font font, float scale, MugshotLabel label)
@@ -278,8 +278,9 @@ public sealed class RecordPhotoComposerSystem : EntitySystem
         const int lineGap = 2;
         const int kneeHeight = 192;
 
-        // Second line: number flush left, date of birth flush right, three characters apart. It is the same width
-        // for everyone, so it sets the plate width: every placard is the same compact size.
+        // Second line: number and date of birth one space apart, centred. The plate is sized as if they were three
+        // characters apart, so the pair has some room to either side; it is the same width for everyone, so every
+        // placard is the same compact size.
         var number = $"#{label.Number:D6}";
         var year = label.BirthYear > 0
             ? label.BirthYear.ToString()
@@ -288,8 +289,9 @@ public sealed class RecordPhotoComposerSystem : EntitySystem
 
         var numberWidth = handle.GetDimensions(font, number, scale).X;
         var birthWidth = handle.GetDimensions(font, birth, scale).X;
-        var minGap = handle.GetDimensions(font, "   ", scale).X;
-        var textWidth = MathF.Ceiling(numberWidth + minGap + birthWidth);
+        var plateGap = handle.GetDimensions(font, "   ", scale).X;
+        var gap = handle.GetDimensions(font, " ", scale).X;
+        var textWidth = MathF.Ceiling(numberWidth + plateGap + birthWidth);
         var lineHeight = MathF.Round(font.GetLineHeight(scale));
 
         // Longer names are cut to fit; the full name is next to the photo and in the printed photo's title.
@@ -313,7 +315,8 @@ public sealed class RecordPhotoComposerSystem : EntitySystem
         // Whole pixels, or the bitmap glyphs get resampled.
         var secondLine = top + padY + lineHeight + lineGap;
         handle.DrawString(font, new Vector2(MathF.Round((PhotoSize - nameWidth) / 2), top + padY), name, scale, Color.FromHex("#F0F0F0"));
-        handle.DrawString(font, new Vector2(left + padX, secondLine), number, scale, Color.FromHex("#C3C3C3"));
-        handle.DrawString(font, new Vector2(MathF.Round(left + width - padX - birthWidth), secondLine), birth, scale, Color.FromHex("#C3C3C3"));
+        var numberLeft = MathF.Round((PhotoSize - (numberWidth + gap + birthWidth)) / 2);
+        handle.DrawString(font, new Vector2(numberLeft, secondLine), number, scale, Color.FromHex("#C3C3C3"));
+        handle.DrawString(font, new Vector2(MathF.Round(numberLeft + numberWidth + gap), secondLine), birth, scale, Color.FromHex("#C3C3C3"));
     }
 }

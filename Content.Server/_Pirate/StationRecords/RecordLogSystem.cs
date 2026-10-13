@@ -8,11 +8,13 @@ using Content.Server.StationRecords.Systems;
 using Content.Shared._Pirate;
 using Content.Shared._Pirate.StationRecords;
 using Content.Shared.Access.Systems;
+using Content.Shared.CCVar;
 using Content.Shared.IdentityManagement;
 using Content.Shared.Paper;
 using Content.Shared.StationRecords;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
+using Robust.Shared.Configuration;
 using Robust.Shared.Timing;
 using Robust.Shared.Utility;
 
@@ -33,6 +35,7 @@ public sealed class RecordLogSystem : EntitySystem
     [Dependency] private readonly MetaDataSystem _metaData = default!;
     [Dependency] private readonly PaperSystem _paper = default!;
     [Dependency] private readonly PopupSystem _popup = default!;
+    [Dependency] private readonly IConfigurationManager _cfg = default!;
 
     private static readonly SoundSpecifier PrintSound = new SoundPathSpecifier("/Audio/Machines/printer.ogg");
     private static readonly TimeSpan PrintDelay = TimeSpan.FromSeconds(2.3f);
@@ -42,6 +45,55 @@ public sealed class RecordLogSystem : EntitySystem
     private const int PrintBudget = 9000;
 
     private readonly HashSet<EntityUid> _activePrintJobs = new();
+
+    /// <summary>Zone of the times on printed histories, from <see cref="CCVars.RecordsPrintTimeZone"/>.</summary>
+    private TimeZoneInfo _printZone = TimeZoneInfo.Local;
+
+    private void SetPrintZone(string id)
+    {
+        _printZone = TimeZoneInfo.Local;
+        if (string.IsNullOrWhiteSpace(id))
+            return;
+
+        // Older tz databases only know Kyiv by its old spelling.
+        foreach (var candidate in new[] { id.Trim(), id.Trim().Replace("Kyiv", "Kiev") })
+        {
+            if (TimeZoneInfo.TryFindSystemTimeZoneById(candidate, out var zone))
+            {
+                _printZone = zone;
+                return;
+            }
+        }
+
+        Log.Warning($"Unknown time zone '{id}' in {CCVars.RecordsPrintTimeZone.Name}, printing record histories in the server's zone ({TimeZoneInfo.Local.Id}).");
+    }
+
+    public override void Initialize()
+    {
+        base.Initialize();
+        SubscribeLocalEvent<AfterGeneralRecordCreatedEvent>(OnGeneralRecordCreated);
+        Subs.CVar(_cfg, CCVars.RecordsPrintTimeZone, SetPrintZone, true);
+    }
+
+    /// <summary>
+    /// The character's station records background from the profile editor becomes the read-only HR file entry
+    /// in each console's history.
+    /// </summary>
+    private void OnGeneralRecordCreated(AfterGeneralRecordCreatedEvent args)
+    {
+        AddBackground(args.Key, RecordLogBook.Security, args.Profile.SecurityRecordBackground);
+        AddBackground(args.Key, RecordLogBook.Crew, args.Profile.CrewRecordBackground);
+        AddBackground(args.Key, RecordLogBook.Psionics, args.Profile.PsionicsRecordBackground);
+    }
+
+    private void AddBackground(StationRecordKey key, RecordLogBook book, string text)
+    {
+        text = text.Trim();
+        if (text.Length == 0)
+            return;
+
+        Add(key, book, RecordLogKind.Background, null, text, null, null);
+    }
 
     /// <summary>
     /// A copy of one book, newest last, for a console state.
@@ -118,7 +170,7 @@ public sealed class RecordLogSystem : EntitySystem
 
     /// <summary>
     /// Prints one book of the person's history at <paramref name="console"/>, newest first. Paper can't follow
-    /// each reader's time zone like the History tab does, so times are printed in UTC, marked as such.
+    /// each reader's time zone like the History tab does, so times are printed in <see cref="CCVars.RecordsPrintTimeZone"/>, marked with its offset.
     /// </summary>
     public void Print(EntityUid console, EntityUid user, StationRecordKey key, RecordLogBook book)
     {
@@ -207,11 +259,21 @@ public sealed class RecordLogSystem : EntitySystem
     }
 
     /// <summary>
-    /// The History tab's format in UTC: 12/10/2468 14:05 UTC, real date and time with the in-game year.
+    /// The History tab's format in the print time zone with its UTC offset: 12/10/2468 14:05 (UTC+3),
+    /// real date and time with the in-game year.
     /// </summary>
-    private static string FormatTime(DateTime utc)
+    private string FormatTime(DateTime utc)
     {
-        return $"{utc.Day:00}/{utc.Month:00}/{PirateStationCalendar.CurrentYear:0000} {utc.Hour:00}:{utc.Minute:00} UTC";
+        var local = TimeZoneInfo.ConvertTimeFromUtc(DateTime.SpecifyKind(utc, DateTimeKind.Utc), _printZone);
+        var offset = _printZone.GetUtcOffset(local);
+        var sign = offset < TimeSpan.Zero ? "-" : "+";
+        var zone = offset == TimeSpan.Zero
+            ? "UTC"
+            : offset.Minutes == 0
+                ? $"UTC{sign}{Math.Abs(offset.Hours)}"
+                : $"UTC{sign}{Math.Abs(offset.Hours)}:{Math.Abs(offset.Minutes):00}";
+
+        return $"{local.Day:00}/{local.Month:00}/{PirateStationCalendar.CurrentYear:0000} {local.Hour:00}:{local.Minute:00} ({zone})";
     }
 
     private RecordLogs EnsureLogs(StationRecordKey key)

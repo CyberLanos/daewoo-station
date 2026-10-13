@@ -4,7 +4,29 @@ SPDX-FileCopyrightText: 2026 SpaceStationUA
 SPDX-License-Identifier: MIT
 -->
 
+<!-- IC fields of the profile editor's Background tab. The tab scrolls, so no scroll container here. -->
 <Control xmlns="https://spacestation14.io"
          HorizontalExpand="True">
-    <BoxContainer Name="Root" Orientation="Vertical" />
+    <BoxContainer Orientation="Vertical">
+        <BoxContainer Name="Physical" Access="Public" Orientation="Vertical" HorizontalExpand="True">
+            <Label Text="{Loc 'character-info-editor-physical-label'}"/>
+            <TextEdit Name="PhysicalDescriptionInput" Access="Public" MinSize="220 140" Margin="10"
+                      HorizontalExpand="True" VerticalExpand="True"/>
+        </BoxContainer>
+        <BoxContainer Name="Personality" Access="Public" Orientation="Vertical" HorizontalExpand="True">
+            <Label Text="{Loc 'character-info-editor-personality-label'}"/>
+            <TextEdit Name="PersonalityDescriptionInput" Access="Public" MinSize="220 140" Margin="10"
+                      HorizontalExpand="True" VerticalExpand="True"/>
+        </BoxContainer>
+        <BoxContainer Name="Exploitable" Access="Public" Orientation="Vertical" HorizontalExpand="True">
+            <Label Text="{Loc 'character-info-editor-exploitable-label'}"/>
+            <TextEdit Name="ExploitableInfoInput" Access="Public" MinSize="220 140" Margin="10"
+                      HorizontalExpand="True" VerticalExpand="True"/>
+        </BoxContainer>
+        <BoxContainer Name="Secrets" Access="Public" Orientation="Vertical" HorizontalExpand="True">
+            <Label Text="{Loc 'character-info-editor-secrets-label'}"/>
+            <TextEdit Name="SecretsInput" Access="Public" MinSize="220 140" Margin="10"
+                      HorizontalExpand="True" VerticalExpand="True"/>
+        </BoxContainer>
+    </BoxContainer>
 </Control>

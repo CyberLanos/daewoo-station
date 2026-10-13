@@ -1,3 +1,4 @@
+# Station records section of the character editor's Background tab
 humanoid-profile-editor-background-tab = Передісторія
 humanoid-profile-editor-records-heading = Станційні записи
 record-background-editor-security-label = Кримінальні записи (консоль СБ):
@@ -6,8 +7,3 @@ record-background-editor-psionics-label = Псіонічні записи (ко�
 record-background-editor-security-placeholder = Судимості, правопорушення, догани з попередніх місць служби...
 record-background-editor-crew-placeholder = Освіта, попередні місця роботи, кваліфікація, відзнаки...
 record-background-editor-psionics-placeholder = Відомі псіонічні здібності, реєстрація, результати тестувань...
-record-background-editor-add = Додати
-record-background-editor-remove = Видалити
-record-background-editor-title = Заголовок:
-record-background-editor-author = Автор:
-record-background-editor-empty = Записів немає.

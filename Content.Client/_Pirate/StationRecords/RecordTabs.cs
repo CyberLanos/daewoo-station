@@ -22,7 +22,6 @@ public sealed class RecordTabs
     private LineEdit? _recordSearch;
     private LineEdit? _historySearch;
     private RecordHistoryPanel? _history;
-    private Control[] _recordOnly = [];
     private bool _hasRecord = true;
     private bool _searchingHistory;
 
@@ -44,15 +43,13 @@ public sealed class RecordTabs
     }
 
     /// <summary>
-    /// Makes the search bar search the history while the History tab is shown. <paramref name="recordOnly"/> are
-    /// hidden meanwhile (the delete / create record buttons).
+    /// Makes the search bar search the history while the History tab is shown.
     /// </summary>
-    public void BindSearch(OptionButton filterType, LineEdit recordSearch, RecordHistoryPanel history, params Control[] recordOnly)
+    public void BindSearch(OptionButton filterType, LineEdit recordSearch, RecordHistoryPanel history)
     {
         _filterType = filterType;
         _recordSearch = recordSearch;
         _history = history;
-        _recordOnly = recordOnly;
 
         _historySearch = new LineEdit
         {
@@ -110,10 +107,6 @@ public sealed class RecordTabs
         _recordSearch.Visible = !searching;
         _historySearch.Visible = searching;
         _filterType.Disabled = searching;
-        foreach (var control in _recordOnly)
-        {
-            control.Visible = !searching;
-        }
 
         if (searching)
         {

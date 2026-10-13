@@ -85,6 +85,7 @@ public sealed partial class PsionicsRecordsConsoleWindow : DefaultWindow
         foreach (var status in Enum.GetValues<PsionicsStatus>())
         {
             AddStatusSelect(status);
+            // Same as the criminal records console: list only one status, "none" lists everyone.
             StatusFilter.AddItem(status == PsionicsStatus.None
                 ? Loc.GetString("psionics-records-console-show-all")
                 : Loc.GetString($"psionics-records-status-{status.ToString().ToLower()}"), (int) status);
@@ -179,7 +180,7 @@ public sealed partial class PsionicsRecordsConsoleWindow : DefaultWindow
                 FilterText.Text = state.Filter.Value;
             }
 
-            // Cached local states omit the server's status filter.
+            // Only real server states carry it; the cached ones shown on a click don't.
             _currentStatusFilter = state.FilterStatus;
         }
 

@@ -224,18 +224,24 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                         <humanoid:MarkingPicker Name="Markings" IgnoreCategories="Hair,FacialHair" />
                     </ScrollContainer>
                 </BoxContainer>
-                <!-- Pirate: persistent record history (start) -->
+                <!-- Pirate: Starlight extended character descriptions - IC and OOC info merged into one Background tab -->
                 <BoxContainer Name="BackgroundTab" Orientation="Vertical" Margin="10" Visible="False">
                     <ScrollContainer VerticalExpand="True" HScrollEnabled="False">
-                        <BoxContainer Orientation="Vertical" HorizontalExpand="True" SeparationOverride="8" Margin="0 0 4 0">
-                            <pirateBackground:BackgroundWarning />
+                        <BoxContainer Orientation="Vertical" HorizontalExpand="True" SeparationOverride="10">
                             <BoxContainer Name="ICInfoSection" Orientation="Vertical">
+                                <Label Text="{Loc 'humanoid-profile-editor-ic-info-heading'}" StyleClasses="LabelHeading" />
+                                <PanelContainer StyleClasses="LowDivider" Margin="0 2 0 4" />
                                 <pirateInfo:CharacterInfoEditor Name="ICInfoEditor" />
                             </BoxContainer>
                             <BoxContainer Name="OOCInfoSection" Orientation="Vertical">
+                                <Label Text="{Loc 'humanoid-profile-editor-ooc-info-heading'}" StyleClasses="LabelHeading" />
+                                <PanelContainer StyleClasses="LowDivider" Margin="0 2 0 4" />
                                 <pirateInfo:OOCInfoEditor Name="OOCInfoEditor" />
                             </BoxContainer>
+                            <!-- Pirate: records select - HR background shown in the records consoles' history -->
                             <BoxContainer Name="RecordBackgroundSection" Orientation="Vertical">
+                                <Label Text="{Loc 'humanoid-profile-editor-records-heading'}" StyleClasses="LabelHeading" />
+                                <PanelContainer StyleClasses="LowDivider" Margin="0 2 0 4" />
                                 <pirateInfo:RecordBackgroundEditor Name="RecordBackgroundEditor" />
                             </BoxContainer>
                         </BoxContainer>

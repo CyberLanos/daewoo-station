@@ -33,7 +33,7 @@ namespace Content.Goobstation.Server.NTR.Documents
                 || !_proto.TryIndex(docType, out var docProto))
                 return string.Empty;
 
-            var dateString = $"{Content.Shared._Pirate.PirateStationCalendar.CurrentYear} {DateTime.Now:MMMM dd}"; // Pirate: OOC records - Use the in-game calendar year.
+            var dateString = $"{Content.Shared._Pirate.PirateStationCalendar.CurrentYear} {DateTime.Now:MMMM dd}"; // Pirate new date - year from PirateStationCalendar instead of a hardcoded 2468
 
             var args = new List<(string, object)>
             {

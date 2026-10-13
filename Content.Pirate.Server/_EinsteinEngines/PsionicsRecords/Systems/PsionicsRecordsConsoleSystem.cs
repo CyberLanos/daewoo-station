@@ -89,6 +89,12 @@ public sealed partial class PsionicsRecordsConsoleSystem : SharedPsionicsRecords
         UpdateUserInterface(ent);
     }
 
+    private void OnStatusFilterChanged(Entity<PsionicsRecordsConsoleComponent> ent, ref PsionicsRecordSetStatusFilter msg)
+    {
+        ent.Comp.FilterStatus = msg.FilterStatus;
+        UpdateUserInterface(ent);
+    }
+
     private void OnFiltersChanged(Entity<PsionicsRecordsConsoleComponent> ent, ref SetStationRecordFilter msg)
     {
         if (ent.Comp.Filter == null ||
@@ -185,6 +191,7 @@ public sealed partial class PsionicsRecordsConsoleSystem : SharedPsionicsRecords
 
         var listing = _stationRecords.BuildListing((owningStation.Value, stationRecords), console.Filter);
 
+        // Only people with the chosen status; no psionics record counts as none.
         if (console.FilterStatus != PsionicsStatus.None)
         {
             listing = listing
@@ -193,11 +200,7 @@ public sealed partial class PsionicsRecordsConsoleSystem : SharedPsionicsRecords
                 .ToDictionary(x => x.Key, x => x.Value);
         }
 
-        var state = new PsionicsRecordsConsoleState(listing, console.Filter)
-        {
-            FilterStatus = console.FilterStatus,
-            SelectionRequest = console.SelectionRequest,
-        };
+        var state = new PsionicsRecordsConsoleState(listing, console.Filter) { FilterStatus = console.FilterStatus };
         if (console.ActiveKey is { } id)
         {
             // get records to display when a crewmember is selected

@@ -1668,11 +1668,24 @@ namespace Content.Server.Database.Migrations.Postgres
                         .HasColumnType("character varying(4096)")
                         .HasColumnName("secrets");
 
-            #region Pirate: persistent record history
-                    b.Property<string>("RecordBackgrounds")
+            #region Pirate: records select - station records background
+                    b.Property<string>("CrewRecordBackground")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("record_backgrounds");
+                        .HasMaxLength(1024)
+                        .HasColumnType("character varying(1024)")
+                        .HasColumnName("crew_record_background");
+
+                    b.Property<string>("PsionicsRecordBackground")
+                        .IsRequired()
+                        .HasMaxLength(1024)
+                        .HasColumnType("character varying(1024)")
+                        .HasColumnName("psionics_record_background");
+
+                    b.Property<string>("SecurityRecordBackground")
+                        .IsRequired()
+                        .HasMaxLength(1024)
+                        .HasColumnType("character varying(1024)")
+                        .HasColumnName("security_record_background");
             #endregion
 
                     b.Property<string>("SkinColor")
