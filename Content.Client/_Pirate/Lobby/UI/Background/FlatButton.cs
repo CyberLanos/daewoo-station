@@ -9,11 +9,16 @@ public enum FlatButtonKind : byte
 {
     Default,
 
+    /// <summary>The main action, e.g. adding.</summary>
     Primary,
 
+    /// <summary>Removing something.</summary>
     Danger,
 }
 
+/// <summary>
+/// A flat rectangular button with a thin border, as in the Traits-style kit, with hover and disabled looks.
+/// </summary>
 public sealed class FlatButton : Button
 {
     private FlatButtonKind _kind;

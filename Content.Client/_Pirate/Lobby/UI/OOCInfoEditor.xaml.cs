@@ -12,6 +12,9 @@ using Robust.Shared.Timing;
 
 namespace Content.Client._Pirate.Lobby.UI;
 
+/// <summary>
+/// OOC section of the Background tab: notes for players, not characters.
+/// </summary>
 [GenerateTypedNameReferences]
 public sealed partial class OOCInfoEditor : Control
 {

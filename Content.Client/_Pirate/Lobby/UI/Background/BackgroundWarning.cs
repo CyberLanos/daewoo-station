@@ -6,6 +6,10 @@ using Robust.Shared.Utility;
 
 namespace Content.Client._Pirate.Lobby.UI.Background;
 
+/// <summary>
+/// The rules warning on top of the Background tab, as a flat warning tag from the Traits-style kit: an orange edge
+/// on a faint orange band.
+/// </summary>
 public sealed class BackgroundWarning : PanelContainer
 {
     private static readonly Color Warn = Color.FromHex("#e0823a");

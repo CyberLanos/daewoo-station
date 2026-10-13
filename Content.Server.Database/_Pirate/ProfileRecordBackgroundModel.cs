@@ -6,8 +6,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Content.Server.Database;
+
+/// <summary>
+/// One entry of the character's OOC records background (RecordBackgroundEntry), stored as JSON on the profile.
+/// </summary>
 public sealed class ProfileRecordBackground
 {
+    /// <summary>RecordLogBook: which records console.</summary>
     public int Book { get; set; }
 
     public string Title { get; set; } = string.Empty;

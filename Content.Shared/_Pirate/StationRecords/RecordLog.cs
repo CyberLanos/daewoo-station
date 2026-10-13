@@ -72,6 +72,46 @@ public sealed partial record RecordLogEntry
     /// <summary>Round time it was written.</summary>
     [DataField]
     public TimeSpan RoundTime;
+
+    /// <summary>Written in an earlier round and restored from the database with the character.</summary>
+    [DataField]
+    public bool Archived;
+}
+
+/// <summary>
+/// The order histories are shown and printed in: this round's entries, then the HR background (dated to the shift
+/// start, it marks where this round begins), then entries from earlier rounds; each group newest first.
+/// </summary>
+public static class RecordLogOrder
+{
+    public static List<RecordLogEntry> ForDisplay(IEnumerable<RecordLogEntry> log)
+    {
+        var sorted = new List<RecordLogEntry>(log);
+        sorted.Sort(Compare);
+        return sorted;
+    }
+
+    private static int Compare(RecordLogEntry a, RecordLogEntry b)
+    {
+        var byGroup = Group(a).CompareTo(Group(b));
+        if (byGroup != 0)
+            return byGroup;
+
+        // The HR file keeps the order it was written in the character editor.
+        if (Group(a) == 1)
+            return a.Id.CompareTo(b.Id);
+
+        var byTime = b.Time.CompareTo(a.Time);
+        return byTime != 0 ? byTime : b.Id.CompareTo(a.Id);
+    }
+
+    private static int Group(RecordLogEntry entry)
+    {
+        if (entry.Kind == RecordLogKind.Background)
+            return 1;
+
+        return entry.Archived ? 2 : 0;
+    }
 }
 
 /// <summary>

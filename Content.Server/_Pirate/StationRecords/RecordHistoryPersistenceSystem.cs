@@ -15,8 +15,20 @@ using Content.Shared.StationRecords;
 using Robust.Shared.Configuration;
 
 namespace Content.Server._Pirate.StationRecords;
-// Only attach an owner after its history loads; an empty history must not erase saved rows.
+
+/// <summary>
+/// Which character profile a station record's history belongs to. Only records whose saved history was loaded
+/// this round get one, so a save never overwrites history that wasn't there to begin with.
+/// </summary>
 public sealed record RecordHistoryOwner(int ProfileId);
+
+/// <summary>
+/// Carries the records consoles' histories (criminal, psionics, crew) between rounds, per character profile, like
+/// the persistent photo albums. The saved history is added to the record when the character arrives, and every
+/// history is saved once at round end, the newest <see cref="CCVars.RecordsHistoryLimit"/> of each console. The HR
+/// background isn't saved: it comes from the character profile every round. A round restarted without a round end
+/// (restartroundnow) is saved during the restart cleanup instead, still once.
+/// </summary>
 public sealed class RecordHistoryPersistenceSystem : EntitySystem
 {
     [Dependency] private readonly IConfigurationManager _cfg = default!;
@@ -30,6 +42,8 @@ public sealed class RecordHistoryPersistenceSystem : EntitySystem
     private bool _enabled;
     private int _limit;
     private Task? _saveTask;
+
+    /// <summary>Whether this round's round-end save ran, so the restart cleanup doesn't save it again.</summary>
     private bool _savedThisRound;
 
     public override void Initialize()
@@ -88,6 +102,10 @@ public sealed class RecordHistoryPersistenceSystem : EntitySystem
         _savedThisRound = true;
         Save();
     }
+
+    /// <summary>
+    /// Fallback for rounds restarted without a round end: the records still exist here, the map is wiped after.
+    /// </summary>
     private void OnRoundRestartCleanup(RoundRestartCleanupEvent ev)
     {
         if (!_savedThisRound)
@@ -121,6 +139,11 @@ public sealed class RecordHistoryPersistenceSystem : EntitySystem
             }
         });
     }
+
+    /// <summary>
+    /// Every console's history of every character whose history was loaded, without the HR background. A character
+    /// with records on two stations gets them merged.
+    /// </summary>
     private List<RecordHistorySnapshot> CollectSnapshots()
     {
         var books = new Dictionary<(int ProfileId, RecordLogBook Book), List<RecordLogEntry>>();

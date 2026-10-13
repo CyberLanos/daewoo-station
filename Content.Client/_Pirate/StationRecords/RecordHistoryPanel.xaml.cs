@@ -15,7 +15,7 @@ namespace Content.Client._Pirate.StationRecords;
 
 /// <summary>
 /// The History tab of the records consoles (criminal, crew, psionics): name, divider, then this console's log of the
-/// person, newest first. Each entry shows its icon and title (see <see cref="Describe"/>), when (in-game year, the
+/// person in <see cref="RecordLogOrder"/>: this round, the HR background, then earlier rounds, each newest first. Each entry shows its icon and title (see <see cref="Describe"/>), when (in-game year, the
 /// viewer's real date and time), who wrote it, where, and the text. Those with access can print the log, add notes
 /// and delete entries, except the HR background. The console's search box filters it (<see cref="SetQuery"/>).
 /// </summary>
@@ -64,7 +64,7 @@ public sealed partial class RecordHistoryPanel : BoxContainer
         PersonName.Text = name;
         AddNoteButton.Visible = canEdit;
         PrintButton.Visible = canEdit;
-        _log = log;
+        _log = log == null ? null : RecordLogOrder.ForDisplay(log); // this round, HR background, earlier rounds
         _canEdit = canEdit;
         Rebuild();
     }
@@ -102,9 +102,8 @@ public sealed partial class RecordHistoryPanel : BoxContainer
         var shown = 0;
         if (_log != null)
         {
-            for (var i = _log.Count - 1; i >= 0; i--)
+            foreach (var entry in _log)
             {
-                var entry = _log[i];
                 var look = Describe(entry);
                 if (!Matches(entry, look.Title))
                     continue;
@@ -128,7 +127,7 @@ public sealed partial class RecordHistoryPanel : BoxContainer
             || Contains(AuthorName(entry))
             || Contains(entry.AuthorTitle)
             || Contains(entry.StationName)
-            || Contains(FormatTime(entry.Time));
+            || entry.Kind != RecordLogKind.Background && Contains(FormatTime(entry.Time));
 
         bool Contains(string? text) => text != null && text.Contains(_query, StringComparison.CurrentCultureIgnoreCase);
     }
@@ -145,7 +144,9 @@ public sealed partial class RecordHistoryPanel : BoxContainer
             VerticalAlignment = Control.VAlignment.Center,
         });
         header.AddChild(new Label { Text = title, FontColorOverride = color, ClipText = true, HorizontalExpand = true });
-        header.AddChild(new Label { Text = FormatTime(entry.Time), FontColorOverride = Color.DarkGray });
+        // The HR file's time (the shift start) only places it in the history; it isn't a date anyone wrote down.
+        if (entry.Kind != RecordLogKind.Background)
+            header.AddChild(new Label { Text = FormatTime(entry.Time), FontColorOverride = Color.DarkGray });
 
         if (_canEdit && entry.Kind != RecordLogKind.Background)
         {
@@ -223,7 +224,7 @@ public sealed partial class RecordHistoryPanel : BoxContainer
         switch (entry.Kind)
         {
             case RecordLogKind.Background:
-                return (Loc.GetString("records-log-kind-background"), BackgroundColor,
+                return (entry.Topic ?? Loc.GetString("records-log-kind-background"), BackgroundColor,
                     new SpriteSpecifier.Rsi(LogIcons, "hr_file"));
 
             case RecordLogKind.StatusChange:

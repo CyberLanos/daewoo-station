@@ -6,6 +6,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
 namespace Content.Server.Database;
+
+/// <summary>
+/// One entry of a character's records-console history (criminal, psionics or crew), kept between rounds.
+/// Saved once at round end, the newest N per book; removed with the character.
+/// </summary>
 [Table("pirate_record_history_entries")]
 [Index(nameof(ProfileId), nameof(Book), nameof(Time))]
 public sealed class PirateRecordHistoryEntry
@@ -17,7 +22,11 @@ public sealed class PirateRecordHistoryEntry
     public int ProfileId { get; set; }
 
     public Profile Profile { get; set; } = default!;
+
+    /// <summary>RecordLogBook: which console's history.</summary>
     public int Book { get; set; }
+
+    /// <summary>RecordLogKind.</summary>
     public int Kind { get; set; }
 
     [StringLength(128)]
@@ -37,6 +46,8 @@ public sealed class PirateRecordHistoryEntry
 
     [StringLength(128)]
     public string? StationName { get; set; }
+
+    /// <summary>Real time (UTC) the entry was written.</summary>
     public DateTime Time { get; set; }
 }
 

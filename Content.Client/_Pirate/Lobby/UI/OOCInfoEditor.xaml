@@ -4,19 +4,9 @@ SPDX-FileCopyrightText: 2026 SpaceStationUA
 SPDX-License-Identifier: MIT
 -->
 
-<!-- OOC fields of the profile editor's Background tab. The tab scrolls, so no scroll container here. -->
+<!-- OOC section of the profile editor's Background tab, built in code (BackgroundSection + field cards).
+     The tab scrolls, so no scroll container here. -->
 <Control xmlns="https://spacestation14.io"
          HorizontalExpand="True">
-    <BoxContainer Orientation="Vertical">
-        <BoxContainer Name="PersonalNotes" Access="Public" Orientation="Vertical">
-            <Label Text="{Loc 'character-info-editor-personal-notes-label'}"/>
-            <TextEdit Name="PersonalNotesInput" Access="Public" MinSize="220 140" Margin="10"
-                      HorizontalExpand="True" VerticalExpand="True"/>
-        </BoxContainer>
-        <BoxContainer Name="OOCNotes" Access="Public" Orientation="Vertical">
-            <Label Text="{Loc 'character-info-editor-ooc-notes-label'}"/>
-            <TextEdit Name="OOCNotesInput" Access="Public" MinSize="220 140" Margin="10"
-                      HorizontalExpand="True" VerticalExpand="True"/>
-        </BoxContainer>
-    </BoxContainer>
+    <BoxContainer Name="Root" Orientation="Vertical" />
 </Control>

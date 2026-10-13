@@ -10,12 +10,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Content.Server.Database.Migrations.Sqlite
 {
-    #region Pirate: persistent record history
-
     [DbContext(typeof(SqliteServerDbContext))]
     [Migration("20261013071503_PirateRecordHistory")]
     partial class PirateRecordHistory
     {
+        /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
@@ -1529,6 +1528,12 @@ namespace Content.Server.Database.Migrations.Sqlite
                         .HasColumnType("TEXT")
                         .HasColumnName("char_name");
 
+                    b.Property<string>("CrewRecordBackground")
+                        .IsRequired()
+                        .HasMaxLength(1024)
+                        .HasColumnType("TEXT")
+                        .HasColumnName("crew_record_background");
+
                     b.Property<string>("CustomMarkings")
                         .IsRequired()
                         .HasColumnType("TEXT")
@@ -1624,16 +1629,23 @@ namespace Content.Server.Database.Migrations.Sqlite
                         .HasColumnType("INTEGER")
                         .HasColumnName("pref_unavailable");
 
-                    b.Property<string>("RecordBackgrounds")
+                    b.Property<string>("PsionicsRecordBackground")
                         .IsRequired()
+                        .HasMaxLength(1024)
                         .HasColumnType("TEXT")
-                        .HasColumnName("record_backgrounds");
+                        .HasColumnName("psionics_record_background");
 
                     b.Property<string>("Secrets")
                         .IsRequired()
                         .HasMaxLength(4096)
                         .HasColumnType("TEXT")
                         .HasColumnName("secrets");
+
+                    b.Property<string>("SecurityRecordBackground")
+                        .IsRequired()
+                        .HasMaxLength(1024)
+                        .HasColumnType("TEXT")
+                        .HasColumnName("security_record_background");
 
                     b.Property<string>("Sex")
                         .IsRequired()
@@ -3163,5 +3175,4 @@ namespace Content.Server.Database.Migrations.Sqlite
 #pragma warning restore 612, 618
         }
     }
-    #endregion
 }

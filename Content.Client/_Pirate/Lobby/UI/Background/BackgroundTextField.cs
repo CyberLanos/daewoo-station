@@ -7,6 +7,10 @@ using Robust.Shared.Utility;
 
 namespace Content.Client._Pirate.Lobby.UI.Background;
 
+/// <summary>
+/// A text field of the Background tab as a card: the name and a character count, a line saying who sees it, then
+/// the text box.
+/// </summary>
 public sealed class BackgroundTextField : PanelContainer
 {
     public readonly TextEdit Input;
@@ -58,7 +62,7 @@ public sealed class BackgroundTextField : PanelContainer
     {
         base.FrameUpdate(args);
 
-        // Code-set text doesn't raise OnTextChanged.
+        // Text set from code doesn't raise OnTextChanged, so the count follows the box itself.
         UpdateCounter();
         BackgroundStyle.FitScrollBar(Input);
     }

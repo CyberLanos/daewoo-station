@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+using System.Linq;
 using System.Text;
 using Content.Server.GameTicking;
 using Content.Server.Popups;
@@ -49,6 +50,9 @@ public sealed class RecordLogSystem : EntitySystem
     /// <summary>Zone of the times on printed histories, from <see cref="CCVars.RecordsPrintTimeZone"/>.</summary>
     private TimeZoneInfo _printZone = TimeZoneInfo.Local;
 
+    /// <summary><see cref="CCVars.RecordsHistoryPersistence"/>: off hides entries restored from earlier rounds.</summary>
+    private bool _showArchived = true;
+
     private void SetPrintZone(string id)
     {
         _printZone = TimeZoneInfo.Local;
@@ -73,36 +77,70 @@ public sealed class RecordLogSystem : EntitySystem
         base.Initialize();
         SubscribeLocalEvent<AfterGeneralRecordCreatedEvent>(OnGeneralRecordCreated);
         Subs.CVar(_cfg, CCVars.RecordsPrintTimeZone, SetPrintZone, true);
+        Subs.CVar(_cfg, CCVars.RecordsHistoryPersistence, enabled => _showArchived = enabled, true);
     }
 
     /// <summary>
-    /// The character's station records background from the profile editor becomes the read-only HR file entry
-    /// in each console's history.
+    /// The character's OOC records background from the profile editor: each entry becomes a read-only HR file
+    /// entry in its console's history, in the profile's order.
     /// </summary>
     private void OnGeneralRecordCreated(AfterGeneralRecordCreatedEvent args)
     {
-        AddBackground(args.Key, RecordLogBook.Security, args.Profile.SecurityRecordBackground);
-        AddBackground(args.Key, RecordLogBook.Crew, args.Profile.CrewRecordBackground);
-        AddBackground(args.Key, RecordLogBook.Psionics, args.Profile.PsionicsRecordBackground);
+        foreach (var background in args.Profile.RecordBackgrounds)
+        {
+            AddBackground(args.Key, background);
+        }
     }
 
-    private void AddBackground(StationRecordKey key, RecordLogBook book, string text)
+    private void AddBackground(StationRecordKey key, RecordBackgroundEntry background)
     {
-        text = text.Trim();
+        var text = background.Body.Trim();
         if (text.Length == 0)
             return;
 
-        Add(key, book, RecordLogKind.Background, null, text, null, null);
+        var title = background.Title.Trim();
+        if (Add(key, background.Book, RecordLogKind.Background, title.Length > 0 ? title : null, text, null, null)
+            is not { } entry)
+        {
+            return;
+        }
+
+        // An empty author shows NanoTrasen HR.
+        var author = background.Author.Trim();
+        entry.AuthorName = author.Length > 0 ? author : null;
+
+        // Dated to the shift start, also for late joiners: it opens this round's part of the history.
+        entry.Time = DateTime.UtcNow - _ticker.RoundDuration();
+        entry.RoundTime = TimeSpan.Zero;
     }
 
     /// <summary>
-    /// A copy of one book, newest last, for a console state.
+    /// A copy of one book for a console state, in <see cref="RecordLogOrder"/>. Entries from earlier rounds are
+    /// left out while history persistence is off.
     /// </summary>
     public List<RecordLogEntry> GetLog(StationRecordKey key, RecordLogBook book)
     {
-        return _records.TryGetRecord<RecordLogs>(key, out var logs)
-            ? new List<RecordLogEntry>(logs.Book(book))
-            : new List<RecordLogEntry>();
+        if (!_records.TryGetRecord<RecordLogs>(key, out var logs))
+            return new List<RecordLogEntry>();
+
+        return RecordLogOrder.ForDisplay(_showArchived
+            ? logs.Book(book)
+            : logs.Book(book).Where(e => !e.Archived));
+    }
+
+    /// <summary>
+    /// Adds entries restored from earlier rounds, with fresh ids.
+    /// </summary>
+    public void AddArchived(StationRecordKey key, IEnumerable<(RecordLogBook Book, RecordLogEntry Entry)> entries)
+    {
+        if (!key.IsValid())
+            return;
+
+        var logs = EnsureLogs(key);
+        foreach (var (book, entry) in entries)
+        {
+            logs.Book(book).Add(entry with { Id = logs.NextId++, Archived = true });
+        }
     }
 
     /// <summary>
@@ -170,7 +208,7 @@ public sealed class RecordLogSystem : EntitySystem
 
     /// <summary>
     /// Prints one book of the person's history at <paramref name="console"/>, newest first. Paper can't follow
-    /// each reader's time zone like the History tab does, so times are printed in <see cref="CCVars.RecordsPrintTimeZone"/>, marked with its offset.
+    /// each reader's time zone like the History tab does, so times are printed in <see cref="CCVars.RecordsPrintTimeZone"/>.
     /// </summary>
     public void Print(EntityUid console, EntityUid user, StationRecordKey key, RecordLogBook book)
     {
@@ -218,12 +256,13 @@ public sealed class RecordLogSystem : EntitySystem
         if (log.Count == 0)
             text.AppendLine(Loc.GetString("records-log-empty"));
 
-        for (var i = log.Count - 1; i >= 0; i--)
+        // Already in display order (GetLog): HR background, then newest first.
+        for (var i = 0; i < log.Count; i++)
         {
             var entry = PrintEntry(log[i]);
             if (text.Length + entry.Length > PrintBudget)
             {
-                text.AppendLine(Loc.GetString("records-log-print-more", ("count", i + 1)));
+                text.AppendLine(Loc.GetString("records-log-print-more", ("count", log.Count - i)));
                 break;
             }
 
@@ -237,7 +276,7 @@ public sealed class RecordLogSystem : EntitySystem
     {
         var title = entry.Kind switch
         {
-            RecordLogKind.Background => Loc.GetString("records-log-kind-background"),
+            RecordLogKind.Background => entry.Topic ?? Loc.GetString("records-log-kind-background"),
             RecordLogKind.StatusChange => entry.Topic ?? Loc.GetString("records-log-kind-status-change"),
             _ => Loc.GetString("records-log-kind-note"),
         };
@@ -248,7 +287,10 @@ public sealed class RecordLogSystem : EntitySystem
             author = $"{author} ({entry.AuthorTitle})";
 
         var text = new StringBuilder();
-        text.AppendLine($"[bold]{FormattedMessage.EscapeText(title)}[/bold] ({FormatTime(entry.Time)})");
+        // The HR file's time (the shift start) only places it in the history, so it isn't printed.
+        text.AppendLine(entry.Kind == RecordLogKind.Background
+            ? $"[bold]{FormattedMessage.EscapeText(title)}[/bold]"
+            : $"[bold]{FormattedMessage.EscapeText(title)}[/bold] ({FormatTime(entry.Time)})");
         text.AppendLine($"[italic]{FormattedMessage.EscapeText(author)}[/italic]");
         if (!string.IsNullOrWhiteSpace(entry.StationName))
             text.AppendLine(Loc.GetString("records-log-station", ("station", FormattedMessage.EscapeText(entry.StationName))));
@@ -259,21 +301,12 @@ public sealed class RecordLogSystem : EntitySystem
     }
 
     /// <summary>
-    /// The History tab's format in the print time zone with its UTC offset: 12/10/2468 14:05 (UTC+3),
-    /// real date and time with the in-game year.
+    /// The History tab's format in the print time zone: 12/10/2468 14:05, real date and time with the in-game year.
     /// </summary>
     private string FormatTime(DateTime utc)
     {
         var local = TimeZoneInfo.ConvertTimeFromUtc(DateTime.SpecifyKind(utc, DateTimeKind.Utc), _printZone);
-        var offset = _printZone.GetUtcOffset(local);
-        var sign = offset < TimeSpan.Zero ? "-" : "+";
-        var zone = offset == TimeSpan.Zero
-            ? "UTC"
-            : offset.Minutes == 0
-                ? $"UTC{sign}{Math.Abs(offset.Hours)}"
-                : $"UTC{sign}{Math.Abs(offset.Hours)}:{Math.Abs(offset.Minutes):00}";
-
-        return $"{local.Day:00}/{local.Month:00}/{PirateStationCalendar.CurrentYear:0000} {local.Hour:00}:{local.Minute:00} ({zone})";
+        return $"{local.Day:00}/{local.Month:00}/{PirateStationCalendar.CurrentYear:0000} {local.Hour:00}:{local.Minute:00}";
     }
 
     private RecordLogs EnsureLogs(StationRecordKey key)

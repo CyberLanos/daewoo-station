@@ -22,14 +22,4 @@ public partial class Profile
 
     [MaxLength(4096)]
     public string ExploitableInfo { get; set; } = string.Empty;
-
-    // Station records background: NanoTrasen HR's file on the character, one per records console.
-    [MaxLength(1024)]
-    public string SecurityRecordBackground { get; set; } = string.Empty;
-
-    [MaxLength(1024)]
-    public string CrewRecordBackground { get; set; } = string.Empty;
-
-    [MaxLength(1024)]
-    public string PsionicsRecordBackground { get; set; } = string.Empty;
 }

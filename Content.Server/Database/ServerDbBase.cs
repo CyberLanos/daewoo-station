@@ -310,9 +310,7 @@ namespace Content.Server.Database
                 profile.OOCNotes,
                 profile.Secrets,
                 profile.ExploitableInfo).WithRecordBackgrounds( // Pirate: records select - HR background on the records consoles
-                profile.SecurityRecordBackground,
-                profile.CrewRecordBackground,
-                profile.PsionicsRecordBackground).WithKnowledge(
+                FromStoredRecordBackgrounds(profile.RecordBackgrounds)).WithKnowledge(
                 new KnowledgeProfile(profile.KnowledgeMastery.ToDictionary(
                     pair => new EntProtoId(pair.Key),
                     pair => pair.Value))).WithCustomMarkings(
@@ -337,9 +335,7 @@ namespace Content.Server.Database
             profile.OOCNotes = humanoid.OOCNotes;
             profile.Secrets = humanoid.Secrets;
             profile.ExploitableInfo = humanoid.ExploitableInfo;
-            profile.SecurityRecordBackground = humanoid.SecurityRecordBackground; // Pirate: records select
-            profile.CrewRecordBackground = humanoid.CrewRecordBackground; // Pirate: records select
-            profile.PsionicsRecordBackground = humanoid.PsionicsRecordBackground; // Pirate: records select
+            profile.RecordBackgrounds = ToStoredRecordBackgrounds(humanoid.RecordBackgrounds); // Pirate: records select
             profile.Species = humanoid.Species;
             profile.Height = humanoid.Height; // Goobstation: port EE height/width sliders
             profile.Width = humanoid.Width; // Goobstation: port EE height/width sliders

@@ -7,11 +7,22 @@ using Content.Shared._Pirate.StationRecords;
 using Microsoft.EntityFrameworkCore;
 
 namespace Content.Server.Database;
+
+/// <summary>
+/// One records console's history of one character, as saved at round end.
+/// </summary>
 public sealed record RecordHistorySnapshot(int ProfileId, RecordLogBook Book, List<RecordLogEntry> Entries);
 
 public partial interface IServerDbManager
 {
+    /// <summary>
+    /// The character's saved records histories, the newest <paramref name="limitPerBook"/> of each console.
+    /// </summary>
     Task<List<(RecordLogBook Book, RecordLogEntry Entry)>> GetRecordHistoryAsync(int profileId, int limitPerBook, CancellationToken cancel = default);
+
+    /// <summary>
+    /// Replaces each snapshot's saved history with its newest <paramref name="limitPerBook"/> entries.
+    /// </summary>
     Task SaveRecordHistoryAsync(IReadOnlyCollection<RecordHistorySnapshot> snapshots, int limitPerBook, CancellationToken cancel = default);
 }
 

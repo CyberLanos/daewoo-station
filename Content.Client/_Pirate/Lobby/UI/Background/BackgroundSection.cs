@@ -6,6 +6,11 @@ using Robust.Client.UserInterface.Controls;
 
 namespace Content.Client._Pirate.Lobby.UI.Background;
 
+/// <summary>
+/// A collapsible section of the Background tab, like a Traits tab category: a header bar with a fold arrow, the
+/// name and a count, a coloured accent line, then the content. Owners put their fields into <see cref="Body"/> and
+/// report what's filled with <see cref="SetProgress"/>.
+/// </summary>
 public sealed class BackgroundSection : BoxContainer
 {
     public readonly BoxContainer Body;
@@ -56,6 +61,9 @@ public sealed class BackgroundSection : BoxContainer
         _arrow.Text = expanded ? "▼" : "▶";
     }
 
+    /// <summary>
+    /// How much of the section is filled in; shown in the header as "filled / total".
+    /// </summary>
     public void SetProgress(int filled, int total)
     {
         Filled = filled;
@@ -63,6 +71,9 @@ public sealed class BackgroundSection : BoxContainer
         SetStats(Loc.GetString("background-tab-section-filled", ("filled", filled), ("total", total)));
     }
 
+    /// <summary>
+    /// Any other text for the header's count, for sections that aren't fill-in fields.
+    /// </summary>
     public void SetStats(string text)
     {
         _stats.Text = text;

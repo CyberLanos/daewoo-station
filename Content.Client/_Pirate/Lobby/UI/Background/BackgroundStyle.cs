@@ -5,6 +5,10 @@ using Robust.Client.UserInterface.Controls;
 
 namespace Content.Client._Pirate.Lobby.UI.Background;
 
+/// <summary>
+/// The Background tab's look, after the Traits tab: flat rectangular panels, thin lines, a coloured accent line per
+/// section, and colour only where it means something (blue for counters, red for over the limit or removing).
+/// </summary>
 public static class BackgroundStyle
 {
     public static readonly Color Panel = Color.FromHex("#20242e");
@@ -23,10 +27,14 @@ public static class BackgroundStyle
     public static readonly Color Good = Color.FromHex("#58bd7c");
     public static readonly Color Bad = Color.FromHex("#df6152");
 
+    /// <summary>Section accents: IC, OOC and the station records (the HR file's gold).</summary>
     public static readonly Color Ic = Color.FromHex("#33b3c7");
     public static readonly Color Ooc = Color.FromHex("#b155c9");
     public static readonly Color Records = Color.FromHex("#dcb63c");
 
+    /// <summary>
+    /// A field's card: a row band with the section colour down its left edge.
+    /// </summary>
     public static StyleBoxFlat Card(Color accent)
     {
         return new StyleBoxFlat
@@ -37,6 +45,9 @@ public static class BackgroundStyle
         };
     }
 
+    /// <summary>
+    /// The frame around a text box or line edit.
+    /// </summary>
     public static StyleBoxFlat InputFrame()
     {
         return new StyleBoxFlat
@@ -51,6 +62,10 @@ public static class BackgroundStyle
         };
     }
 
+    /// <summary>
+    /// Shows a text box's scroll bar only while its text doesn't fit; the engine always shows it. Call every frame,
+    /// the text box works out its size while drawing.
+    /// </summary>
     public static void FitScrollBar(TextEdit edit)
     {
         foreach (var child in edit.Children)
@@ -60,6 +75,9 @@ public static class BackgroundStyle
         }
     }
 
+    /// <summary>
+    /// A line edit in the tab's flat style.
+    /// </summary>
     public static LineEdit LineEdit()
     {
         return new LineEdit { StyleBoxOverride = InputFrame() };

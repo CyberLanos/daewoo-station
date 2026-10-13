@@ -77,7 +77,7 @@ namespace Content.Server.Database
         public DbSet<PersistentPhotoAlbum> PersistentPhotoAlbums { get; set; } = default!;
         public DbSet<PersistentPhotoAlbumPhoto> PersistentPhotoAlbumPhotos { get; set; } = default!;
         public DbSet<PirateTempRankEligibility> PirateTempRankEligibility { get; set; } = default!; // Pirate: temporary ranks
-        public DbSet<PirateRecordHistoryEntry> PirateRecordHistory { get; set; } = default!; // Pirate: persistent record history
+        public DbSet<PirateRecordHistoryEntry> PirateRecordHistory { get; set; } = default!; // Pirate: records history persistence
         #endregion
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -91,7 +91,7 @@ namespace Content.Server.Database
                 .IsUnique();
 
             KnowledgeProfileModel.Configure(modelBuilder); // Pirate
-            ProfileRecordBackgroundModel.Configure(modelBuilder); // Pirate: persistent record history
+            ProfileRecordBackgroundModel.Configure(modelBuilder); // Pirate: records history persistence
 
             modelBuilder.Entity<Antag>()
                 .HasIndex(p => new { HumanoidProfileId = p.ProfileId, p.AntagName })
@@ -449,7 +449,7 @@ namespace Content.Server.Database
             //Pirate Changes End
             PersistentPhotoAlbumModelConfiguration.Configure(modelBuilder); //Pirate: cameras (photo persistence)
             PirateTempRankEligibilityModelConfiguration.Configure(modelBuilder); // Pirate: temporary ranks
-            PirateRecordHistoryModelConfiguration.Configure(modelBuilder); // Pirate: persistent record history
+            PirateRecordHistoryModelConfiguration.Configure(modelBuilder); // Pirate: records history persistence
             ConfigureCustomMarkings(modelBuilder); // Pirate
         }
 

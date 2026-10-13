@@ -14,11 +14,6 @@ public sealed partial class HumanoidCharacterProfile
     public const int MaxCharacterInfoLength = 4096;
 
     /// <summary>
-    /// Max length of each station records background (the HR file shown on the records consoles).
-    /// </summary>
-    public const int MaxRecordBackgroundLength = 1024;
-
-    /// <summary>
     /// Physical description keeps using the existing flavor text field for backwards compatibility.
     /// </summary>
     public string PhysicalDescription
@@ -43,22 +38,11 @@ public sealed partial class HumanoidCharacterProfile
     public string ExploitableInfo { get; set; } = string.Empty;
 
     /// <summary>
-    /// Station records background for the criminal records console's history, from NanoTrasen HR. Read-only there.
+    /// OOC station records background: NanoTrasen's file on the character, any number of entries per records
+    /// console (up to <see cref="RecordBackgroundEntry.MaxPerBook"/>). Read-only in that console's history.
     /// </summary>
     [DataField]
-    public string SecurityRecordBackground { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Station records background for the crew records console's history.
-    /// </summary>
-    [DataField]
-    public string CrewRecordBackground { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Station records background for the psionics records console's history.
-    /// </summary>
-    [DataField]
-    public string PsionicsRecordBackground { get; set; } = string.Empty;
+    public List<RecordBackgroundEntry> RecordBackgrounds { get; set; } = new();
 
     public HumanoidCharacterProfile WithPhysicalDescription(string description)
     {
@@ -90,29 +74,9 @@ public sealed partial class HumanoidCharacterProfile
         return new(this) { ExploitableInfo = info };
     }
 
-    public HumanoidCharacterProfile WithSecurityRecordBackground(string text)
+    public HumanoidCharacterProfile WithRecordBackgrounds(IEnumerable<RecordBackgroundEntry> entries)
     {
-        return new(this) { SecurityRecordBackground = text };
-    }
-
-    public HumanoidCharacterProfile WithCrewRecordBackground(string text)
-    {
-        return new(this) { CrewRecordBackground = text };
-    }
-
-    public HumanoidCharacterProfile WithPsionicsRecordBackground(string text)
-    {
-        return new(this) { PsionicsRecordBackground = text };
-    }
-
-    public HumanoidCharacterProfile WithRecordBackgrounds(string security, string crew, string psionics)
-    {
-        return new(this)
-        {
-            SecurityRecordBackground = security,
-            CrewRecordBackground = crew,
-            PsionicsRecordBackground = psionics,
-        };
+        return new(this) { RecordBackgrounds = new List<RecordBackgroundEntry>(entries) };
     }
 
     public HumanoidCharacterProfile WithCharacterInfo(
@@ -139,9 +103,7 @@ public sealed partial class HumanoidCharacterProfile
         OOCNotes = other.OOCNotes;
         Secrets = other.Secrets;
         ExploitableInfo = other.ExploitableInfo;
-        SecurityRecordBackground = other.SecurityRecordBackground;
-        CrewRecordBackground = other.CrewRecordBackground;
-        PsionicsRecordBackground = other.PsionicsRecordBackground;
+        RecordBackgrounds = new List<RecordBackgroundEntry>(other.RecordBackgrounds);
     }
 
     private bool PirateCharacterInfoEquals(HumanoidCharacterProfile other)
@@ -151,9 +113,7 @@ public sealed partial class HumanoidCharacterProfile
             && OOCNotes == other.OOCNotes
             && Secrets == other.Secrets
             && ExploitableInfo == other.ExploitableInfo
-            && SecurityRecordBackground == other.SecurityRecordBackground
-            && CrewRecordBackground == other.CrewRecordBackground
-            && PsionicsRecordBackground == other.PsionicsRecordBackground;
+            && RecordBackgrounds.SequenceEqual(other.RecordBackgrounds);
     }
 
     private void EnsurePirateCharacterInfoValid()
@@ -163,9 +123,42 @@ public sealed partial class HumanoidCharacterProfile
         OOCNotes = SanitizeCharacterInfo(OOCNotes);
         Secrets = SanitizeCharacterInfo(Secrets);
         ExploitableInfo = SanitizeCharacterInfo(ExploitableInfo);
-        SecurityRecordBackground = SanitizeCharacterInfo(SecurityRecordBackground, MaxRecordBackgroundLength);
-        CrewRecordBackground = SanitizeCharacterInfo(CrewRecordBackground, MaxRecordBackgroundLength);
-        PsionicsRecordBackground = SanitizeCharacterInfo(PsionicsRecordBackground, MaxRecordBackgroundLength);
+        RecordBackgrounds = SanitizeRecordBackgrounds(RecordBackgrounds);
+    }
+
+    /// <summary>
+    /// Drops entries without text or past the per-console limit; title and author are single lines.
+    /// </summary>
+    private static List<RecordBackgroundEntry> SanitizeRecordBackgrounds(List<RecordBackgroundEntry> entries)
+    {
+        var result = new List<RecordBackgroundEntry>();
+        var perBook = new Dictionary<RecordLogBook, int>();
+        foreach (var entry in entries)
+        {
+            if (entry.Book is not (RecordLogBook.Security or RecordLogBook.Psionics or RecordLogBook.Crew))
+                continue;
+
+            var body = SanitizeCharacterInfo(entry.Body.Trim(), RecordBackgroundEntry.MaxBodyLength);
+            var count = perBook.GetValueOrDefault(entry.Book);
+            if (body.Length == 0 || count >= RecordBackgroundEntry.MaxPerBook)
+                continue;
+
+            perBook[entry.Book] = count + 1;
+            result.Add(new RecordBackgroundEntry
+            {
+                Book = entry.Book,
+                Title = SanitizeLine(entry.Title, RecordBackgroundEntry.MaxTitleLength),
+                Author = SanitizeLine(entry.Author, RecordBackgroundEntry.MaxAuthorLength),
+                Body = body,
+            });
+        }
+
+        return result;
+    }
+
+    private static string SanitizeLine(string value, int maxLength)
+    {
+        return SanitizeCharacterInfo(value.Replace('\r', ' ').Replace('\n', ' ').Trim(), maxLength);
     }
 
     private static string SanitizeCharacterInfo(string value, int maxLength = MaxCharacterInfoLength)
@@ -183,8 +176,9 @@ public sealed partial class HumanoidCharacterProfile
         hashCode.Add(OOCNotes);
         hashCode.Add(Secrets);
         hashCode.Add(ExploitableInfo);
-        hashCode.Add(SecurityRecordBackground);
-        hashCode.Add(CrewRecordBackground);
-        hashCode.Add(PsionicsRecordBackground);
+        foreach (var entry in RecordBackgrounds)
+        {
+            hashCode.Add(entry);
+        }
     }
 }

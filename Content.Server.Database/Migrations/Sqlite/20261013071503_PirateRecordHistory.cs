@@ -7,19 +7,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Content.Server.Database.Migrations.Sqlite
 {
-    #region Pirate: persistent record history
-
+    /// <inheritdoc />
     public partial class PirateRecordHistory : Migration
     {
+        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
-                name: "record_backgrounds",
-                table: "profile",
-                type: "TEXT",
-                nullable: false,
-                defaultValue: "[]");
-
             migrationBuilder.CreateTable(
                 name: "pirate_record_history_entries",
                 columns: table => new
@@ -53,15 +46,12 @@ namespace Content.Server.Database.Migrations.Sqlite
                 table: "pirate_record_history_entries",
                 columns: new[] { "profile_id", "book", "time" });
         }
+
+        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
                 name: "pirate_record_history_entries");
-
-            migrationBuilder.DropColumn(
-                name: "record_backgrounds",
-                table: "profile");
         }
     }
-    #endregion
 }

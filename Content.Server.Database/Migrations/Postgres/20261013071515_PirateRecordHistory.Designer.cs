@@ -15,12 +15,11 @@ using NpgsqlTypes;
 
 namespace Content.Server.Database.Migrations.Postgres
 {
-    #region Pirate: persistent record history
-
     [DbContext(typeof(PostgresServerDbContext))]
     [Migration("20261013071515_PirateRecordHistory")]
     partial class PirateRecordHistory
     {
+        /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
@@ -1610,6 +1609,12 @@ namespace Content.Server.Database.Migrations.Postgres
                         .HasColumnType("text")
                         .HasColumnName("char_name");
 
+                    b.Property<string>("CrewRecordBackground")
+                        .IsRequired()
+                        .HasMaxLength(1024)
+                        .HasColumnType("character varying(1024)")
+                        .HasColumnName("crew_record_background");
+
                     b.Property<string>("CustomMarkings")
                         .IsRequired()
                         .HasColumnType("text")
@@ -1705,16 +1710,23 @@ namespace Content.Server.Database.Migrations.Postgres
                         .HasColumnType("integer")
                         .HasColumnName("pref_unavailable");
 
-                    b.Property<string>("RecordBackgrounds")
+                    b.Property<string>("PsionicsRecordBackground")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("record_backgrounds");
+                        .HasMaxLength(1024)
+                        .HasColumnType("character varying(1024)")
+                        .HasColumnName("psionics_record_background");
 
                     b.Property<string>("Secrets")
                         .IsRequired()
                         .HasMaxLength(4096)
                         .HasColumnType("character varying(4096)")
                         .HasColumnName("secrets");
+
+                    b.Property<string>("SecurityRecordBackground")
+                        .IsRequired()
+                        .HasMaxLength(1024)
+                        .HasColumnType("character varying(1024)")
+                        .HasColumnName("security_record_background");
 
                     b.Property<string>("Sex")
                         .IsRequired()
@@ -3266,5 +3278,4 @@ namespace Content.Server.Database.Migrations.Postgres
 #pragma warning restore 612, 618
         }
     }
-    #endregion
 }

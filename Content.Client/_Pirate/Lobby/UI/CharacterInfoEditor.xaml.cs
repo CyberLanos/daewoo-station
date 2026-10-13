@@ -14,6 +14,10 @@ using Robust.Shared.Timing;
 
 namespace Content.Client._Pirate.Lobby.UI;
 
+/// <summary>
+/// IC section of the Background tab: what others can learn about the character. Fields the server doesn't allow
+/// are hidden by the profile editor and don't count towards the section's progress.
+/// </summary>
 [GenerateTypedNameReferences]
 public sealed partial class CharacterInfoEditor : Control
 {
@@ -39,7 +43,7 @@ public sealed partial class CharacterInfoEditor : Control
         RobustXamlLoader.Load(this);
 
         _section = new BackgroundSection(Loc.GetString("humanoid-profile-editor-ic-info-heading"), BackgroundStyle.Ic);
-        // Physical description uses the legacy flavor text limit.
+        // The physical description is the old flavor text, with its own server limit.
         _physical = Field("background-tab-physical", "character-info-editor-physical-placeholder",
             IoCManager.Resolve<IConfigurationManager>().GetCVar(CCVars.MaxFlavorTextLength));
         _personality = Field("background-tab-personality", "character-info-editor-personality-placeholder");

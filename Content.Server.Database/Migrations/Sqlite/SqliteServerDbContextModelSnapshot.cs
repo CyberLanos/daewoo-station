@@ -1099,7 +1099,7 @@ namespace Content.Server.Database.Migrations.Sqlite
                 });
             #endregion Pirate: temporary ranks
 
-            #region Pirate: persistent record history
+            #region Pirate: records history persistence
             modelBuilder.Entity("Content.Server.Database.PirateRecordHistoryEntry", b =>
                 {
                     b.Property<int>("Id")
@@ -1587,24 +1587,11 @@ namespace Content.Server.Database.Migrations.Sqlite
                         .HasColumnType("TEXT")
                         .HasColumnName("secrets");
 
-            #region Pirate: records select - station records background
-                    b.Property<string>("CrewRecordBackground")
+            #region Pirate: records select - station records background, a JSON list of entries
+                    b.Property<string>("RecordBackgrounds")
                         .IsRequired()
-                        .HasMaxLength(1024)
                         .HasColumnType("TEXT")
-                        .HasColumnName("crew_record_background");
-
-                    b.Property<string>("PsionicsRecordBackground")
-                        .IsRequired()
-                        .HasMaxLength(1024)
-                        .HasColumnType("TEXT")
-                        .HasColumnName("psionics_record_background");
-
-                    b.Property<string>("SecurityRecordBackground")
-                        .IsRequired()
-                        .HasMaxLength(1024)
-                        .HasColumnType("TEXT")
-                        .HasColumnName("security_record_background");
+                        .HasColumnName("record_backgrounds");
             #endregion
 
                     b.Property<string>("SkinColor")
@@ -2621,7 +2608,7 @@ namespace Content.Server.Database.Migrations.Sqlite
                 });
             #endregion Pirate: temporary ranks
 
-            #region Pirate: persistent record history
+            #region Pirate: records history persistence
             modelBuilder.Entity("Content.Server.Database.PirateRecordHistoryEntry", b =>
                 {
                     b.HasOne("Content.Server.Database.Profile", "Profile")
