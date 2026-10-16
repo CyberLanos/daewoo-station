@@ -216,5 +216,6 @@
   showInVote: false
   rules:
     - BlueshiftScheduler
+    - BlueshiftAntagScheduler
     - MeteorSwarmScheduler
     - GlimmerEventScheduler

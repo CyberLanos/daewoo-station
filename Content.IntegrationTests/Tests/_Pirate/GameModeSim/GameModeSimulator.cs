@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Content.Shared._Pirate.EntityTable.Conditions;
 using Content.Shared.EntityTable.Conditions;
 using Content.Shared.EntityTable.EntitySelectors;
 
@@ -592,19 +591,6 @@ public sealed class GameModeSimulator
                 var rule = reoccurrence.RuleOverride?.Id ?? (root is EntSelector ent ? ent.Id.Id : string.Empty);
                 return rule != string.Empty
                     && _history.Any(p => p.Id == rule && p.Time + reoccurrence.Delay.TotalSeconds <= _now);
-            }
-            case RulesCooldownCondition cooldown:
-            {
-                // GameTicker keeps a pending entry (added time) until the rule starts, then the start time.
-                var limit = cooldown.Cooldown.TotalSeconds;
-                foreach (var instance in _rules)
-                {
-                    var at = instance.Started ? instance.StartedAt : instance.AddedAt;
-                    if (_now - at < limit && cooldown.Rules.Any(r => r.Id == instance.Rule.Id))
-                        return false;
-                }
-
-                return true;
             }
             case HasBudgetCondition:
                 // Schedulers call GetSpawns without a budget in the context.
@@ -1309,9 +1295,15 @@ public sealed class GameModeSimulator
                 s.RoundstartRules.Add(instance.Rule.Id);
                 s.RoundstartAntags += instance.AntagSpawned;
             }
-            else if (instance.Source == "midround")
+            else
             {
-                s.MidroundEvents++;
+                // Chaos-scheduler picks are "midround events"; meteor, glimmer and other basic schedulers are side events.
+                if (instance.Source == "midround")
+                    s.MidroundEvents++;
+                else
+                    s.SideEvents++;
+
+                // Any antag after roundstart is a midround antag, whichever scheduler started it.
                 if (isAntag)
                 {
                     s.MidroundAntagEvents++;
@@ -1323,10 +1315,6 @@ public sealed class GameModeSimulator
                             s.FirstMidroundAntagMinute = arrival / 60;
                     }
                 }
-            }
-            else
-            {
-                s.SideEvents++;
             }
 
             s.AntagBlocked += instance.AntagBlocked;

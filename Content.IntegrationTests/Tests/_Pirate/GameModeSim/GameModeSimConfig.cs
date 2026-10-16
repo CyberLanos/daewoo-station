@@ -14,7 +14,7 @@ namespace Content.IntegrationTests.Tests._Pirate.GameModeSim;
 public sealed class GameModeSimConfig
 {
     /// <summary>Game presets to simulate, by id or alias.</summary>
-    public List<string> Presets { get; set; } = ["SecretPlusMid", "SecretPlusLow", "SecretSalt", "SecretTP", "Blueshift"];
+    public List<string> Presets { get; set; } = ["SecretPlusMid", "SecretSalt", "SecretTP", "Blueshift"];
 
     /// <summary>Each preset runs every scenario.</summary>
     public List<GameModeSimScenario> Scenarios { get; set; } = [new()];
