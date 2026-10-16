@@ -1,0 +1,526 @@
+# Blueshift: Entropy (SecretPlusMid) re-aimed at minor antags, at Entropy's chaos rate.
+#
+# Roundstart: the first pick is a core antag (traitor, vampire, blood brothers) or, less often,
+# one major (revs, blood cult, cosmic cult, rarely nukies). Follow-up picks are core antags,
+# then aggressive ones (ling, heretic), then quiet ones (thief, devil, silicon liberation) least.
+# Majors only sit in the first-pick table, so a round never gets two.
+# Changeling and Heretic exclude each other (Blueshift copies with their own incompatibleModes).
+#
+# Midround: maintenance, chaotic, neutral, hostile-spawn, interference and cargo-gift events.
+# Antags: traitors, vampires and bounty hunters in three waves, plus rare hitman, malf AI,
+# tunnel clown, mime assassin, dark priest, borer and paradox clone.
+# Friendly spawns and psionic events are out.
+#
+# Midround antag rules last the whole round (duration: null), so the scheduler can never run the
+# same id twice. The Blueshift* copies below are separate ids with their own start times, which is
+# what lets a second traitor or vampire wave happen. The originals are untouched for other modes.
+
+# Midround pool
+
+- type: entityTable
+  id: BlueshiftEventsTable
+  table: !type:AllSelector
+    children:
+    - !type:NestedSelector
+      tableId: BlueshiftCalmEventsTable
+    - !type:NestedSelector
+      tableId: CalmPestEventsTable
+    - !type:NestedSelector
+      tableId: CargoGiftsTable
+    - !type:NestedSelector
+      tableId: BlueshiftAntagEventsTable
+
+# BasicCalmEventsTable without DerelictCyborgSyndicateSpawn (a ghost-role antag), with the malign rift
+# twice as likely and the goblins toned down. Keep in sync with BasicCalmEventsTable.
+- type: entityTable
+  id: BlueshiftCalmEventsTable
+  table: !type:AllSelector
+    children:
+    - id: AnomalySpawn
+    - id: BluespaceArtifact
+    - id: BluespaceLocker
+    - id: BreakerFlip
+    - id: BureaucraticError
+    - id: ClericalError
+    - id: CockroachMigration
+    - id: GasLeak
+    - id: GreytideVirus
+    - id: IonStorm
+    - id: JobDistributionError
+    - id: KudzuGrowth
+    - id: MassHallucinations
+    - id: MimicVendorRule
+    - id: MouseMigration
+    - id: RandomVirus
+    - id: PowerGridCheck
+    - id: RandomSentience
+    - id: SlimesSpawn
+    - id: SolarFlare
+    - id: SnakeSpawn
+    - id: SpiderClownSpawn
+    - id: SpiderSpawn
+    - id: VentClog
+    - id: TidemindDevelop
+    - id: MothroachSpawn
+    - id: BlueshiftMalignRiftSpawn
+    - id: BlueshiftFloorGoblinMidRound
+    - id: BlueshiftClownGoblinMigration
+    - id: EeepEvent
+    # From SpicyPestEventsTable; its KingRatMigration moved to the antag table below.
+    - id: SnailMigration
+
+# Three waves. Each is a time window that delivers at most one antag event: once one member of a
+# wave has run, the others drop out (MaxRuleOccurenceCondition on each other). A wave opens at its
+# members' earliestStart and closes at the RoundDurationCondition max (seconds of round time).
+# Hitman, malf AI, tunnel clown, mime assassin, dark priest, borer, paradox clone and the rat king
+# migration are rare extras outside the waves.
+# The cooldown on the root holds back every antag event here, waves and extras alike, until 15
+# minutes after the last one was queued, so arrivals never pile on each other.
+- type: entityTable
+  id: BlueshiftAntagEventsTable
+  table: !type:AllSelector
+    conditions:
+    - !type:RulesCooldownCondition
+      cooldown: 900
+      rules:
+      - BlueshiftTraitorMidround
+      - BlueshiftVampireMidround
+      - BlueshiftSleeperAgents
+      - BlueshiftBountyHunterSpawn
+      - BlueshiftTraitorMidroundLate
+      - BlueshiftVampireMidroundLate
+      - BlueshiftBountyHunterSpawnLate
+      - HitmanShuttle
+      - MalfAiMidround
+      - TunnelClownMidround
+      - MimeAssassinMidround
+      - BlueshiftDarkPriestMidround
+      - BorerSpawn
+      - ParadoxCloneSpawn
+      - KingRatMigration
+    children:
+    # wave 1, 25-55 min
+    - id: BlueshiftTraitorMidround
+      conditions:
+      - !type:RoundDurationCondition
+        max: 3300
+      - !type:MaxRuleOccurenceCondition
+        ruleOverride: BlueshiftVampireMidround
+    - id: BlueshiftVampireMidround
+      conditions:
+      - !type:RoundDurationCondition
+        max: 3300
+      - !type:MaxRuleOccurenceCondition
+        ruleOverride: BlueshiftTraitorMidround
+    # wave 2, 55-85 min
+    - id: BlueshiftSleeperAgents
+      conditions:
+      - !type:RoundDurationCondition
+        max: 5100
+      - !type:MaxRuleOccurenceCondition
+        ruleOverride: BlueshiftBountyHunterSpawn
+    - id: BlueshiftBountyHunterSpawn
+      conditions:
+      - !type:BountyHunterTargetCondition
+      - !type:RoundDurationCondition
+        max: 5100
+      - !type:MaxRuleOccurenceCondition
+        ruleOverride: BlueshiftSleeperAgents
+    # wave 3, 95-125 min
+    - id: BlueshiftTraitorMidroundLate
+      conditions:
+      - !type:RoundDurationCondition
+        max: 7500
+      - !type:MaxRuleOccurenceCondition
+        ruleOverride: BlueshiftVampireMidroundLate
+      - !type:MaxRuleOccurenceCondition
+        ruleOverride: BlueshiftBountyHunterSpawnLate
+    - id: BlueshiftVampireMidroundLate
+      conditions:
+      - !type:RoundDurationCondition
+        max: 7500
+      - !type:MaxRuleOccurenceCondition
+        ruleOverride: BlueshiftTraitorMidroundLate
+      - !type:MaxRuleOccurenceCondition
+        ruleOverride: BlueshiftBountyHunterSpawnLate
+    - id: BlueshiftBountyHunterSpawnLate
+      conditions:
+      - !type:BountyHunterTargetCondition
+      - !type:RoundDurationCondition
+        max: 7500
+      - !type:MaxRuleOccurenceCondition
+        ruleOverride: BlueshiftTraitorMidroundLate
+      - !type:MaxRuleOccurenceCondition
+        ruleOverride: BlueshiftVampireMidroundLate
+    # rare extras, at their usual weights
+    - id: HitmanShuttle
+    - id: MalfAiMidround
+      conditions:
+      - !type:MalfAiAvailableCondition
+    - id: TunnelClownMidround
+    - id: MimeAssassinMidround
+    - id: BlueshiftDarkPriestMidround
+    - id: BorerSpawn
+    - id: ParadoxCloneSpawn
+    # Always puts up a rat king ghost role (VentCrittersRule spawns one specialEntry and ignores its prob),
+    # so it lives under the antag cooldown instead of in the pest table.
+    - id: KingRatMigration
+
+# Wave copies. Component fields merge per key with the parent, so a copy inherits every field it
+# doesn't set. StationEvent is spelled out in full anyway, for readability.
+
+- type: entity
+  id: BlueshiftTraitorMidround
+  parent: TraitorMidround
+  categories: [ HideSpawnMenu ]
+  components:
+  # TraitorMidround inherits the roundstart Traitor's 240-420 s start delay. While a rule waits to start,
+  # occurrence checks can't see it, so a second event of the same wave could be queued. Start at once.
+  - type: GameRule
+    delay:
+      min: 0
+      max: 0
+  - type: StationEvent
+    earliestStart: 25
+    weight: 40
+    minimumPlayers: 15
+    maxOccurrences: 1
+    startAnnouncement: station-event-communication-interception
+    startAudio:
+      path: /Audio/Announcements/intercept.ogg
+    duration: null
+    occursDuringRoundEnd: false
+    chaos:
+      Hostile: 100
+      Medical: 100
+      Death: 100
+    eventType: HostilesSpawn
+
+- type: entity
+  id: BlueshiftTraitorMidroundLate
+  parent: BlueshiftTraitorMidround
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StationEvent
+    earliestStart: 95
+    weight: 35
+    minimumPlayers: 15
+    maxOccurrences: 1
+    startAnnouncement: station-event-communication-interception
+    startAudio:
+      path: /Audio/Announcements/intercept.ogg
+    duration: null
+    occursDuringRoundEnd: false
+    chaos:
+      Hostile: 100
+      Medical: 100
+      Death: 100
+    eventType: HostilesSpawn
+
+- type: entity
+  id: BlueshiftSleeperAgents
+  parent: SleeperAgents
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StationEvent
+    earliestStart: 55
+    weight: 35
+    minimumPlayers: 15
+    maxOccurrences: 1
+    startAnnouncement: station-event-communication-interception
+    startAudio:
+      path: /Audio/Announcements/intercept.ogg
+    duration: null
+    occursDuringRoundEnd: false
+    eventType: HostilesSpawn
+
+- type: entity
+  id: BlueshiftVampireMidround
+  parent: VampireMidround
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StationEvent
+    earliestStart: 25
+    weight: 40
+    minimumPlayers: 5
+    maxOccurrences: 1
+    duration: null
+    occursDuringRoundEnd: false
+    chaos:
+      Hostile: 100
+      Medical: 50
+      Death: 50
+    eventType: HostilesSpawn
+
+- type: entity
+  id: BlueshiftVampireMidroundLate
+  parent: BlueshiftVampireMidround
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StationEvent
+    earliestStart: 95
+    weight: 35
+    minimumPlayers: 5
+    maxOccurrences: 1
+    duration: null
+    occursDuringRoundEnd: false
+    chaos:
+      Hostile: 100
+      Medical: 50
+      Death: 50
+    eventType: HostilesSpawn
+
+- type: entity
+  id: BlueshiftBountyHunterSpawn
+  parent: BountyHunterSpawn
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StationEvent
+    weight: 35
+    duration: null
+    earliestStart: 55
+    reoccurrenceDelay: 20
+    minimumPlayers: 15
+
+- type: entity
+  id: BlueshiftBountyHunterSpawnLate
+  parent: BountyHunterSpawn
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StationEvent
+    weight: 35
+    duration: null
+    earliestStart: 95
+    reoccurrenceDelay: 20
+    minimumPlayers: 15
+
+# Dark priest 5x rarer than the tunnel clown (1.5) instead of upstream's 30x (0.05).
+# StationEvent fields merge with the parent, so only the weight is overridden.
+- type: entity
+  id: BlueshiftDarkPriestMidround
+  parent: DarkPriestMidround
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StationEvent
+    weight: 0.3
+
+# Goblins: upstream runs each at weight 15, up to twice a round, and they cost almost no chaos, so in
+# Blueshift they landed in over 80% of rounds. Weight 2.5 and once a round each: about 30% of rounds.
+- type: entity
+  id: BlueshiftFloorGoblinMidRound
+  parent: FloorGoblinMidRound
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StationEvent
+    weight: 2.5
+    maxOccurrences: 1
+
+- type: entity
+  id: BlueshiftClownGoblinMigration
+  parent: ClownGoblinMigration
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StationEvent
+    weight: 2.5
+    maxOccurrences: 1
+
+# Malign rift at twice the base weight (0.4).
+- type: entity
+  id: BlueshiftMalignRiftSpawn
+  parent: MalignRiftSpawn
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StationEvent
+    earliestStart: 15
+    minimumPlayers: 15
+    weight: 0.8
+    eventType: Neutral
+    startAnnouncement: cosmiccult-announce-tier2-warning
+    startAnnouncementColor: "#cae8e8"
+    startAudio:
+      path: /Audio/_DV/CosmicCult/tier2.ogg
+
+# Roundstart
+
+# Roundstart antag sizes for Blueshift. AntagSelection `definitions` is a list, which inheritance
+# replaces whole, so each copy repeats its parent's definition with only playerRatio changed.
+# Keep them in sync with Changeling, Thief and Vampire. Traitor uses the standard rule (1 per 10).
+
+- type: entity
+  id: BlueshiftChangeling
+  parent: Changeling
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: AntagSelection
+    selectionTime: IntraPlayerSpawn
+    agentName: changeling-roundend-name
+    definitions:
+    - prefRoles: [ Changeling ]
+      max: 4
+      playerRatio: 15 # Changeling: 12
+      chaosScore: 200
+      jobBlacklist: [ Chaplain ]
+      blacklist:
+        components:
+        - CommandStaff
+      lateJoinAdditional: true
+      mindRoles:
+      - MindRoleChangeling
+
+- type: entity
+  id: BlueshiftThief
+  parent: Thief
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: AntagSelection
+    agentName: thief-round-end-agent-name
+    selectionTime: IntraPlayerSpawn
+    definitions:
+    - prefRoles: [ Thief ]
+      max: 3
+      playerRatio: 10 # Thief: 15
+      chaosScore: 100
+      lateJoinAdditional: true
+      allowNonHumans: true
+      multiAntagSetting: NotExclusive
+      startingGear: ThiefGear
+      jobBlacklist: [ Chaplain ]
+      blacklist:
+        components:
+        - CommandStaff
+      components:
+      - type: Pacified
+      - type: Thieving
+        stripTimeReduction: 2
+        stealthy: true
+      mindRoles:
+      - MindRoleThief
+      briefing:
+        sound: "/Audio/Misc/thief_greeting.ogg"
+
+# Max stays 1, so the ratio only matters if the max is ever raised.
+- type: entity
+  id: BlueshiftVampire
+  parent: Vampire
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: AntagSelection
+    selectionTime: IntraPlayerSpawn
+    agentName: vampire-roundend-name
+    definitions:
+    - prefRoles: [ Vampire ]
+      max: 1
+      playerRatio: 10 # Vampire: 5
+      chaosScore: 200
+      jobBlacklist: [ Chaplain ]
+      blacklist:
+        components:
+        - CommandStaff
+        - AntagImmune
+        - Changeling
+        - BibleUser
+      lateJoinAdditional: true
+      mindRoles:
+      - MindRoleVampire
+
+# Unchanged Heretic under its own id, so the ling/heretic exclusion below can name both Blueshift copies.
+- type: entity
+  id: BlueshiftHeretic
+  parent: Heretic
+  categories: [ HideSpawnMenu ]
+
+# incompatibleModes is keyed by the picked rule's id: these mirror Changeling's and Heretic's entries.
+- type: incompatibleModes
+  id: BlueshiftChangeling
+  modes:
+  - Heretic
+  - BlueshiftHeretic
+  - CosmicCult
+  - BlueshiftCosmicCult
+
+- type: incompatibleModes
+  id: BlueshiftHeretic
+  modes:
+  - Heretic
+  - BlueshiftHeretic
+  - CosmicCult
+  - BlueshiftCosmicCult
+  - Changeling
+  - BlueshiftChangeling
+
+# Cosmic cult from 20 connected players instead of 25, in Blueshift only.
+- type: entity
+  id: BlueshiftCosmicCult
+  parent: CosmicCult
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: GameRule
+    minPlayers: 20
+
+# Same exclusions as CosmicCult (incompatibleModes is keyed by the picked rule's id).
+- type: incompatibleModes
+  id: BlueshiftCosmicCult
+  modes:
+  - Nukeops
+  - Honkops
+  - Zombie
+  - Revolutionary
+  - BlobGameMode
+  - CosmicCult
+  - BlueshiftCosmicCult
+  - Heretic
+  - BlueshiftHeretic
+
+# First pick. Core antags lead; majors are rarer and need 15-25 players at roundstart (their minPlayers).
+- type: weightedRandom
+  id: BlueshiftPrimary
+  weights:
+    Traitor: 0.30
+    BlueshiftVampire: 0.15
+    BloodBrothers: 0.15
+    # majors at 0.75x of the first draft (0.07 / 0.05 / 0.05 / 0.02)
+    Revolutionary: 0.0525
+    BloodCult: 0.0375
+    BlueshiftCosmicCult: 0.0375
+    Nukeops: 0.015
+
+# Follow-up picks while chaos budget is left.
+- type: weightedRandom
+  id: BlueshiftRoundstart
+  weights:
+    # core
+    Traitor: 0.30
+    BlueshiftVampire: 0.15
+    BloodBrothers: 0.15
+    # aggressive: likelier than the quiet group. Ling and heretic exclude each other (incompatibleModes above).
+    BlueshiftChangeling: 0.08
+    BlueshiftHeretic: 0.08
+    # quiet: cheap in chaos, so they pass the budget roll easily; keep their weights low
+    BlueshiftThief: 0.015
+    Devil: 0.01
+    SiliconLiberation: 0.01
+
+# Scheduler
+
+- type: entity
+  id: BlueshiftScheduler
+  parent: BaseGameRule
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: SecretPlus
+    minStartingChaos: 6 # Entropy: 11. Per connected player, and the whole lobby counts
+    maxStartingChaos: 12 # Entropy: 22
+    livingChaosChange: -0.018 # Entropy's rate
+    deadChaosChange: 0.048
+    chaosChangeVariationMin: 0.65
+    chaosChangeVariationMax: 1.3
+    eventIntervalMin: 180
+    eventIntervalMax: 450
+    primaryAntagsWeightTable: BlueshiftPrimary
+    roundStartAntagsWeightTable: BlueshiftRoundstart
+    disallowedEvents:
+    - FriendlySpawn
+    - Psionic
+  - type: SelectedGameRules
+    scheduledGameRules: !type:NestedSelector
+      tableId: BlueshiftEventsTable

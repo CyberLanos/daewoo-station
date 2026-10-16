@@ -205,3 +205,16 @@
   - MeteorSwarmScheduler
   - SpaceTrafficControlEventScheduler
   - BasicRoundstartVariation
+
+# Blueshift: Entropy built around minor antags (see GameRules/blueshift.yml).
+- type: gamePreset
+  id: Blueshift
+  alias:
+    - blueshift
+  name: blueshift-title
+  description: blueshift-description
+  showInVote: false
+  rules:
+    - BlueshiftScheduler
+    - MeteorSwarmScheduler
+    - GlimmerEventScheduler
