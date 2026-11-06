@@ -90,6 +90,17 @@ namespace Content.Shared.Maps
 
         [DataField("variants")] public byte Variants { get; set; } = 1;
 
+        #region Pirate: glass floors - tile smoothing
+        /// <summary>
+        /// Tiles that share this group smooth against each other, like SS13 bitmask smoothing.
+        /// The server picks <see cref="Tile.Variant"/> from the 8 neighbours, so the sprite must be a
+        /// strip of all 47 tg junction states (<see cref="Variants"/> = 47), in ascending mask order.
+        /// Null disables smoothing.
+        /// </summary>
+        [DataField]
+        public string? SmoothGroup;
+        #endregion
+
         /// <summary>
         ///     Allows the tile to be rotated/mirrored when placed on a grid.
         /// </summary>

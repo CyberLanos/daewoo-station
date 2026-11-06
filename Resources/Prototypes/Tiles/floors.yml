@@ -1273,7 +1273,7 @@
   - 1.0
   footstepSounds:
     collection: FootstepTile
-  itemDrop: SheetGlass1
+  itemDrop: FloorTileItemGlass # Pirate: glass floors - drop the 1/4-sheet tile item, a sheet would let 1 sheet become 4
   tileRipResistance: 150 # Goob
 
 - type: tile
@@ -1290,7 +1290,7 @@
   - 1.0
   footstepSounds:
     collection: FootstepTile
-  itemDrop: SheetRGlass1
+  itemDrop: FloorTileItemRGlass # Pirate: glass floors - drop the 1/4-sheet tile item, a sheet would let 1 sheet become 4
   tileRipResistance: 175 # Goob
 
 - type: tile
