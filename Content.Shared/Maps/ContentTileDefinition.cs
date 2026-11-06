@@ -99,6 +99,27 @@ namespace Content.Shared.Maps
         /// </summary>
         [DataField]
         public string? SmoothGroup;
+
+        /// <summary>
+        /// A strip like <c>sprite</c>, with only the coloured glass pixels, that the client draws unshaded over the
+        /// tile. Tiles are drawn lit, so in the dark tinted glass would look like plain glass without this.
+        /// </summary>
+        [DataField]
+        public ResPath? PaneOverlay;
+
+        /// <summary>
+        /// Opacity of <see cref="PaneOverlay"/>. The engine blends in linear space, so small values already show:
+        /// 0.25 looked about 2.5 times stronger in game than in an sRGB mock-up.
+        /// </summary>
+        [DataField]
+        public float PaneOverlayAlpha = 0.06f;
+
+        /// <summary>
+        /// Colour of the starlight that comes through this tile when it looks down into open space (plasma glass
+        /// tints it violet, as in SS13). Null lets the plain starlight through. Only used for ZTransparent tiles.
+        /// </summary>
+        [DataField]
+        public Color? StarlightColor;
         #endregion
 
         /// <summary>

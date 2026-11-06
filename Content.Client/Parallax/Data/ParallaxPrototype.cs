@@ -53,4 +53,20 @@ public sealed partial class ParallaxPrototype : IPrototype
     /// </summary>
     [DataField]
     public string SectorDescription { get; private set; } = "";
+
+    #region Pirate: starlight
+    /// <summary>
+    ///     Colour of the starlight on maps that draw this parallax. Null uses the server default
+    ///     (pirate.starlight_color). A map's StarlightComponent overrides it.
+    /// </summary>
+    [DataField]
+    public Color? StarlightColor { get; private set; }
+
+    /// <summary>
+    ///     Strength of the starlight, 0 to 1, on maps that draw this parallax. Null uses the server
+    ///     default (pirate.starlight_strength). A map's StarlightComponent overrides it.
+    /// </summary>
+    [DataField]
+    public float? StarlightStrength { get; private set; }
+    #endregion
 }

@@ -5,6 +5,7 @@ using Content.Server._Pirate.Tiles;
 using Content.Shared.Maps;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
+using Robust.Shared.ContentPack;
 using Robust.Shared.Maths;
 
 namespace Content.IntegrationTests.Tests._Pirate.Tiles;
@@ -35,6 +36,7 @@ public sealed class TileSmoothingTest
     {
         await using var pair = await PoolManager.GetServerClient();
         var tileDefs = pair.Server.ResolveDependency<ITileDefinitionManager>();
+        var resources = pair.Client.ResolveDependency<IResourceManager>();
 
         Assert.That(ValidMasks, Has.Length.EqualTo(TileSmoothingSystem.VariantCount));
 
@@ -44,6 +46,12 @@ public sealed class TileSmoothingTest
             {
                 Assert.That(def.Variants, Is.EqualTo(TileSmoothingSystem.VariantCount), def.ID);
                 Assert.That(def.AllowRotationMirror, Is.False, def.ID);
+            }
+
+            // The pane overlay is indexed by the same variant, so it must exist next to the tile sprite.
+            foreach (var def in tileDefs.OfType<ContentTileDefinition>().Where(d => d.PaneOverlay != null))
+            {
+                Assert.That(resources.ContentFileExists(def.PaneOverlay!.Value), def.ID);
             }
         });
 

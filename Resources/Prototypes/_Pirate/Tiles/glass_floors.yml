@@ -1,5 +1,8 @@
 # Glass floors ported from NovaSector. They sit next to the old FloorGlass / FloorRGlass, they do not replace them.
 # All of them share smoothGroup Glass, so they join into one pane with each other (TileSmoothingSystem).
+# paneOverlay keeps plasma / uranium glass tinted in the dark (GlassPaneOverlay draws it unshaded).
+# starlightColor is the colour of the starlight that comes through them over open space (StarlightSystem);
+# plasma is SS13's COLOR_STRONG_VIOLET, uranium a green of about the same brightness.
 
 - type: tile
   abstract: true
@@ -34,6 +37,8 @@
   parent: BaseFloorGlassSolid
   name: tiles-plasma-glass-floor
   sprite: /Textures/_Pirate/Tiles/Glass/plasma_glass.png
+  paneOverlay: /Textures/_Pirate/Tiles/Glass/plasma_glass_pane.png
+  starlightColor: "#6927C5"
   itemDrop: FloorTileItemPlasmaGlass
   tileRipResistance: 175
 
@@ -42,6 +47,8 @@
   parent: BaseFloorGlassSolid
   name: tiles-plasma-glass-reinforced-floor
   sprite: /Textures/_Pirate/Tiles/Glass/reinf_plasma_glass.png
+  paneOverlay: /Textures/_Pirate/Tiles/Glass/reinf_plasma_glass_pane.png
+  starlightColor: "#6927C5"
   itemDrop: FloorTileItemPlasmaGlassReinforced
   tileRipResistance: 200
 
@@ -50,6 +57,8 @@
   parent: BaseFloorGlassSolid
   name: tiles-uranium-glass-floor
   sprite: /Textures/_Pirate/Tiles/Glass/uranium_glass.png
+  paneOverlay: /Textures/_Pirate/Tiles/Glass/uranium_glass_pane.png
+  starlightColor: "#1A5E26"
   itemDrop: FloorTileItemUraniumGlass
   tileRipResistance: 175
 
@@ -58,5 +67,7 @@
   parent: BaseFloorGlassSolid
   name: tiles-uranium-glass-reinforced-floor
   sprite: /Textures/_Pirate/Tiles/Glass/reinf_uranium_glass.png
+  paneOverlay: /Textures/_Pirate/Tiles/Glass/reinf_uranium_glass_pane.png
+  starlightColor: "#1A5E26"
   itemDrop: FloorTileItemUraniumGlassReinforced
   tileRipResistance: 200
